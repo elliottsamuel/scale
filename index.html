@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="SCALE — a five-step framework for getting from where you are to where you want to be. Step 1: See Your Destination.">
+<title>SCALE — See Your Destination</title>
+</head>
+<body>
+<style>
+  :root{
+    --paper:#EEF1F6;
+    --surface:#FFFFFF;
+    --surface-2:#F6F8FC;
+    --ink:#151B2E;
+    --muted:#5B6478;
+    --faint:#8A93A6;
+    --line:#DCE2EE;
+    --accent:#10897A;
+    --accent-ink:#0B5E54;
+    --accent-soft:#E2F1EE;
+    --a:#5C77A8;
+    --a-soft:#E8ECF6;
+    --b:#C4881F;
+    --b-soft:#F8EEDA;
+    --shadow:0 1px 2px rgba(21,27,46,.05), 0 12px 32px -12px rgba(21,27,46,.18);
+    --radius:16px;
+    --font-display:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,"Times New Roman",serif;
+    --font-body:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --font-mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --paper:#0E1424;--surface:#161D30;--surface-2:#1B2338;--ink:#E7EAF3;--muted:#9AA6C2;
+      --faint:#6E7A96;--line:#28324A;--accent:#2EBBA7;--accent-ink:#0E1424;--accent-soft:#123A38;
+      --a:#84A0D6;--a-soft:#1C2740;--b:#E7B558;--b-soft:#322916;
+      --shadow:0 1px 2px rgba(0,0,0,.4),0 16px 40px -16px rgba(0,0,0,.6);
+    }
+  }
+  :root[data-theme="light"]{
+    --paper:#EEF1F6;--surface:#FFFFFF;--surface-2:#F6F8FC;--ink:#151B2E;--muted:#5B6478;
+    --faint:#8A93A6;--line:#DCE2EE;--accent:#10897A;--accent-ink:#0B5E54;--accent-soft:#E2F1EE;
+    --a:#5C77A8;--a-soft:#E8ECF6;--b:#C4881F;--b-soft:#F8EEDA;
+    --shadow:0 1px 2px rgba(21,27,46,.05),0 12px 32px -12px rgba(21,27,46,.18);
+  }
+  :root[data-theme="dark"]{
+    --paper:#0E1424;--surface:#161D30;--surface-2:#1B2338;--ink:#E7EAF3;--muted:#9AA6C2;
+    --faint:#6E7A96;--line:#28324A;--accent:#2EBBA7;--accent-ink:#0E1424;--accent-soft:#123A38;
+    --a:#84A0D6;--a-soft:#1C2740;--b:#E7B558;--b-soft:#322916;
+    --shadow:0 1px 2px rgba(0,0,0,.4),0 16px 40px -16px rgba(0,0,0,.6);
+  }
+
+  *{box-sizing:border-box}
+  body{margin:0}
+  .wrap{
+    min-height:100vh;background:
+      radial-gradient(120% 60% at 50% -10%, color-mix(in srgb, var(--accent) 8%, var(--paper)) 0%, var(--paper) 55%);
+    color:var(--ink);font-family:var(--font-body);
+    line-height:1.55;-webkit-font-smoothing:antialiased;
+    display:flex;flex-direction:column;align-items:center;
+    padding:28px 20px 64px;
+  }
+  .shell{width:100%;max-width:720px;display:flex;flex-direction:column;gap:22px}
+
+  /* ---- header / rail ---- */
+  .rail{display:flex;flex-direction:column;gap:12px}
+  .rail__top{display:flex;align-items:center;justify-content:space-between;gap:16px}
+  .brand{font-family:var(--font-mono);font-size:12px;letter-spacing:.28em;color:var(--faint);text-transform:uppercase}
+  .theme-btn{
+    font-family:var(--font-mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;
+    color:var(--muted);background:transparent;border:1px solid var(--line);border-radius:999px;
+    padding:6px 12px;cursor:pointer}
+  .theme-btn:hover{border-color:var(--accent);color:var(--accent)}
+  .letters{display:flex;gap:8px}
+  .letter{
+    flex:1;display:flex;flex-direction:column;align-items:center;gap:6px;
+    padding:12px 6px 10px;border-radius:12px;border:1px solid var(--line);
+    background:var(--surface);position:relative}
+  .letter b{font-family:var(--font-display);font-size:24px;font-weight:600;color:var(--faint);line-height:1}
+  .letter small{font-family:var(--font-mono);font-size:9px;letter-spacing:.1em;text-transform:uppercase;color:var(--faint)}
+  .letter.is-active{border-color:var(--accent);background:var(--accent-soft);box-shadow:var(--shadow)}
+  .letter.is-active b{color:var(--accent)}
+  .letter.is-active small{color:var(--accent-ink)}
+  @media (prefers-color-scheme:dark){.letter.is-active small{color:var(--accent)}}
+  :root[data-theme="dark"] .letter.is-active small{color:var(--accent)}
+
+  /* ---- card ---- */
+  .card{
+    background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+    box-shadow:var(--shadow);padding:34px 34px 30px}
+  @media (max-width:520px){.card{padding:26px 22px 24px}}
+
+  .eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin:0 0 14px}
+  .eyebrow--muted{color:var(--faint)}
+  h1{font-family:var(--font-display);font-weight:600;font-size:clamp(28px,5.5vw,40px);line-height:1.08;letter-spacing:-.01em;margin:0 0 14px;text-wrap:balance}
+  h2{font-family:var(--font-display);font-weight:600;font-size:clamp(23px,4.4vw,30px);line-height:1.12;margin:0 0 12px;text-wrap:balance}
+  .lede{font-size:17px;color:var(--muted);margin:0 0 20px;max-width:56ch}
+  p.body{font-size:15.5px;color:var(--muted);margin:0 0 16px;max-width:60ch}
+  .q-help{font-size:14.5px;color:var(--muted);margin:2px 0 18px;max-width:58ch}
+
+  /* ---- callout ---- */
+  .callout{
+    display:flex;gap:13px;background:var(--surface-2);border:1px solid var(--line);
+    border-left:3px solid var(--b);border-radius:10px;padding:14px 16px;margin:4px 0 22px}
+  .callout .mark{font-family:var(--font-mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--b);white-space:nowrap;padding-top:2px}
+  .callout p{margin:0;font-size:14.5px;color:var(--muted)}
+  .callout p b{color:var(--ink);font-weight:600}
+
+  /* ---- steps preview (welcome) ---- */
+  .preview{display:flex;flex-direction:column;gap:8px;margin:6px 0 24px}
+  .prow{display:flex;align-items:baseline;gap:14px;padding:11px 14px;border:1px solid var(--line);border-radius:11px;background:var(--surface-2)}
+  .prow .k{font-family:var(--font-display);font-size:19px;font-weight:600;width:18px;color:var(--accent)}
+  .prow .n{font-weight:600;color:var(--ink);font-size:15px}
+  .prow .d{color:var(--muted);font-size:14px}
+  .prow.locked .k{color:var(--faint)}
+  .prow.locked .n{color:var(--faint)}
+  .prow .soon{margin-left:auto;font-family:var(--font-mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);border:1px solid var(--line);border-radius:999px;padding:3px 9px;align-self:center}
+
+  /* ---- use case cards ---- */
+  .choices{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:4px 0 8px}
+  @media (max-width:520px){.choices{grid-template-columns:1fr}}
+  .choice{
+    text-align:left;background:var(--surface-2);border:1px solid var(--line);border-radius:12px;
+    padding:16px 16px 15px;cursor:pointer;font-family:inherit;color:inherit;transition:border-color .15s,background .15s,transform .05s}
+  .choice:hover{border-color:var(--accent)}
+  .choice:active{transform:translateY(1px)}
+  .choice.sel{border-color:var(--accent);background:var(--accent-soft);box-shadow:var(--shadow)}
+  .choice .t{font-weight:600;font-size:15px;margin-bottom:3px;color:var(--ink)}
+  .choice .s{font-size:13.5px;color:var(--muted);line-height:1.4}
+  .choice.sel .t{color:var(--accent-ink)}
+  :root[data-theme="dark"] .choice.sel .t{color:var(--ink)}
+  @media (prefers-color-scheme:dark){.choice.sel .t{color:var(--ink)}}
+
+  /* ---- inputs ---- */
+  textarea,input[type=text]{
+    width:100%;font-family:inherit;font-size:16px;color:var(--ink);background:var(--surface-2);
+    border:1px solid var(--line);border-radius:12px;padding:14px 15px;resize:vertical;line-height:1.5}
+  textarea{min-height:132px}
+  textarea::placeholder,input::placeholder{color:var(--faint)}
+  textarea:focus,input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 22%,transparent);background:var(--surface)}
+  .field-note{font-family:var(--font-mono);font-size:11px;letter-spacing:.04em;color:var(--faint);margin-top:9px}
+
+  /* ---- footer nav ---- */
+  .foot{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:24px}
+  .subprog{font-family:var(--font-mono);font-size:11px;letter-spacing:.06em;color:var(--faint)}
+  .nav{display:flex;gap:10px;margin-left:auto}
+  .btn{font-family:inherit;font-size:14.5px;font-weight:600;border-radius:10px;padding:11px 20px;cursor:pointer;border:1px solid transparent;transition:background .15s,border-color .15s,transform .05s}
+  .btn:active{transform:translateY(1px)}
+  .btn--primary{background:var(--accent);color:#fff;border-color:var(--accent)}
+  :root[data-theme="dark"] .btn--primary{color:var(--accent-ink)}
+  @media (prefers-color-scheme:dark){.btn--primary{color:var(--accent-ink)}}
+  .btn--primary:hover{filter:brightness(1.06)}
+  .btn--ghost{background:transparent;color:var(--muted);border-color:var(--line)}
+  .btn--ghost:hover{border-color:var(--muted);color:var(--ink)}
+  .btn:disabled{opacity:.4;cursor:not-allowed}
+
+  /* ---- tags ---- */
+  .tag{font-family:var(--font-mono);font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;padding:4px 9px;border-radius:999px;display:inline-block}
+  .tag--a{background:var(--a-soft);color:var(--a)}
+  .tag--b{background:var(--b-soft);color:var(--b)}
+
+  /* ---- summary map ---- */
+  .journeys{display:flex;flex-direction:column;gap:16px;margin:8px 0 24px}
+  .journey{border:1px solid var(--line);border-radius:14px;background:var(--surface-2);padding:16px 16px 18px}
+  .journey__who{font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+  .path{display:grid;grid-template-columns:1fr 34px 1fr;align-items:stretch;gap:8px}
+  @media (max-width:520px){.path{grid-template-columns:1fr;gap:10px}}
+  .node{background:var(--surface);border:1px solid var(--line);border-radius:11px;padding:12px 13px;display:flex;flex-direction:column;gap:8px}
+  .node--a{border-top:3px solid var(--a)}
+  .node--b{border-top:3px solid var(--b)}
+  .node p{margin:0;font-size:14px;color:var(--ink);white-space:pre-wrap;overflow-wrap:anywhere}
+  .node .empty{color:var(--faint);font-style:italic}
+  .arrow{display:flex;align-items:center;justify-content:center;color:var(--faint);font-size:20px}
+  @media (max-width:520px){.arrow{transform:rotate(90deg)}}
+
+  .next-teaser{display:flex;align-items:center;gap:14px;border:1px dashed var(--line);border-radius:12px;padding:15px 16px;background:transparent}
+  .next-teaser .k{font-family:var(--font-display);font-size:22px;font-weight:600;color:var(--faint)}
+  .next-teaser .txt{font-size:14px;color:var(--muted)}
+  .next-teaser .soon{margin-left:auto;font-family:var(--font-mono);font-size:9.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--faint);border:1px solid var(--line);border-radius:999px;padding:4px 10px}
+
+  .toast{position:fixed;left:50%;bottom:26px;transform:translateX(-50%) translateY(12px);background:var(--ink);color:var(--paper);font-size:13.5px;padding:10px 18px;border-radius:999px;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:50}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  .fade{animation:fade .32s ease both}
+  @keyframes fade{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion:reduce){.fade{animation:none}.toast{transition:opacity .2s}}
+</style>
+
+<div class="wrap">
+  <div class="shell">
+    <header class="rail">
+      <div class="rail__top">
+        <span class="brand">The SCALE Framework</span>
+        <button class="theme-btn" id="themeBtn" type="button">Theme</button>
+      </div>
+      <div class="letters" id="letters"></div>
+    </header>
+    <main class="card" id="root"></main>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  var STEPS = [
+    {k:"S", name:"See Your Destination", live:true},
+    {k:"C", name:"Coming soon", live:false},
+    {k:"A", name:"Coming soon", live:false},
+    {k:"L", name:"Coming soon", live:false},
+    {k:"E", name:"Coming soon", live:false}
+  ];
+
+  var USE_CASES = {
+    product:{
+      title:"Create a product or feature",
+      desc:"Design a product experience or a new feature.",
+      challengeQ:"What do you want to create?",
+      challengePh:"e.g. A mobile onboarding flow that gets new users set up in under two minutes.",
+      audNoun:"your user",
+      audIdQ:"Who is this for? Bring one real user or a single archetype to mind.",
+      audIdPh:"e.g. A busy first-time user opening the app on their phone.",
+      audAQ:"Where is your user now — before they’ve used this?",
+      audAPh:"e.g. Confused about how to start; likely to give up before seeing any value.",
+      audBQ:"Where do you want your user to end up?",
+      audBPh:"e.g. Set up, confident, and already feeling the core value."
+    },
+    article:{
+      title:"Write an article or content",
+      desc:"Write an article, essay, or other piece.",
+      challengeQ:"What do you want to write?",
+      challengePh:"e.g. An essay on why naming what you actually want is the hardest first step.",
+      audNoun:"your reader",
+      audIdQ:"Who are you writing for? Bring one reader or a single archetype to mind.",
+      audIdPh:"e.g. A thoughtful founder who feels stuck and can’t name what they want.",
+      audAQ:"Where is your reader now — before they’ve read this?",
+      audAPh:"e.g. Vaguely dissatisfied, spinning, without language for the problem.",
+      audBQ:"Where do you want your reader to end up after reading?",
+      audBPh:"e.g. Clear, a little relieved, with one concrete thing to do next."
+    },
+    conflict:{
+      title:"Resolve a conflict or relationship",
+      desc:"Work through a conflict or strengthen a relationship.",
+      challengeQ:"What situation do you want to work through?",
+      challengePh:"e.g. A recurring tension with a co-founder about how decisions get made.",
+      audNoun:"the other person",
+      audIdQ:"Who is the other person? Bring them clearly to mind.",
+      audIdPh:"e.g. My co-founder, who feels shut out of decisions.",
+      audAQ:"Where is the other person now in this situation?",
+      audAPh:"e.g. Frustrated, guarded, expecting not to be heard.",
+      audBQ:"Where do you want the other person to end up — a place they’d want too?",
+      audBPh:"e.g. Feeling respected and genuinely part of how we decide things."
+    },
+    problem:{
+      title:"Solve a problem",
+      desc:"Work through a problem or a decision.",
+      challengeQ:"What problem do you want to solve?",
+      challengePh:"e.g. Whether to change careers this year.",
+      audNoun:"the person on the other end",
+      audIdQ:"Who else is affected by this? Bring one person or archetype to mind.",
+      audIdPh:"e.g. My partner, who’s affected by any big change I make.",
+      audAQ:"Where is that person now in relation to this?",
+      audAPh:"e.g. Anxious about instability, unsure what I’m really considering.",
+      audBQ:"Where do you want them to end up?",
+      audBPh:"e.g. Reassured, on board, clear on the plan and the why."
+    },
+    learn:{
+      title:"Learn how SCALE works",
+      desc:"Get a feel for the framework using something real from your life.",
+      handHold:true,
+      challengeQ:"Bring any challenge or goal you’re navigating right now to mind. What is it?",
+      challengePh:"Anything alive for you — a project, a relationship, a decision, a goal. Just pick one.",
+      audNoun:"the other person",
+      audIdQ:"Almost anything meaningful involves someone else. Who’s the other person here?",
+      audIdPh:"e.g. Someone this affects, or someone you’re doing it for.",
+      audAQ:"Where is that person now?",
+      audAPh:"Describe where they’re starting from.",
+      audBQ:"Where would you want that person to end up — somewhere they’d want too?",
+      audBPh:"Describe the shared destination."
+    },
+    other:{
+      title:"Something else",
+      desc:"Bring your own use case.",
+      challengeQ:"What do you want to use this SCALE session for?",
+      challengePh:"Describe it in a sentence or two.",
+      audNoun:"the other person",
+      audIdQ:"Who’s on the other end of this? Bring one person or archetype to mind.",
+      audIdPh:"Describe who they are.",
+      audAQ:"Where is that person now?",
+      audAPh:"Describe where they’re starting from.",
+      audBQ:"Where do you want that person to end up?",
+      audBPh:"Describe the destination."
+    }
+  };
+
+  var SCREENS = ["welcome","usecase","intro","challenge","myA","myB","audId","audA","audB","summary"];
+  var DEFINE = ["challenge","myA","myB","audId","audA","audB"]; // step-1 working screens
+
+  var LS_KEY = "scale_v1";
+  var state = {i:0, a:{useCase:"", challenge:"", myA:"", myB:"", audName:"", audA:"", audB:""}};
+  load();
+
+  var root = document.getElementById("root");
+  var toastEl = document.getElementById("toast");
+
+  function load(){
+    try{ var s = JSON.parse(localStorage.getItem(LS_KEY)); if(s&&s.a){state=s;} }catch(e){}
+  }
+  function save(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(state)); }catch(e){} }
+  function esc(s){ return (s||"").replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];}); }
+  function uc(){ return USE_CASES[state.a.useCase] || USE_CASES.other; }
+  function audLabel(){ return state.a.audName ? esc(state.a.audName) : ("Your " + esc(uc().audNoun).replace(/^your\s+/i,"")); }
+
+  function toast(msg){
+    toastEl.textContent = msg; toastEl.classList.add("show");
+    setTimeout(function(){ toastEl.classList.remove("show"); }, 1800);
+  }
+
+  /* theme toggle */
+  document.getElementById("themeBtn").addEventListener("click", function(){
+    var r = document.documentElement;
+    var cur = r.getAttribute("data-theme");
+    if(!cur){ cur = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark":"light"; }
+    r.setAttribute("data-theme", cur==="dark"?"light":"dark");
+  });
+
+  function renderLetters(){
+    var el = document.getElementById("letters");
+    el.innerHTML = STEPS.map(function(s){
+      var active = s.k==="S";
+      return '<div class="letter'+(active?' is-active':'')+'">'
+        + '<b>'+s.k+'</b><small>'+(active?'Step 1':'Soon')+'</small></div>';
+    }).join("");
+  }
+
+  function go(name){ state.i = SCREENS.indexOf(name); save(); render(); window.scrollTo({top:0,behavior:"smooth"}); }
+  function next(){ if(state.i<SCREENS.length-1){ state.i++; save(); render(); window.scrollTo({top:0,behavior:"smooth"}); } }
+  function back(){ if(state.i>0){ state.i--; save(); render(); window.scrollTo({top:0,behavior:"smooth"}); } }
+
+  function footer(opts){
+    // opts: {showBack, primaryLabel, onPrimary(name/fn), disabled, subLabel}
+    var sub = opts.subLabel ? '<span class="subprog">'+opts.subLabel+'</span>' : '';
+    var backBtn = opts.showBack ? '<button class="btn btn--ghost" id="backBtn" type="button">Back</button>' : '';
+    var primary = opts.primaryLabel ? '<button class="btn btn--primary" id="primaryBtn" type="button"'+(opts.disabled?' disabled':'')+'>'+opts.primaryLabel+'</button>' : '';
+    return '<div class="foot">'+sub+'<div class="nav">'+backBtn+primary+'</div></div>';
+  }
+  function wireFooter(onPrimary){
+    var b = document.getElementById("backBtn"); if(b) b.addEventListener("click", back);
+    var p = document.getElementById("primaryBtn"); if(p) p.addEventListener("click", onPrimary);
+  }
+
+  function inputScreen(cfg){
+    // cfg: {field, stepIdx, eyebrow, question, help, placeholder, note}
+    var val = state.a[cfg.field] || "";
+    root.innerHTML =
+      '<div class="fade">'
+      + '<p class="eyebrow">'+cfg.eyebrow+'</p>'
+      + '<h2>'+cfg.question+'</h2>'
+      + (cfg.help?'<p class="q-help">'+cfg.help+'</p>':'')
+      + '<textarea id="ta" placeholder="'+esc(cfg.placeholder)+'">'+esc(val)+'</textarea>'
+      + (cfg.note?'<p class="field-note">'+cfg.note+'</p>':'')
+      + footer({showBack:true, primaryLabel:"Continue", subLabel:"Step 1 · "+cfg.stepIdx+" of "+DEFINE.length})
+      + '</div>';
+    var ta = document.getElementById("ta");
+    ta.addEventListener("input", function(){ state.a[cfg.field]=ta.value; save(); });
+    wireFooter(next);
+  }
+
+  function render(){
+    renderLetters();
+    var name = SCREENS[state.i];
+    var u = uc();
+
+    if(name==="welcome"){
+      root.innerHTML =
+        '<div class="fade">'
+        + '<p class="eyebrow eyebrow--muted">A five-step framework for getting there</p>'
+        + '<h1>Move from where you are to where you want to be.</h1>'
+        + '<p class="lede">SCALE is a step-by-step process for creating something real — a product, a piece of writing, a resolution, a decision. It starts by getting you clear on the destination, then helps you actually reach it.</p>'
+        + '<div class="preview">'
+          + '<div class="prow"><span class="k">S</span><span class="n">See Your Destination</span><span class="d">— get clear on where you’re going</span></div>'
+          + '<div class="prow locked"><span class="k">C</span><span class="n">Step 2</span><span class="soon">Coming soon</span></div>'
+          + '<div class="prow locked"><span class="k">A</span><span class="n">Step 3</span><span class="soon">Coming soon</span></div>'
+          + '<div class="prow locked"><span class="k">L</span><span class="n">Step 4</span><span class="soon">Coming soon</span></div>'
+          + '<div class="prow locked"><span class="k">E</span><span class="n">Step 5</span><span class="soon">Coming soon</span></div>'
+        + '</div>'
+        + '<p class="body">Step&nbsp;1 is ready to walk through now. The rest of the framework is on its way.</p>'
+        + footer({primaryLabel:"Begin"})
+        + '</div>';
+      wireFooter(next);
+    }
+
+    else if(name==="usecase"){
+      var keys = ["product","article","conflict","problem","learn","other"];
+      var cards = keys.map(function(k){
+        var c = USE_CASES[k];
+        var sel = state.a.useCase===k ? " sel":"";
+        return '<button class="choice'+sel+'" type="button" data-k="'+k+'">'
+          + '<div class="t">'+c.title+'</div><div class="s">'+c.desc+'</div></button>';
+      }).join("");
+      root.innerHTML =
+        '<div class="fade">'
+        + '<p class="eyebrow">Before we begin</p>'
+        + '<h2>What do you want to use SCALE for?</h2>'
+        + '<p class="q-help">Pick the closest fit. It tailors the questions ahead — you can change it later.</p>'
+        + '<div class="choices">'+cards+'</div>'
+        + footer({showBack:true, primaryLabel:"Continue", disabled:!state.a.useCase})
+        + '</div>';
+      Array.prototype.forEach.call(document.querySelectorAll(".choice"), function(btn){
+        btn.addEventListener("click", function(){
+          state.a.useCase = btn.getAttribute("data-k"); save(); render();
+        });
+      });
+      wireFooter(next);
+    }
+
+    else if(name==="intro"){
+      root.innerHTML =
+        '<div class="fade">'
+        + '<p class="eyebrow">Step 1 · S</p>'
+        + '<h1>See Your Destination</h1>'
+        + '<p class="lede">This whole process is about movement — getting you from where you are to where you want to be. So before anything else, we get clear on the destination.</p>'
+        + '<p class="body">Most people never actually name what they want. That clarity is the first real step toward any meaningful goal — and it’s the entire job of this step.</p>'
+        + '<div class="callout"><span class="mark">Set aside</span><p>If problems, doubts, or obstacles come to mind, good — notice them and <b>set them aside for now</b>. We deal with those in Step&nbsp;2. Right now we only define where you want to go.</p></div>'
+        + footer({showBack:true, primaryLabel:"Start Step 1"})
+        + '</div>';
+      wireFooter(next);
+    }
+
+    else if(name==="challenge"){
+      inputScreen({field:"challenge", stepIdx:1,
+        eyebrow:"Step 1 · The challenge",
+        question:u.challengeQ,
+        help:u.handHold?"There’s no wrong answer here. Pick one thing and describe it in a sentence or two.":"Describe it at a high level — a sentence or two is plenty.",
+        placeholder:u.challengePh});
+    }
+
+    else if(name==="myA"){
+      inputScreen({field:"myA", stepIdx:2,
+        eyebrow:"Step 1 · My A · where you are now",
+        question:"Where are you now with this?",
+        help:"Capture your full current position — what you’ve done so far, what you have, and how you feel about it. Don’t filter it.",
+        placeholder:"Everything about where you stand right now…",
+        note:"A = your starting point."});
+    }
+
+    else if(name==="myB"){
+      inputScreen({field:"myB", stepIdx:3,
+        eyebrow:"Step 1 · My B · where you want to be",
+        question:"Where do you want to end up?",
+        help:"Describe the outcome you want from this — your destination, as vividly as you can. Stay with what you want, not how you’ll get there.",
+        placeholder:"The destination you’re moving toward…",
+        note:"B = your destination."});
+    }
+
+    else if(name==="audId"){
+      inputScreen({field:"audName", stepIdx:4,
+        eyebrow:"Step 1 · Your audience",
+        question:u.audIdQ,
+        help:"There’s always someone on the other end. For now, bring just one person or a single archetype to mind — you can run SCALE again later for others.",
+        placeholder:u.audIdPh,
+        note:"One person for now."});
+    }
+
+    else if(name==="audA"){
+      inputScreen({field:"audA", stepIdx:5,
+        eyebrow:"Step 1 · Audience A · where they are now",
+        question:u.audAQ,
+        help:"Step into their shoes. Where do they genuinely stand right now, before anything changes?",
+        placeholder:u.audAPh,
+        note:"Their starting point."});
+    }
+
+    else if(name==="audB"){
+      inputScreen({field:"audB", stepIdx:6,
+        eyebrow:"Step 1 · Audience B · where they want to be",
+        question:u.audBQ,
+        help:"This is one shared destination: the place you want them to reach that they’d want too. That alignment is what actually helps them get there.",
+        placeholder:u.audBPh,
+        note:"Their destination — aligned with yours."});
+    }
+
+    else if(name==="summary"){
+      var myA = state.a.myA, myB = state.a.myB, aA = state.a.audA, aB = state.a.audB;
+      function cell(v){ return v ? esc(v) : '<span class="empty">Not yet defined</span>'; }
+      root.innerHTML =
+        '<div class="fade">'
+        + '<p class="eyebrow">Step 1 complete</p>'
+        + '<h1>Your destination is clear.</h1>'
+        + '<p class="lede">You just did the thing most people skip: you named where you are and where you want to go — for yourself and for the person on the other end. That clarity is the foundation everything else builds on.</p>'
+        + '<div class="journeys">'
+          + '<div class="journey"><div class="journey__who">You</div><div class="path">'
+            + '<div class="node node--a"><span class="tag tag--a">Now · A</span><p>'+cell(myA)+'</p></div>'
+            + '<div class="arrow">→</div>'
+            + '<div class="node node--b"><span class="tag tag--b">Destination · B</span><p>'+cell(myB)+'</p></div>'
+          + '</div></div>'
+          + '<div class="journey"><div class="journey__who">'+audLabel()+'</div><div class="path">'
+            + '<div class="node node--a"><span class="tag tag--a">Now · A</span><p>'+cell(aA)+'</p></div>'
+            + '<div class="arrow">→</div>'
+            + '<div class="node node--b"><span class="tag tag--b">Destination · B</span><p>'+cell(aB)+'</p></div>'
+          + '</div></div>'
+        + '</div>'
+        + '<div class="next-teaser"><span class="k">C</span><span class="txt">Next: <b>Step&nbsp;2</b>. Remember those problems and barriers you set aside? That’s exactly what Step&nbsp;2 is for.</span><span class="soon">Coming soon</span></div>'
+        + '<div class="foot"><div class="nav"><button class="btn btn--ghost" id="resetBtn" type="button">Start over</button><button class="btn btn--ghost" id="backBtn" type="button">Back</button><button class="btn btn--primary" id="copyBtn" type="button">Copy summary</button></div></div>'
+        + '</div>';
+      document.getElementById("backBtn").addEventListener("click", back);
+      document.getElementById("resetBtn").addEventListener("click", function(){
+        state = {i:0, a:{useCase:"", challenge:"", myA:"", myB:"", audName:"", audA:"", audB:""}};
+        save(); render(); window.scrollTo({top:0,behavior:"smooth"});
+      });
+      document.getElementById("copyBtn").addEventListener("click", function(){
+        var txt = summaryText();
+        if(navigator.clipboard && navigator.clipboard.writeText){
+          navigator.clipboard.writeText(txt).then(function(){toast("Summary copied");},function(){toast("Copy failed — select and copy manually");});
+        } else { toast("Copy not available in this view"); }
+      });
+    }
+  }
+
+  function summaryText(){
+    var u = uc();
+    return "SCALE — Step 1: See Your Destination\n"
+      + "Use case: " + (u.title) + "\n"
+      + (state.a.challenge? "Challenge: " + state.a.challenge + "\n":"")
+      + "\nYOU\n  Now (A): " + (state.a.myA||"—") + "\n  Destination (B): " + (state.a.myB||"—") + "\n"
+      + "\n" + (state.a.audName||"AUDIENCE").toUpperCase() + "\n  Now (A): " + (state.a.audA||"—") + "\n  Destination (B): " + (state.a.audB||"—") + "\n";
+  }
+
+  render();
+})();
+</script>
+</body>
+</html>
