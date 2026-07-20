@@ -92,6 +92,14 @@
   .talk-frame{font-size:17px;line-height:1.6;color:var(--muted)}
   .talk-ask{font-size:20px;line-height:1.4;font-weight:600;color:var(--ink);text-wrap:balance}
 
+  /* ---------- AI reflection + thinking ---------- */
+  .reflect-text{font-size:19px;line-height:1.6;color:var(--ink);margin:2px 0 8px;max-width:54ch;text-wrap:pretty}
+  .thinking{display:flex;flex-direction:column;align-items:center;gap:18px;text-align:center;padding:40px 10px}
+  .thinking svg{width:30px;height:30px;animation:pulse 1.4s ease-in-out infinite}
+  .thinking p{margin:0;color:var(--muted);font-size:15px}
+  @keyframes pulse{0%,100%{opacity:.4;transform:scale(.9)}50%{opacity:1;transform:scale(1.1)}}
+  @media (prefers-reduced-motion:reduce){.thinking svg{animation:none;opacity:1}}
+
   /* ---------- recap (reflection) ---------- */
   .recap{border:1px solid var(--line);border-left:2px solid var(--accent);border-radius:10px;
     background:var(--panel-2);padding:11px 14px;margin:0 0 20px}
@@ -280,7 +288,12 @@
   var DEFINE = ["challenge","myA","myB","audId","audA","audB"];
   var LS_KEY = "scale_v2";
 
-  var state = {i:0, a:{useCase:"", challenge:"", myA:"", myB:"", audName:"", audA:"", audB:""}};
+  // Set this to your deployed Cloudflare Worker URL to turn on AI reflections.
+  // While empty, the app skips the reflection and continues normally.
+  var WORKER_URL = "";
+  var aiLoading = false;
+
+  var state = {i:0, a:{useCase:"", challenge:"", myA:"", myB:"", audName:"", audA:"", audB:"", reflection:"", reflectFor:""}};
   load();
 
   var root = document.getElementById("root");
@@ -349,6 +362,66 @@
     wireFooter(next);
   }
 
+  function renderChallenge(u){
+    var cval = state.a.challenge || "";
+    var hasReflection = state.a.reflection && state.a.reflectFor === cval && cval.trim();
+
+    if(aiLoading){
+      root.innerHTML = '<div class="card fade"><div class="thinking">'
+        + '<svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 0 L13.6 10.4 L24 12 L13.6 13.6 L12 24 L10.4 13.6 L0 12 L10.4 10.4 Z" fill="#8AA0FF"/></svg>'
+        + '<p>Reading what you wrote…</p></div></div>';
+      return;
+    }
+
+    if(hasReflection){
+      root.innerHTML = '<div class="card fade">'
+        + '<p class="eyebrow">Here’s what I’m hearing</p>'
+        + '<p class="reflect-text">'+esc(state.a.reflection)+'</p>'
+        + '<div class="foot"><span class="subprog">Step 1 · 1 of '+DEFINE.length+'</span>'
+        + '<div class="nav"><button class="btn btn--ghost" id="editBtn" type="button">Edit</button>'
+        + '<button class="btn btn--primary" id="primaryBtn" type="button">Continue</button></div></div>'
+        + '</div>';
+      document.getElementById("editBtn").addEventListener("click", function(){
+        state.a.reflection=""; state.a.reflectFor=""; save(); render();
+      });
+      document.getElementById("primaryBtn").addEventListener("click", next);
+      return;
+    }
+
+    root.innerHTML = '<div class="card fade">'
+      + '<p class="talk"><span class="talk-frame">'+u.frame+'</span><span class="talk-ask">'+u.ask+'</span></p>'
+      + '<textarea id="ta" placeholder="'+esc(u.challengePh)+'">'+esc(cval)+'</textarea>'
+      + footer({showBack:true, primaryLabel:"Continue", subLabel:"Step 1 · 1 of "+DEFINE.length})
+      + '</div>';
+    var cta=document.getElementById("ta");
+    cta.addEventListener("input", function(){ state.a.challenge=cta.value; save(); });
+    var b=document.getElementById("backBtn"); if(b) b.addEventListener("click", back);
+    var p=document.getElementById("primaryBtn"); if(p) p.addEventListener("click", submitChallenge);
+  }
+
+  function submitChallenge(){
+    var cval = (state.a.challenge||"").trim();
+    if(!cval || !WORKER_URL){ next(); return; }   // nothing to reflect, or AI not configured yet
+    aiLoading = true; render(); scrollUp();
+    fetch(WORKER_URL, {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({ useCase: uc().title, challenge: cval })
+    })
+    .then(function(r){ return r.ok ? r.json() : Promise.reject(r.status); })
+    .then(function(d){
+      aiLoading = false;
+      if(d && d.reflection){
+        state.a.reflection = d.reflection; state.a.reflectFor = cval; save(); render(); scrollUp();
+      } else { next(); }
+    })
+    .catch(function(){
+      aiLoading = false;
+      toast("Couldn’t reach the guide — continuing");
+      next();
+    });
+  }
+
   function render(){
     var name = SCREENS[state.i];
     var u = uc();
@@ -390,15 +463,7 @@
     }
 
     else if(name==="challenge"){
-      var cval = state.a.challenge || "";
-      root.innerHTML = '<div class="card fade">'
-        + '<p class="talk"><span class="talk-frame">'+u.frame+'</span><span class="talk-ask">'+u.ask+'</span></p>'
-        + '<textarea id="ta" placeholder="'+esc(u.challengePh)+'">'+esc(cval)+'</textarea>'
-        + footer({showBack:true, primaryLabel:"Continue", subLabel:"Step 1 · 1 of "+DEFINE.length})
-        + '</div>';
-      var cta=document.getElementById("ta");
-      cta.addEventListener("input", function(){ state.a.challenge=cta.value; save(); });
-      wireFooter(next);
+      renderChallenge(u);
     }
     else if(name==="myA"){
       inputScreen({field:"myA",stepIdx:2,eyebrow:"Step 1 · Where you are now · A",
@@ -459,7 +524,7 @@
         + '</div>';
       document.getElementById("backBtn").addEventListener("click", back);
       document.getElementById("resetBtn").addEventListener("click", function(){
-        state={i:0,a:{useCase:"",challenge:"",myA:"",myB:"",audName:"",audA:"",audB:""}}; save(); render(); scrollUp();
+        state={i:0,a:{useCase:"",challenge:"",myA:"",myB:"",audName:"",audA:"",audB:"",reflection:"",reflectFor:""}}; save(); render(); scrollUp();
       });
       document.getElementById("copyBtn").addEventListener("click", function(){
         var txt=summaryText();

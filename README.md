@@ -40,9 +40,29 @@ It's a single self-contained file with no build step or dependencies.
 Progress is saved in the browser (`localStorage`) so a refresh won't lose work.
 There's no backend yet; answers stay on the visitor's device.
 
+## AI reflections (optional)
+
+After someone describes their challenge, the app can call a live model to
+reflect their words back and sharpen their goal. This needs a tiny backend so
+the API key stays private — a plain static site can't hold a secret safely.
+
+`worker/worker.js` is a Cloudflare Worker that holds an Anthropic API key and
+returns the reflection (using the fast Haiku model). To turn it on:
+
+1. Create a Worker in the Cloudflare dashboard and paste `worker/worker.js`
+   (or `cd worker && npx wrangler deploy`).
+2. Add a **secret** named `ANTHROPIC_API_KEY` (Settings → Variables and Secrets,
+   or `npx wrangler secret put ANTHROPIC_API_KEY`).
+3. Copy the Worker's URL into `WORKER_URL` near the top of the `<script>` in
+   `index.html`.
+
+Until `WORKER_URL` is set, the app simply skips the reflection and continues —
+so it always works, with or without the backend. AI reflections run on the
+GitHub Pages site; the claude.ai artifact preview can't make external calls.
+
 ## Structure
 
-Everything lives in `index.html`: a token-based theme (light + dark), the
-`SCALE` progress rail, and a small state-driven screen router in vanilla JS.
+Everything lives in `index.html`: a cosmic dark theme, an animated starfield,
+the `SCALE` progress rail, and a small state-driven screen router in vanilla JS.
 The flow is defined as a list of screens with per-use-case copy, so adding
 Steps 2–5 means extending those data structures rather than rewriting the shell.
