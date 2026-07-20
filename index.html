@@ -151,6 +151,20 @@
     box-shadow:0 0 0 3px rgba(138,160,255,.22)}
   .field-note{font-family:var(--font-mono);font-size:11px;letter-spacing:.04em;color:var(--faint);margin-top:9px}
 
+  /* ---------- voice input ---------- */
+  .field{position:relative}
+  .field textarea{padding-right:54px}
+  .mic{position:absolute;right:10px;bottom:10px;width:38px;height:38px;padding:0;border-radius:10px;
+    display:inline-flex;align-items:center;justify-content:center;cursor:pointer;
+    background:var(--panel-2);border:1px solid var(--line);color:var(--muted);
+    transition:border-color .15s,color .15s,background .15s}
+  .mic:hover{border-color:var(--accent);color:var(--accent)}
+  .mic:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .mic svg{width:18px;height:18px}
+  .mic.rec{border-color:#ff7a7a;color:#ff7a7a;background:rgba(255,122,122,.14);animation:micpulse 1.3s ease-in-out infinite}
+  @keyframes micpulse{0%,100%{box-shadow:0 0 0 0 rgba(255,122,122,.4)}50%{box-shadow:0 0 0 7px rgba(255,122,122,0)}}
+  @media (prefers-reduced-motion:reduce){.mic.rec{animation:none}}
+
   /* ---------- nav ---------- */
   .foot{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;
     position:sticky;bottom:0;z-index:5;
@@ -316,9 +330,9 @@
   function audLabel(){ return state.a.audName ? esc(state.a.audName) : ("Your " + esc(uc().audNoun).replace(/^your\s+/i,"")); }
   function toast(m){ toastEl.textContent=m; toastEl.classList.add("show"); setTimeout(function(){toastEl.classList.remove("show");},1800); }
 
-  function go(name){ state.i=SCREENS.indexOf(name); save(); render(); scrollUp(); }
-  function next(){ if(state.i<SCREENS.length-1){ state.i++; save(); render(); scrollUp(); } }
-  function back(){ if(state.i>0){ state.i--; save(); render(); scrollUp(); } }
+  function go(name){ stopMic(); state.i=SCREENS.indexOf(name); save(); render(); scrollUp(); }
+  function next(){ stopMic(); if(state.i<SCREENS.length-1){ state.i++; save(); render(); scrollUp(); } }
+  function back(){ stopMic(); if(state.i>0){ state.i--; save(); render(); scrollUp(); } }
   function scrollUp(){ window.scrollTo({top:0,behavior:"smooth"}); }
 
   function renderHeader(name){
@@ -351,6 +365,55 @@
     var p=document.getElementById("primaryBtn"); if(p) p.addEventListener("click", onPrimary);
   }
 
+  // ---------- voice input (Web Speech API) ----------
+  var SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  var activeRec = null;
+  function stopMic(){ if(activeRec){ try{ activeRec.stop(); }catch(e){} activeRec = null; } }
+
+  var MIC_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 2a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V5a3 3 0 0 0-3-3z"/><path d="M19 10v1a7 7 0 0 1-14 0v-1"/><line x1="12" y1="18" x2="12" y2="22"/></svg>';
+
+  function fieldHtml(placeholder, value){
+    return '<div class="field">'
+      + '<textarea id="ta" placeholder="'+placeholder+'">'+value+'</textarea>'
+      + '<button class="mic" id="ta-mic" type="button" aria-label="Record with voice" title="Record with voice" hidden>'+MIC_SVG+'</button>'
+      + '</div>';
+  }
+
+  function wireMic(field){
+    if(!SR) return;                                  // browser has no speech recognition — typing only
+    var btn = document.getElementById("ta-mic");
+    var ta = document.getElementById("ta");
+    if(!btn || !ta) return;
+    btn.hidden = false;
+    var rec = null, base = "";
+    btn.addEventListener("click", function(){
+      if(activeRec){ stopMic(); return; }            // clicking again stops
+      rec = new SR();
+      rec.lang = "en-US";
+      rec.interimResults = true;
+      rec.continuous = true;
+      base = ta.value ? ta.value.replace(/\s+$/,"") + " " : "";
+      rec.onresult = function(e){
+        var full = "";
+        for(var i=0;i<e.results.length;i++){ full += e.results[i][0].transcript; }
+        ta.value = (base + full).replace(/\s{2,}/g," ");
+        state.a[field] = ta.value;
+      };
+      rec.onerror = function(ev){
+        if(ev.error==="not-allowed" || ev.error==="service-not-allowed") toast("Microphone blocked — allow it in your browser");
+        else if(ev.error==="no-speech") toast("Didn’t catch that — try again");
+      };
+      rec.onend = function(){
+        activeRec = null;
+        btn.classList.remove("rec");
+        ta.value = ta.value.replace(/\s+$/,"");
+        state.a[field] = ta.value;
+      };
+      try { rec.start(); activeRec = rec; btn.classList.add("rec"); }
+      catch(e){ /* already running */ }
+    });
+  }
+
   function inputScreen(cfg){
     var val = state.a[cfg.field] || "";
     var recap = (cfg.recap && cfg.recap.value)
@@ -361,12 +424,13 @@
       + recap
       + '<h2>'+cfg.question+'</h2>'
       + (cfg.help?'<p class="q-help">'+cfg.help+'</p>':'')
-      + '<textarea id="ta" placeholder="'+esc(cfg.placeholder)+'">'+esc(val)+'</textarea>'
+      + fieldHtml(esc(cfg.placeholder), esc(val))
       + (cfg.note?'<p class="field-note">'+cfg.note+'</p>':'')
       + footer({showBack:true, primaryLabel:"Continue", subLabel:"Step 1 · "+cfg.stepIdx+" of "+DEFINE.length})
       + '</div>';
     var ta=document.getElementById("ta");
     ta.addEventListener("input", function(){ state.a[cfg.field]=ta.value; save(); });
+    wireMic(cfg.field);
     wireFooter(next);
   }
 
@@ -398,16 +462,18 @@
 
     root.innerHTML = '<div class="card fade">'
       + '<p class="talk"><span class="talk-frame">'+u.frame+'</span><span class="talk-ask">'+u.ask+'</span></p>'
-      + '<textarea id="ta" placeholder="'+esc(u.challengePh)+'">'+esc(cval)+'</textarea>'
+      + fieldHtml(esc(u.challengePh), esc(cval))
       + footer({showBack:true, primaryLabel:"Continue", subLabel:"Step 1 · 1 of "+DEFINE.length})
       + '</div>';
     var cta=document.getElementById("ta");
     cta.addEventListener("input", function(){ state.a.challenge=cta.value; save(); });
+    wireMic("challenge");
     var b=document.getElementById("backBtn"); if(b) b.addEventListener("click", back);
     var p=document.getElementById("primaryBtn"); if(p) p.addEventListener("click", submitChallenge);
   }
 
   function submitChallenge(){
+    stopMic();
     var cval = (state.a.challenge||"").trim();
     if(!cval || !WORKER_URL){ next(); return; }   // nothing to reflect, or AI not configured yet
     aiLoading = true; render(); scrollUp();
