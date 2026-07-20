@@ -29,7 +29,7 @@
     --b-soft:rgba(245,200,122,.15);
     --radius:16px;
     --glow:0 0 44px rgba(138,160,255,.28);
-    --font-display:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,"Times New Roman",serif;
+    --font-display:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
     --font-body:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
     --font-mono:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,"Liberation Mono",monospace;
   }
@@ -87,12 +87,18 @@
   p.body{font-size:15.5px;color:var(--muted);margin:0 0 16px;max-width:60ch}
   .q-help{font-size:14.5px;color:var(--muted);margin:2px 0 18px;max-width:58ch}
 
+  /* ---------- recap (reflection) ---------- */
+  .recap{border:1px solid var(--line);border-left:2px solid var(--accent);border-radius:10px;
+    background:var(--panel-2);padding:11px 14px;margin:0 0 20px}
+  .recap .rl{font-family:var(--font-mono);font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);margin-bottom:5px}
+  .recap .rt{font-size:14.5px;color:var(--ink);white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.5}
+
   /* ---------- splash ---------- */
   .splash{display:flex;flex-direction:column;align-items:center;text-align:center;gap:0;padding:24px 8px}
   .starmark{width:34px;height:34px;margin-bottom:26px;opacity:0;animation:markIn 1s ease .1s forwards}
-  .wordmark{display:flex;justify-content:center;gap:.02em;margin:0;font-family:var(--font-display);
-    font-weight:600;font-size:clamp(52px,15vw,108px);letter-spacing:.16em;line-height:1;
-    color:var(--ink);text-indent:.16em}
+  .wordmark{display:flex;justify-content:center;gap:.04em;margin:0;font-family:var(--font-display);
+    font-weight:700;font-size:clamp(52px,15vw,108px);letter-spacing:.14em;line-height:1;
+    color:var(--ink);text-indent:.14em}
   .wordmark span{display:inline-block;opacity:0;transform:translateY(14px);
     text-shadow:0 0 32px rgba(138,160,255,.45),0 0 66px rgba(138,160,255,.22);
     animation:letterIn .9s cubic-bezier(.2,.7,.2,1) forwards;animation-delay:calc(.35s + var(--i) * .1s)}
@@ -253,7 +259,7 @@
       audBQ:"Where do you want that person to end up?",audBPh:"Describe the destination."}
   };
 
-  var SCREENS = ["splash","usecase","intro","challenge","myA","myB","audId","audA","audB","summary"];
+  var SCREENS = ["splash","usecase","challenge","myA","myB","audId","audA","audB","summary"];
   var DEFINE = ["challenge","myA","myB","audId","audA","audB"];
   var LS_KEY = "scale_v2";
 
@@ -279,7 +285,7 @@
 
   function renderHeader(name){
     if(name==="splash"){ hdr.innerHTML=""; return; }
-    var showRail = SCREENS.indexOf(name) >= SCREENS.indexOf("intro");
+    var showRail = SCREENS.indexOf(name) >= SCREENS.indexOf("challenge");
     var rail = "";
     if(showRail){
       rail = '<div class="letters">' + STEPS.map(function(s){
@@ -309,8 +315,12 @@
 
   function inputScreen(cfg){
     var val = state.a[cfg.field] || "";
+    var recap = (cfg.recap && cfg.recap.value)
+      ? '<div class="recap"><div class="rl">'+esc(cfg.recap.label)+'</div><div class="rt">'+esc(cfg.recap.value)+'</div></div>'
+      : '';
     root.innerHTML = '<div class="card fade">'
       + '<p class="eyebrow">'+cfg.eyebrow+'</p>'
+      + recap
       + '<h2>'+cfg.question+'</h2>'
       + (cfg.help?'<p class="q-help">'+cfg.help+'</p>':'')
       + '<textarea id="ta" placeholder="'+esc(cfg.placeholder)+'">'+esc(val)+'</textarea>'
@@ -362,46 +372,46 @@
       wireFooter(next);
     }
 
-    else if(name==="intro"){
-      root.innerHTML = '<div class="card fade">'
-        + '<p class="eyebrow">Step 1 · S</p>'
-        + '<h1>See Your Destination</h1>'
-        + '<p class="lede">This whole process is about movement — getting you from where you are to where you want to be. So before anything else, we get clear on the destination.</p>'
-        + '<p class="body">Most people never actually name what they want. That clarity is the first real step toward any meaningful goal — and it’s the entire job of this step.</p>'
-        + '<div class="callout"><span class="mark">Set aside</span><p>If problems, doubts, or obstacles come to mind, good — notice them and <b>set them aside for now</b>. We deal with those in Step&nbsp;2. Right now we only define where you want to go.</p></div>'
-        + footer({showBack:true, primaryLabel:"Start Step 1"})
-        + '</div>';
-      wireFooter(next);
-    }
-
     else if(name==="challenge"){
-      inputScreen({field:"challenge",stepIdx:1,eyebrow:"Step 1 · The challenge",question:u.challengeQ,
-        help:u.handHold?"There’s no wrong answer here. Pick one thing and describe it in a sentence or two.":"Describe it at a high level — a sentence or two is plenty.",
+      inputScreen({field:"challenge",stepIdx:1,eyebrow:"Step 1 · See Your Destination",
+        recap:{label:"Using SCALE to",value:u.title},
+        question:"In your own words, what do you want SCALE to help you with?",
+        help:"A sentence or two is plenty.",
         placeholder:u.challengePh});
     }
     else if(name==="myA"){
-      inputScreen({field:"myA",stepIdx:2,eyebrow:"Step 1 · My A · where you are now",question:"Where are you now with this?",
-        help:"Capture your full current position — what you’ve done so far, what you have, and how you feel about it. Don’t filter it.",
-        placeholder:"Everything about where you stand right now…",note:"A = your starting point."});
+      inputScreen({field:"myA",stepIdx:2,eyebrow:"Step 1 · Where you are now · A",
+        recap:{label:"What you want help with",value:state.a.challenge},
+        question:"Where are you right now with this?",
+        help:"Describe your current position as clearly as you can.",
+        placeholder:"Where you stand right now…",note:"A = your starting point."});
     }
     else if(name==="myB"){
-      inputScreen({field:"myB",stepIdx:3,eyebrow:"Step 1 · My B · where you want to be",question:"Where do you want to end up?",
-        help:"Describe the outcome you want — your destination, as vividly as you can. Stay with what you want, not how you’ll get there.",
+      inputScreen({field:"myB",stepIdx:3,eyebrow:"Step 1 · Your destination · B",
+        recap:{label:"Where you are now",value:state.a.myA},
+        question:"Now picture your ideal destination. Where do you want to be?",
+        help:"Stay with what you want — not how you’ll get there.",
         placeholder:"The destination you’re moving toward…",note:"B = your destination."});
     }
     else if(name==="audId"){
-      inputScreen({field:"audName",stepIdx:4,eyebrow:"Step 1 · Your audience",question:u.audIdQ,
-        help:"There’s always someone on the other end. For now, bring just one person or a single archetype to mind — you can run SCALE again later for others.",
+      inputScreen({field:"audName",stepIdx:4,eyebrow:"Step 1 · The other person",
+        recap:{label:"Your destination",value:state.a.myB},
+        question:u.audIdQ,
+        help:"Almost every destination involves someone else. Bring one person or archetype to mind.",
         placeholder:u.audIdPh,note:"One person for now."});
     }
     else if(name==="audA"){
-      inputScreen({field:"audA",stepIdx:5,eyebrow:"Step 1 · Audience A · where they are now",question:u.audAQ,
-        help:"Step into their shoes. Where do they genuinely stand right now, before anything changes?",
+      inputScreen({field:"audA",stepIdx:5,eyebrow:"Step 1 · Where they are now · A",
+        recap:{label:"The other person",value:state.a.audName},
+        question:u.audAQ,
+        help:"Step into their shoes — where do they stand right now?",
         placeholder:u.audAPh,note:"Their starting point."});
     }
     else if(name==="audB"){
-      inputScreen({field:"audB",stepIdx:6,eyebrow:"Step 1 · Audience B · where they want to be",question:u.audBQ,
-        help:"This is one shared destination: the place you want them to reach that they’d want too. That alignment is what actually helps them get there.",
+      inputScreen({field:"audB",stepIdx:6,eyebrow:"Step 1 · Where they want to be · B",
+        recap:{label:"Where they are now",value:state.a.audA},
+        question:u.audBQ,
+        help:"One shared destination: where you want them to reach that they’d want too.",
         placeholder:u.audBPh,note:"Their destination — aligned with yours."});
     }
 
