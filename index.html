@@ -87,6 +87,11 @@
   p.body{font-size:15.5px;color:var(--muted);margin:0 0 16px;max-width:60ch}
   .q-help{font-size:14.5px;color:var(--muted);margin:2px 0 18px;max-width:58ch}
 
+  /* ---------- conversational lead (challenge) ---------- */
+  .talk{display:flex;flex-direction:column;gap:14px;margin:2px 0 22px;max-width:52ch}
+  .talk-frame{font-size:17px;line-height:1.6;color:var(--muted)}
+  .talk-ask{font-size:20px;line-height:1.4;font-weight:600;color:var(--ink);text-wrap:balance}
+
   /* ---------- recap (reflection) ---------- */
   .recap{border:1px solid var(--line);border-left:2px solid var(--accent);border-radius:10px;
     background:var(--panel-2);padding:11px 14px;margin:0 0 20px}
@@ -207,6 +212,8 @@
 
   var USE_CASES = {
     product:{title:"Create a product or feature",desc:"Design a product experience or a new feature.",
+      frame:"You’re building a product. SCALE will help you get clear on who it’s for, what it’s really meant to achieve, and how to start mapping the path to building it.",
+      ask:"To begin — what are you setting out to create?",
       challengeQ:"What do you want to create?",
       challengePh:"e.g. A mobile onboarding flow that gets new users set up in under two minutes.",
       audNoun:"your user",audIdQ:"Who is this for? Bring one real user or a single archetype to mind.",
@@ -216,6 +223,8 @@
       audBQ:"Where do you want your user to end up?",
       audBPh:"e.g. Set up, confident, and already feeling the core value."},
     article:{title:"Write an article or content",desc:"Write an article, essay, or other piece.",
+      frame:"You’re setting out to write. SCALE will help you find what you’re really trying to say, who it’s for, and the shift you want it to create in them.",
+      ask:"First — what do you want to write?",
       challengeQ:"What do you want to write?",
       challengePh:"e.g. An essay on why naming what you actually want is the hardest first step.",
       audNoun:"your reader",audIdQ:"Who are you writing for? Bring one reader or a single archetype to mind.",
@@ -225,6 +234,8 @@
       audBQ:"Where do you want your reader to end up after reading?",
       audBPh:"e.g. Clear, a little relieved, with one concrete thing to do next."},
     conflict:{title:"Resolve a conflict or relationship",desc:"Work through a conflict or strengthen a relationship.",
+      frame:"You’re working through something with another person. SCALE will help you get clear on what you actually want, where they’re coming from, and a way forward you’d both choose.",
+      ask:"To start — what’s the situation?",
       challengeQ:"What situation do you want to work through?",
       challengePh:"e.g. A recurring tension with a co-founder about how decisions get made.",
       audNoun:"the other person",audIdQ:"Who is the other person? Bring them clearly to mind.",
@@ -234,6 +245,8 @@
       audBQ:"Where do you want the other person to end up — a place they’d want too?",
       audBPh:"e.g. Feeling respected and genuinely part of how we decide things."},
     problem:{title:"Solve a problem",desc:"Work through a problem or a decision.",
+      frame:"You’ve got a problem to solve. SCALE will help you define what a good outcome really looks like, who it affects, and the path to get there.",
+      ask:"First — what’s the problem in front of you?",
       challengeQ:"What problem do you want to solve?",
       challengePh:"e.g. Whether to change our pricing model this quarter.",
       audNoun:"the person on the other end",audIdQ:"Who else is affected by this? Bring one person or archetype to mind.",
@@ -243,6 +256,8 @@
       audBQ:"Where do you want them to end up?",
       audBPh:"e.g. Feeling the new plan is fair and clearly worth it."},
     learn:{title:"Learn how SCALE works",desc:"Get a feel for the framework using something real.",handHold:true,
+      frame:"Let’s learn SCALE by using it on something real. Bring one thing you’re navigating — a project, a decision, a goal — and SCALE will take you from where you are to where you want to be.",
+      ask:"So — what’s on your mind?",
       challengeQ:"Bring any challenge or goal you’re navigating right now to mind. What is it?",
       challengePh:"Anything alive for you — a project, a decision, a goal. Just pick one.",
       audNoun:"the other person",audIdQ:"Almost anything meaningful involves someone else. Who’s the other person here?",
@@ -251,6 +266,8 @@
       audBQ:"Where would you want that person to end up — somewhere they’d want too?",
       audBPh:"Describe the shared destination."},
     other:{title:"Something else",desc:"Bring your own use case.",
+      frame:"Whatever you’re taking on, SCALE will help you get clear on where you want to end up, who it’s for, and how to get there.",
+      ask:"To start — what do you want to use SCALE for?",
       challengeQ:"What do you want to use this SCALE session for?",
       challengePh:"Describe it in a sentence or two.",
       audNoun:"the other person",audIdQ:"Who’s on the other end of this? Bring one person or archetype to mind.",
@@ -373,11 +390,15 @@
     }
 
     else if(name==="challenge"){
-      inputScreen({field:"challenge",stepIdx:1,eyebrow:"Step 1 · See Your Destination",
-        recap:{label:"Using SCALE to",value:u.title},
-        question:"In your own words, what do you want SCALE to help you with?",
-        help:"A sentence or two is plenty.",
-        placeholder:u.challengePh});
+      var cval = state.a.challenge || "";
+      root.innerHTML = '<div class="card fade">'
+        + '<p class="talk"><span class="talk-frame">'+u.frame+'</span><span class="talk-ask">'+u.ask+'</span></p>'
+        + '<textarea id="ta" placeholder="'+esc(u.challengePh)+'">'+esc(cval)+'</textarea>'
+        + footer({showBack:true, primaryLabel:"Continue", subLabel:"Step 1 · 1 of "+DEFINE.length})
+        + '</div>';
+      var cta=document.getElementById("ta");
+      cta.addEventListener("input", function(){ state.a.challenge=cta.value; save(); });
+      wireFooter(next);
     }
     else if(name==="myA"){
       inputScreen({field:"myA",stepIdx:2,eyebrow:"Step 1 · Where you are now · A",
