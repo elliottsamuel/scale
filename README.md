@@ -46,13 +46,15 @@ After someone describes their challenge, the app can call a live model to
 reflect their words back and sharpen their goal. This needs a tiny backend so
 the API key stays private — a plain static site can't hold a secret safely.
 
-`worker/worker.js` is a Cloudflare Worker that holds an Anthropic API key and
-returns the reflection (using the fast Haiku model). To turn it on:
+`worker/worker.js` is a Cloudflare Worker that generates the reflection using
+**Cloudflare Workers AI** (Cloudflare's built-in models) — no API key and no
+credit card, just Cloudflare's free daily allowance. To turn it on:
 
 1. Create a Worker in the Cloudflare dashboard and paste `worker/worker.js`
    (or `cd worker && npx wrangler deploy`).
-2. Add a **secret** named `ANTHROPIC_API_KEY` (Settings → Variables and Secrets,
-   or `npx wrangler secret put ANTHROPIC_API_KEY`).
+2. Add a **Workers AI binding** named `AI` (Settings → Bindings → Add →
+   Workers AI → variable name `AI`). The CLI reads this from the `[ai]` block
+   in `wrangler.toml` automatically.
 3. Copy the Worker's URL into `WORKER_URL` near the top of the `<script>` in
    `index.html`.
 
