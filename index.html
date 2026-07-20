@@ -74,10 +74,11 @@
   .letter.is-active small{color:var(--accent)}
 
   /* ---------- card ---------- */
-  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
-    padding:34px 34px 30px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  .card{--pad:34px;background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+    padding:34px var(--pad) 0;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
     box-shadow:0 24px 60px -28px rgba(0,0,0,.8)}
-  @media (max-width:520px){.card{padding:26px 22px 24px}}
+  @media (max-width:520px){.card{--pad:22px;padding:26px var(--pad) 0}}
+  .card > :last-child:not(.foot){margin-bottom:30px}
 
   .eyebrow{font-family:var(--font-mono);font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:var(--accent);margin:0 0 14px}
   .eyebrow--muted{color:var(--faint)}
@@ -151,7 +152,13 @@
   .field-note{font-family:var(--font-mono);font-size:11px;letter-spacing:.04em;color:var(--faint);margin-top:9px}
 
   /* ---------- nav ---------- */
-  .foot{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:24px}
+  .foot{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;
+    position:sticky;bottom:0;z-index:5;
+    margin:24px calc(-1 * var(--pad)) 0;
+    padding:14px var(--pad) calc(15px + env(safe-area-inset-bottom, 0px));
+    background:rgba(11,15,34,.94);border-top:1px solid var(--line);
+    border-radius:0 0 var(--radius) var(--radius);
+    backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
   .subprog{font-family:var(--font-mono);font-size:11px;letter-spacing:.06em;color:var(--faint)}
   .nav{display:flex;gap:10px;margin-left:auto}
   .btn{font-family:inherit;font-size:14.5px;font-weight:600;border-radius:11px;padding:11px 20px;cursor:pointer;
@@ -220,8 +227,8 @@
 
   var USE_CASES = {
     product:{title:"Create a product or feature",desc:"Design a product experience or a new feature.",
-      frame:"You’re building a product. SCALE will help you get clear on who it’s for, what it’s really meant to achieve, and how to start mapping the path to building it.",
-      ask:"To begin — what are you setting out to create?",
+      frame:"SCALE will help you get sharp on who this experience is really for, the difference it should make for them, and the path from idea to something they can use.",
+      ask:"To start — what do you want to create?",
       challengeQ:"What do you want to create?",
       challengePh:"e.g. A mobile onboarding flow that gets new users set up in under two minutes.",
       audNoun:"your user",audIdQ:"Who is this for? Bring one real user or a single archetype to mind.",
@@ -231,8 +238,8 @@
       audBQ:"Where do you want your user to end up?",
       audBPh:"e.g. Set up, confident, and already feeling the core value."},
     article:{title:"Write an article or content",desc:"Write an article, essay, or other piece.",
-      frame:"You’re setting out to write. SCALE will help you find what you’re really trying to say, who it’s for, and the shift you want it to create in them.",
-      ask:"First — what do you want to write?",
+      frame:"SCALE will help you find what you’re really trying to say, who it’s for, and the shift you want it to leave them with.",
+      ask:"To start — what do you want to write?",
       challengeQ:"What do you want to write?",
       challengePh:"e.g. An essay on why naming what you actually want is the hardest first step.",
       audNoun:"your reader",audIdQ:"Who are you writing for? Bring one reader or a single archetype to mind.",
@@ -242,7 +249,7 @@
       audBQ:"Where do you want your reader to end up after reading?",
       audBPh:"e.g. Clear, a little relieved, with one concrete thing to do next."},
     conflict:{title:"Resolve a conflict or relationship",desc:"Work through a conflict or strengthen a relationship.",
-      frame:"You’re working through something with another person. SCALE will help you get clear on what you actually want, where they’re coming from, and a way forward you’d both choose.",
+      frame:"SCALE will help you get clear on what you actually want here, understand where the other person is coming from, and find a way forward you’d both choose.",
       ask:"To start — what’s the situation?",
       challengeQ:"What situation do you want to work through?",
       challengePh:"e.g. A recurring tension with a co-founder about how decisions get made.",
@@ -253,8 +260,8 @@
       audBQ:"Where do you want the other person to end up — a place they’d want too?",
       audBPh:"e.g. Feeling respected and genuinely part of how we decide things."},
     problem:{title:"Solve a problem",desc:"Work through a problem or a decision.",
-      frame:"You’ve got a problem to solve. SCALE will help you define what a good outcome really looks like, who it affects, and the path to get there.",
-      ask:"First — what’s the problem in front of you?",
+      frame:"SCALE will help you define what a good outcome actually looks like, see who it affects, and find the clearest path to get there.",
+      ask:"To start — what’s the problem you’re facing?",
       challengeQ:"What problem do you want to solve?",
       challengePh:"e.g. Whether to change our pricing model this quarter.",
       audNoun:"the person on the other end",audIdQ:"Who else is affected by this? Bring one person or archetype to mind.",
@@ -301,8 +308,9 @@
   var wrap = document.getElementById("wrap");
   var toastEl = document.getElementById("toast");
 
-  function load(){ try{ var s=JSON.parse(localStorage.getItem(LS_KEY)); if(s&&s.a){state=s;} }catch(e){} }
-  function save(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(state)); }catch(e){} }
+  // No persistence across reloads — every load starts fresh at the splash screen.
+  function load(){}
+  function save(){}
   function esc(s){ return (s||"").replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];}); }
   function uc(){ return USE_CASES[state.a.useCase] || USE_CASES.other; }
   function audLabel(){ return state.a.audName ? esc(state.a.audName) : ("Your " + esc(uc().audNoun).replace(/^your\s+/i,"")); }
