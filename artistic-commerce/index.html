@@ -3,17 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="ARTISTIC COMMERCE — a sci-fi comedy about making something real in a universe that only sells copies. Coming soon.">
+<meta name="description" content="ARTISTIC COMMERCE — a sci-fi comedy about a ragtag crew of alien artists who come to Earth to remind us that business can be an expression of art. An original series.">
 <meta name="theme-color" content="#141019">
 <meta name="color-scheme" content="dark">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%23141019'/%3E%3Ctext y='.9em' font-size='84' x='6'%3E%F0%9F%9B%B0%EF%B8%8F%3C/text%3E%3C/svg%3E">
-<title>ARTISTIC COMMERCE — a new series</title>
+<title>ARTISTIC COMMERCE — an original series</title>
 </head>
 <body>
 <!-- =========================================================================
      ARTISTIC COMMERCE — promo landing page
-     Placeholder copy throughout. Search "SWAP:" to find every spot to drop in
-     the real write-up (tagline, synopsis, episodes, cast/credits).
+     Copy incorporated from the show write-up. Aesthetic: a slick sci-fi
+     broadcast package defaced with riso-print grunge — art vs. commerce.
      Committed single "poster" theme (dark riso print) by design.
      ========================================================================= -->
 <style>
@@ -77,21 +77,19 @@
     background:
       repeating-linear-gradient(90deg,var(--paper) 0 2px,transparent 2px 4px,var(--paper) 4px 5px,transparent 5px 9px,var(--paper) 9px 12px,transparent 12px 13px);
   }
-  .barcode.ink{filter:none}
   .stamp{
     font-family:var(--font-mono);font-weight:700;text-transform:uppercase;letter-spacing:.14em;
     border:2px solid currentColor;padding:6px 12px;border-radius:3px;font-size:12px;
     display:inline-block;transform:rotate(-6deg);opacity:.92;
     box-shadow:2px 2px 0 rgba(0,0,0,.4);
   }
-  .tape{
-    position:absolute;background:rgba(237,230,212,.16);border:1px dashed rgba(237,230,212,.3);
-    width:120px;height:30px;backdrop-filter:blur(1px);
-  }
   .sticker{
     font-family:var(--font-mono);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;
     padding:8px 12px;border-radius:999px;display:inline-block;line-height:1;
   }
+  .subhead{font-family:var(--font-mono);font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--volt);
+    margin:0 0 14px;display:flex;align-items:center;gap:10px}
+  .subhead::before{content:"";width:22px;height:2px;background:var(--pink)}
 
   /* ============================ HERO ============================ */
   .hero{position:relative;padding:26px 0 40px;min-height:100svh;display:flex;flex-direction:column;
@@ -100,7 +98,6 @@
       radial-gradient(900px 620px at 8% 6%, rgba(51,80,255,.18), transparent 58%),
       radial-gradient(700px 700px at 50% 120%, rgba(214,251,79,.08), transparent 60%);
   }
-  /* halftone dust bottom-left */
   .hero::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:0;
     background:radial-gradient(circle at center, var(--pink) .8px, transparent 1.4px);
     background-size:9px 9px;opacity:.05;
@@ -114,16 +111,14 @@
   .topbar nav{display:flex;gap:22px;font-family:var(--font-mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--smoke)}
   .topbar nav a{text-decoration:none;transition:color .2s}
   .topbar nav a:hover{color:var(--paper)}
-  @media (max-width:720px){.topbar nav{display:none}}
+  @media (max-width:820px){.topbar nav{display:none}}
 
   .hero-inner{flex:1;display:flex;flex-direction:column;justify-content:center;gap:24px;padding:34px 0}
   .hero-meta{display:flex;flex-wrap:wrap;gap:14px 22px;align-items:center}
 
-  /* ---- the wordmark ---- */
   .wordmark{position:relative;margin:4px 0 0}
   .wordmark svg{width:100%;height:auto;display:block;overflow:visible}
-  .wm-line{font-family:var(--font-display);font-weight:900;
-    text-transform:uppercase;letter-spacing:-.02em;}
+  .wm-line{font-family:var(--font-display);font-weight:900;text-transform:uppercase;letter-spacing:-.02em}
   .glitch{animation:glitch 6s infinite steps(1)}
   @keyframes glitch{
     0%,92%,100%{transform:translate(0,0)}
@@ -131,11 +126,12 @@
     95%{transform:translate(-2px,0)}96%{transform:translate(2px,1px)}97%{transform:translate(0,0)}
   }
 
-  .tagline{font-family:var(--font-body);font-weight:800;font-size:clamp(20px,3.4vw,32px);
-    line-height:1.12;max-width:20ch;text-wrap:balance;margin:0}
+  .tagline{font-family:var(--font-body);font-weight:800;font-size:clamp(22px,3.6vw,36px);
+    line-height:1.1;max-width:22ch;text-wrap:balance;margin:0}
   .tagline .hl{background:var(--volt);color:var(--ink);padding:0 .18em;box-decoration-break:clone;-webkit-box-decoration-break:clone}
 
-  .lede{font-family:var(--font-mono);color:var(--smoke);max-width:56ch;font-size:14.5px;line-height:1.65;margin:0}
+  .lede{font-family:var(--font-mono);color:var(--smoke);max-width:58ch;font-size:14.5px;line-height:1.7;margin:0}
+  .lede b{color:var(--paper)}
 
   .cta-row{display:flex;flex-wrap:wrap;gap:14px;align-items:center;margin-top:6px}
   .btn{font-family:var(--font-mono);font-weight:700;text-transform:uppercase;letter-spacing:.12em;font-size:13px;
@@ -148,17 +144,17 @@
 
   .floaters{position:absolute;inset:0;z-index:1;pointer-events:none}
   .floaters > *{position:absolute;pointer-events:auto}
-  .fl-1{top:20%;right:4%;color:var(--volt)}
-  .fl-2{bottom:20%;right:10%;background:var(--blue);color:var(--paper);transform:rotate(7deg);box-shadow:3px 3px 0 rgba(0,0,0,.4)}
-  .fl-3{top:44%;left:-14px;background:var(--pink);color:var(--ink);transform:rotate(-90deg);transform-origin:left center}
-  @media (max-width:860px){.floaters{display:none}}
+  .fl-1{top:19%;right:4%;color:var(--volt)}
+  .fl-2{bottom:19%;right:9%;background:var(--blue);color:var(--paper);transform:rotate(7deg);box-shadow:3px 3px 0 rgba(0,0,0,.4)}
+  .fl-3{top:46%;left:-6px;background:var(--pink);color:var(--ink);transform:rotate(-90deg);transform-origin:left center}
+  @media (max-width:960px){.floaters{display:none}}
   .float{animation:bob 7s ease-in-out infinite}
   @keyframes bob{50%{transform:translateY(-12px)}}
 
   /* ============================ TICKER ============================ */
   .ticker{position:relative;z-index:3;border-top:2px solid var(--paper);border-bottom:2px solid var(--paper);
     background:var(--volt);color:var(--ink);overflow:hidden;padding:11px 0}
-  .ticker-track{display:inline-flex;white-space:nowrap;will-change:transform;animation:marq 32s linear infinite}
+  .ticker-track{display:inline-flex;white-space:nowrap;will-change:transform;animation:marq 34s linear infinite}
   .ticker:hover .ticker-track{animation-play-state:paused}
   .ticker span{font-family:var(--font-mono);font-weight:700;text-transform:uppercase;letter-spacing:.16em;font-size:14px;padding:0 26px}
   .ticker span::after{content:"✦";margin-left:26px;opacity:.5}
@@ -172,13 +168,26 @@
   .sec-title em{font-style:normal;color:var(--pink)}
   .sec-index{font-family:var(--font-mono);font-size:12px;letter-spacing:.2em;color:var(--smoke-dim);white-space:nowrap}
 
-  /* ---- SYNOPSIS: the receipt ---- */
-  .synopsis{background:linear-gradient(180deg,#171220,#100b16)}
+  /* ---- MANIFESTO: the idea underneath ---- */
+  .manifesto{background:linear-gradient(180deg,#15111d,#0f0b15);border-bottom:2px solid var(--line)}
+  .big-statement{font-family:var(--font-display);font-weight:900;text-transform:uppercase;letter-spacing:-.02em;
+    font-size:clamp(34px,6.6vw,80px);line-height:.95;margin:0 0 36px;text-wrap:balance;max-width:15ch}
+  .big-statement .hl{color:var(--volt)}
+  .man-cols{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 44px}
+  @media (max-width:760px){.man-cols{grid-template-columns:1fr}}
+  .man-cols p{margin:0;font-size:16.5px;line-height:1.72}
+  .man-cols p strong{color:var(--volt);font-weight:700}
+  .values{display:flex;flex-wrap:wrap;gap:10px;margin-top:36px}
+  .values .sticker{border:1.5px solid var(--line-2);color:var(--paper);background:transparent}
+  .values .sticker::before{content:"✦ ";color:var(--pink)}
+
+  /* ---- MISSION: ship + crew (with ledger) ---- */
+  .mission{background:linear-gradient(180deg,#0f0b15,#171220)}
   .receipt-wrap{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:44px;align-items:start}
-  @media (max-width:820px){.receipt-wrap{grid-template-columns:1fr}}
-  .prose p{font-size:17px;line-height:1.7;max-width:60ch;margin:0 0 18px}
-  .prose p:first-of-type{font-size:20px}
-  .drop{color:var(--volt);font-weight:800}
+  @media (max-width:860px){.receipt-wrap{grid-template-columns:1fr}}
+  .mission-block + .mission-block{margin-top:34px}
+  .prose p{font-size:16.5px;line-height:1.72;max-width:62ch;margin:0}
+  .prose p em{color:var(--paper);font-style:italic}
   .receipt{background:var(--paper);color:var(--ink);font-family:var(--font-mono);font-size:12.5px;line-height:1.7;
     padding:26px 22px 34px;position:relative;box-shadow:0 24px 60px rgba(0,0,0,.5);transform:rotate(1.4deg)}
   .receipt::before,.receipt::after{content:"";position:absolute;left:0;right:0;height:12px}
@@ -188,27 +197,30 @@
   .receipt .r-rule{border-top:1px dashed rgba(20,16,25,.4);margin:12px 0}
   .receipt .r-row{display:flex;justify-content:space-between;gap:12px}
   .receipt .r-total{font-weight:700;font-size:14px}
-  .receipt .r-foot{margin-top:16px;text-align:center;opacity:.7;font-size:11px;letter-spacing:.05em}
+  .receipt .r-foot{margin-top:16px;text-align:center;opacity:.75;font-size:11px;letter-spacing:.04em}
   .receipt .barcode{filter:invert(1);margin:14px auto 0;display:block}
 
-  /* ---- SIGNAL GRID (visual mood) ---- */
-  .signal{background:var(--ink-2)}
-  .grid-tiles{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
-  @media (max-width:820px){.grid-tiles{grid-template-columns:repeat(2,1fr)}}
-  @media (max-width:520px){.grid-tiles{grid-template-columns:1fr}}
-  .tile{position:relative;aspect-ratio:4/5;overflow:hidden;border:2px solid var(--line);
-    display:flex;flex-direction:column;justify-content:flex-end;padding:16px;isolation:isolate;
-    background:linear-gradient(140deg,var(--c1,#3350ff),var(--c2,#ff3d88))}
-  .tile::before{content:"";position:absolute;inset:0;z-index:-1;
-    background:radial-gradient(circle at center,rgba(0,0,0,.55) .8px,transparent 1.6px);background-size:6px 6px;mix-blend-mode:multiply;opacity:.5}
-  .tile::after{content:"";position:absolute;inset:0;z-index:-1;
-    background:repeating-linear-gradient(to bottom,rgba(0,0,0,.18) 0 2px,transparent 2px 5px)}
-  .tile .tnum{font-family:var(--font-mono);font-size:11px;letter-spacing:.2em;color:rgba(255,255,255,.85)}
-  .tile .tcap{font-family:var(--font-display);font-weight:900;text-transform:uppercase;font-size:clamp(16px,2vw,22px);line-height:.95;color:#fff;text-shadow:2px 2px 0 rgba(0,0,0,.4)}
-  .tile.big{grid-column:span 2;aspect-ratio:auto}
-  @media (max-width:520px){.tile.big{grid-column:span 1}}
+  /* ---- DEVICE ---- */
+  .device{background:var(--ink-2)}
+  .device-panel{border:2px solid var(--line-2);position:relative;overflow:hidden;
+    background:linear-gradient(180deg,rgba(51,80,255,.10),rgba(51,80,255,.02))}
+  .device-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+  @media (max-width:760px){.device-grid{grid-template-columns:1fr}}
+  .device-cell{padding:32px}
+  .device-cell + .device-cell{border-left:2px solid var(--line)}
+  @media (max-width:760px){.device-cell + .device-cell{border-left:none;border-top:2px solid var(--line)}}
+  .device-cell h4{font-family:var(--font-mono);font-size:12px;letter-spacing:.2em;text-transform:uppercase;color:var(--volt);margin:0 0 16px}
+  .device-cell p{margin:0 0 12px;font-size:15.5px;line-height:1.66}
+  .device-cell p:last-child{margin-bottom:0}
+  .lockup{font-family:var(--font-mono);font-size:13px;line-height:2;margin-top:4px}
+  .lockup .aim{color:var(--smoke)}
+  .lockup .mis{color:var(--pink)}
+  .lockup .lock{color:var(--volt)}
+  .scanline{position:absolute;left:0;right:0;height:2px;top:0;
+    background:linear-gradient(90deg,transparent,var(--blue),transparent);opacity:.7;animation:scanmove 4.5s linear infinite}
+  @keyframes scanmove{from{top:-2px}to{top:100%}}
 
-  /* ---- EPISODES: catalog of SKUs ---- */
+  /* ---- EPISODES: catalog of signals ---- */
   .episodes{background:linear-gradient(180deg,#100b16,#15111d)}
   .ep-list{display:flex;flex-direction:column;gap:18px}
   .ep{display:grid;grid-template-columns:150px minmax(0,1fr) auto;gap:26px;align-items:center;
@@ -219,9 +231,12 @@
     background:linear-gradient(140deg,var(--c1,#3350ff),var(--c2,#ff3d88));display:flex;align-items:center;justify-content:center}
   .ep-still::after{content:"";position:absolute;inset:0;background:radial-gradient(circle,rgba(0,0,0,.5) .7px,transparent 1.4px);background-size:6px 6px;mix-blend-mode:multiply;opacity:.5}
   .ep-still .en{font-family:var(--font-display);font-weight:900;font-size:44px;color:#fff;text-shadow:2px 2px 0 rgba(0,0,0,.45);z-index:1}
+  .ep-theme{font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--pink);display:block;margin-bottom:6px}
   .ep-body h3{font-family:var(--font-display);font-weight:900;text-transform:uppercase;letter-spacing:-.01em;
-    font-size:clamp(19px,2.6vw,27px);line-height:1;margin:0 0 8px;text-wrap:balance}
-  .ep-body p{margin:0;color:var(--smoke);font-size:14.5px;max-width:60ch;line-height:1.55}
+    font-size:clamp(20px,2.8vw,29px);line-height:1;margin:0 0 10px;text-wrap:balance}
+  .ep-body p{margin:0;color:var(--smoke);font-size:14.5px;max-width:62ch;line-height:1.58}
+  .ep-body p.cold-open{color:var(--paper);padding-left:12px;border-left:2px solid var(--volt);margin:0 0 10px;font-family:var(--font-mono);font-size:12.5px;line-height:1.55}
+  .ep-body p.cold-open b{color:var(--volt);letter-spacing:.1em}
   .ep-sku{font-family:var(--font-mono);font-size:11px;letter-spacing:.14em;color:var(--smoke-dim);margin-bottom:8px;display:block}
   .ep-meta{text-align:right;font-family:var(--font-mono);font-size:11px;letter-spacing:.12em;color:var(--smoke);white-space:nowrap}
   .ep-meta .price{color:var(--volt);font-size:15px;font-weight:700;display:block;margin-bottom:6px}
@@ -231,18 +246,27 @@
     .ep-still .en{font-size:30px}
   }
 
+  /* ---- STILL OPEN ---- */
+  .still-open{background:var(--ink-2)}
+  .open-intro{color:var(--smoke);font-family:var(--font-mono);font-size:14px;max-width:62ch;margin:0 0 30px;line-height:1.65}
+  .open-cards{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+  @media (max-width:760px){.open-cards{grid-template-columns:1fr}}
+  .open-card{border:2px dashed var(--line-2);padding:24px;background:rgba(237,230,212,.02);transition:transform .2s,border-color .2s}
+  .open-card:hover{transform:translateY(-4px);border-color:var(--pink)}
+  .open-card .qn{font-family:var(--font-mono);font-size:11px;letter-spacing:.2em;color:var(--pink);display:block;margin-bottom:12px}
+  .open-card p{margin:0;font-size:15.5px;line-height:1.6}
+
   /* reveal */
   .reveal{opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease}
   .reveal.in{opacity:1;transform:none}
 
-  /* ---- SIGN-UP FOOTER ---- */
+  /* ---- SIGN-UP ---- */
   .signup{background:var(--pink);color:var(--ink);padding:88px 0}
-  .signup .sec-title em{color:var(--ink);-webkit-text-stroke:2px var(--ink);color:transparent}
   .signup-inner{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:44px;align-items:center}
   @media (max-width:820px){.signup-inner{grid-template-columns:1fr}}
   .signup h2{font-family:var(--font-display);font-weight:900;text-transform:uppercase;letter-spacing:-.02em;
     font-size:clamp(34px,6vw,68px);line-height:.9;margin:0 0 14px}
-  .signup p{font-family:var(--font-mono);font-size:14px;max-width:42ch;line-height:1.6}
+  .signup p{font-family:var(--font-mono);font-size:14px;max-width:44ch;line-height:1.6}
   .form{display:flex;gap:10px;flex-wrap:wrap;margin-top:8px}
   .form input{flex:1;min-width:220px;font-family:var(--font-mono);font-size:14px;padding:16px 18px;border:2px solid var(--ink);
     background:var(--paper);color:var(--ink);border-radius:4px}
@@ -252,7 +276,7 @@
     box-shadow:4px 4px 0 rgba(0,0,0,.35);transition:transform .12s}
   .form button:hover{transform:translate(-2px,-2px)}
   .form button:active{transform:translate(1px,1px)}
-  .form-note{font-family:var(--font-mono);font-size:11px;margin-top:12px;opacity:.75}
+  .form-note{font-family:var(--font-mono);font-size:11px;margin-top:12px;opacity:.78}
   .toast{margin-top:14px;font-family:var(--font-mono);font-weight:700;font-size:13px;
     background:var(--ink);color:var(--volt);padding:10px 14px;border-radius:4px;display:none}
   .toast.show{display:inline-block}
@@ -261,7 +285,7 @@
   .colophon{background:var(--ink);padding:44px 0 60px;border-top:2px solid var(--line)}
   .colo-grid{display:flex;justify-content:space-between;gap:24px;flex-wrap:wrap;align-items:flex-start}
   .colo-grid .brandmark{font-size:15px}
-  .fineprint{font-family:var(--font-mono);font-size:10.5px;line-height:1.7;color:var(--smoke-dim);max-width:70ch;margin:26px 0 0}
+  .fineprint{font-family:var(--font-mono);font-size:10.5px;line-height:1.7;color:var(--smoke-dim);max-width:74ch;margin:26px 0 0}
   .colo-links{display:flex;gap:18px;font-family:var(--font-mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--smoke);flex-wrap:wrap}
   .colo-links a{text-decoration:none;transition:color .2s}
   .colo-links a:hover{color:var(--volt)}
@@ -273,10 +297,11 @@
 <!-- ============================ HERO ============================ -->
 <header class="hero">
   <div class="container topbar">
-    <div class="brandmark">TRANSMISSION&nbsp;<b>001</b>&nbsp;// A&nbsp;NEW&nbsp;SERIES</div>
+    <div class="brandmark">INBOUND&nbsp;TRANSMISSION&nbsp;<b>//</b>&nbsp;DESTINATION:&nbsp;EARTH</div>
     <nav>
-      <a href="#synopsis">Synopsis</a>
-      <a href="#signal">The Vibe</a>
+      <a href="#idea">The Idea</a>
+      <a href="#mission">The Ship</a>
+      <a href="#device">The Device</a>
       <a href="#episodes">Episodes</a>
       <a href="#signup">Get Alerts</a>
     </nav>
@@ -284,18 +309,18 @@
 
   <div class="floaters" aria-hidden="true">
     <span class="stamp fl-1 float">Premiering&nbsp;Soon</span>
-    <span class="sticker fl-2">Not&nbsp;For&nbsp;Resale</span>
-    <span class="sticker fl-3">Authenticity&nbsp;Sold&nbsp;Separately</span>
+    <span class="sticker fl-2">Held&nbsp;Together&nbsp;With&nbsp;Tape</span>
+    <span class="sticker fl-3">Enjoy&nbsp;The&nbsp;Party</span>
   </div>
 
   <div class="container hero-inner">
     <div class="hero-meta">
-      <span class="kicker"><span class="eyebrow-dot"></span>&nbsp;Original Series</span>
-      <span class="kicker">Genre&nbsp;// Sci-Fi&nbsp;Comedy</span>
+      <span class="kicker"><span class="eyebrow-dot"></span>&nbsp;An Original Series</span>
+      <span class="kicker">Sci-Fi · Comedy · Heart</span>
     </div>
 
-    <!-- SWAP: replace this SVG wordmark with the final logo when ready.
-         Built as text so it stays crisp & editable; two-color riso offset. -->
+    <!-- The wordmark. Built as editable SVG text; two-color riso offset.
+         Swap for final logo art when it exists. -->
     <div class="wordmark glitch" role="img" aria-label="Artistic Commerce">
       <svg viewBox="0 0 1000 300" preserveAspectRatio="xMinYMid meet">
         <defs>
@@ -305,21 +330,17 @@
           </filter>
         </defs>
         <g class="wm-line" font-size="150" filter="url(#rough)">
-          <!-- ARTISTIC: paint / volt, offset blue behind -->
           <text x="6" y="130" fill="#3350ff" opacity="0.85" transform="translate(6,4)">ARTISTIC</text>
           <text x="6" y="130" fill="#d6fb4f">ARTISTIC</text>
-          <!-- COMMERCE: cold blue, offset pink behind, hollow -->
           <text x="6" y="270" fill="#ff3d88" opacity="0.9" transform="translate(-6,4)">COMMERCE</text>
           <text x="6" y="270" fill="none" stroke="#ede6d4" stroke-width="2.5">COMMERCE</text>
         </g>
       </svg>
     </div>
 
-    <!-- SWAP: real tagline -->
-    <p class="tagline">Sell your soul. <span class="hl">Keep the receipt.</span></p>
+    <p class="tagline">Business can be an <span class="hl">expression of art.</span></p>
 
-    <!-- SWAP: short hero lede / one-liner -->
-    <p class="lede">A ragtag crew aboard a failing art-collective-slash-cargo-freighter tries to make something <em>true</em> in a galaxy that only pays for knockoffs. Part space opera, part garage sale. All heart, no warranty.</p>
+    <p class="lede">Out past the last exit of the galaxy, a ragtag crew of alien artists points their held-together-with-tape starship — the <b>Artistic Commerce</b> — straight at Earth. Word is we're waking up. They've come to help usher it along. And, obviously, to enjoy the party.</p>
 
     <div class="cta-row">
       <a class="btn primary" href="#signup">▸ Get Launch Alerts</a>
@@ -331,76 +352,102 @@
 <!-- ============================ TICKER ============================ -->
 <div class="ticker" aria-hidden="true">
   <div class="ticker-track" id="ticker">
-    <span>Now Boarding</span><span>Art × Commerce</span><span>Batteries Not Included</span><span>Made By Hand In Deep Space</span><span>No Refunds On Feelings</span><span>Void Where Prohibited</span><span>Some Assembly Required</span><span>Meaning Sold Separately</span>
+    <span>An Answer To The Hustle</span><span>Business As Art</span><span>Earth Is Waking Up</span><span>One Consciousness Per Episode</span><span>Utopia Got Boring</span><span>Made With Integrity</span><span>Held Together With Tape</span><span>Enjoy The Party</span>
   </div>
 </div>
 
-<!-- ============================ SYNOPSIS ============================ -->
-<section class="spread synopsis" id="synopsis">
+<!-- ============================ THE IDEA (manifesto) ============================ -->
+<section class="spread manifesto" id="idea">
   <div class="container">
     <div class="sec-head reveal">
-      <h2 class="sec-title">What&nbsp;is&nbsp;<em>Artistic&nbsp;Commerce?</em></h2>
-      <span class="sec-index">// FILE 001 — LOGLINE</span>
+      <h2 class="sec-title">The Idea <em>Underneath It</em></h2>
+      <span class="sec-index">// WHY THIS SHOW EXISTS</span>
+    </div>
+
+    <p class="big-statement reveal">Business isn't a grind. It's a <span class="hl">creative act.</span></p>
+
+    <div class="man-cols reveal">
+      <p>Artistic Commerce is an answer to the hustle. It says something else is possible — that we can bring real value to the world in ways that <strong>enrich and uplift</strong> people's lives, and be rewarded for it. Not a brutal battle for survival. An expression of our artistry and our authentic selves. The most successful entrepreneurs who ever lived worked exactly this way.</p>
+      <p>It also resolves the shame around commerce. There's nothing wrong with being successful. Nothing wrong with making a lot of money — <strong>as long as it's made</strong> in ways that honor integrity, authenticity, creative expression, an even distribution of wealth, and real positive impact. We got duped into believing business had to look the way it did for our parents' generation. That model's outdated. We're growing out of it.</p>
+    </div>
+
+    <div class="values reveal" aria-label="What good commerce honors">
+      <span class="sticker">Integrity</span>
+      <span class="sticker">Authenticity</span>
+      <span class="sticker">Creative Expression</span>
+      <span class="sticker">Even Distribution of Wealth</span>
+      <span class="sticker">Real Positive Impact</span>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ THE SHIP & CREW ============================ -->
+<section class="spread mission" id="mission">
+  <div class="container">
+    <div class="sec-head reveal">
+      <h2 class="sec-title">The Ship &amp; <em>The Crew</em></h2>
+      <span class="sec-index">// FILE 002 — THE PREMISE</span>
     </div>
 
     <div class="receipt-wrap">
-      <!-- SWAP: full synopsis goes here -->
       <div class="prose reveal">
-        <p><span class="drop">Somewhere past</span> the last exit of the known galaxy, the starship <em>Artistic Commerce</em> drifts between dying star systems — half cargo hauler, half art collective, entirely behind on rent.</p>
-        <p>Its crew of washed-up visionaries, sellout geniuses, and one alarmingly sincere intern are on an impossible mission: to make something <strong>real</strong> in a universe engineered to sell you a slightly worse copy of everything you already love.</p>
-        <p>It's a show about creativity, authenticity, and the deeply stupid, deeply beautiful things people do to protect them. Think <em>Spaceballs</em> raised by <em>Monty Python</em> in a squat full of broken synthesizers. Cosmic, grungy, and allergic to taking itself seriously — while quietly meaning every word.</p>
-        <p style="color:var(--smoke);font-family:var(--font-mono);font-size:13px">[ Placeholder synopsis — final copy drops in here. ]</p>
+        <div class="mission-block">
+          <div class="subhead">The Ship</div>
+          <p><em>Artistic Commerce</em> is also the name of a spaceship. Sci-fi, funny, loose, inspiring — the whole series lives aboard it, the crew talking through the journey. The ship is ragtag. Things keep breaking and they keep patching them, because when you go out on a limb, it gets messy. Every malfunction is a metaphor for a barrier you hit on the way to something ambitious.</p>
+        </div>
+        <div class="mission-block">
+          <div class="subhead">The Crew</div>
+          <p>They come from a planet that achieved utopia — world peace, wealth shared evenly, bliss all the time — and then got bored of it. Having solved everything, even their best scientists lost their mojo. Utopia had quietly become the new conformity. So the rebels, the renegades, the artists built the one thing nobody had done yet: a ship that could leave their solar system. They built it a little sloppy, because that's who they are.</p>
+          <p style="margin-top:16px">They're headed for Earth. They've heard it's going through a rebirth right now — one of the most special things a planet can go through — and they're coming to help usher it along. To say: <em>don't neglect the importance of this step.</em> And, honestly, to enjoy the party.</p>
+        </div>
       </div>
 
-      <!-- decorative "receipt" — themic flavor -->
+      <!-- The ship's ledger — the "shame around commerce," resolved, with a wink -->
       <aside class="receipt reveal" aria-hidden="true">
         <h4>Artistic Commerce™</h4>
-        <div style="opacity:.7">Deep Space Retail Co. · Reg. #AC-001</div>
+        <div style="opacity:.7">Ship's Ledger · Reg. #AC-001</div>
         <div class="r-rule"></div>
-        <div class="r-row"><span>1× Original Idea</span><span>∞.00</span></div>
-        <div class="r-row"><span>1× Artistic Integrity</span><span>PRICELESS</span></div>
-        <div class="r-row"><span>3× Creative Differences</span><span>0.00</span></div>
-        <div class="r-row"><span>1× Sellout (refurbished)</span><span>-99.99</span></div>
+        <div class="r-row"><span>1× Original Idea</span><span>PRICELESS</span></div>
+        <div class="r-row"><span>1× Integrity</span><span>KEPT</span></div>
+        <div class="r-row"><span>1× Creative Expression</span><span>INCLUDED</span></div>
+        <div class="r-row"><span>Wealth, evenly shared</span><span>&#10003;</span></div>
+        <div class="r-row"><span>Positive Impact</span><span>&#10003;</span></div>
+        <div class="r-row"><span>Sellout Fee</span><span>0.00</span></div>
+        <div class="r-row"><span>Shame (re: money)</span><span>REFUNDED</span></div>
         <div class="r-rule"></div>
-        <div class="r-row r-total"><span>SUBTOTAL</span><span>YOUR SOUL</span></div>
-        <div class="r-row"><span>TAX (existential)</span><span>&nbsp;9.99%</span></div>
-        <div class="r-rule"></div>
-        <div class="r-row r-total"><span>TOTAL</span><span>1 SERIES</span></div>
+        <div class="r-row r-total"><span>TOTAL</span><span>ONE GOOD LIFE</span></div>
         <span class="barcode"></span>
-        <div class="r-foot">** NO REFUNDS ON FEELINGS **<br>THANK YOU FOR CREATING</div>
+        <div class="r-foot">** YES, YOU'RE ALLOWED **<br>TO GET PAID FOR THIS</div>
       </aside>
     </div>
   </div>
 </section>
 
-<!-- ============================ SIGNAL / VIBE ============================ -->
-<section class="spread signal" id="signal">
+<!-- ============================ THE DEVICE ============================ -->
+<section class="spread device" id="device">
   <div class="container">
     <div class="sec-head reveal">
-      <h2 class="sec-title">The&nbsp;<em>Vibe</em></h2>
-      <span class="sec-index">// INCOMING SIGNAL — VISUAL FEED</span>
+      <h2 class="sec-title">The <em>Device</em></h2>
+      <span class="sec-index">// ONE CONSCIOUSNESS PER EPISODE</span>
     </div>
-    <!-- SWAP: replace these color-block "stills" with real key art / frames -->
-    <div class="grid-tiles">
-      <div class="tile reveal big" style="--c1:#3350ff;--c2:#ff3d88">
-        <span class="tnum">FEED&nbsp;/&nbsp;01</span>
-        <span class="tcap">High vibe.<br>Low budget.<br>No apologies.</span>
-      </div>
-      <div class="tile reveal" style="--c1:#d6fb4f;--c2:#3350ff">
-        <span class="tnum">FEED&nbsp;/&nbsp;02</span>
-        <span class="tcap">Grunge<br>Deluxe</span>
-      </div>
-      <div class="tile reveal" style="--c1:#ff3d88;--c2:#141019">
-        <span class="tnum">FEED&nbsp;/&nbsp;03</span>
-        <span class="tcap">Sincerely<br>Ridiculous</span>
-      </div>
-      <div class="tile reveal" style="--c1:#141019;--c2:#d6fb4f">
-        <span class="tnum">FEED&nbsp;/&nbsp;04</span>
-        <span class="tcap">Made By<br>Hand</span>
-      </div>
-      <div class="tile reveal big" style="--c1:#ff3d88;--c2:#3350ff">
-        <span class="tnum">FEED&nbsp;/&nbsp;05</span>
-        <span class="tcap">Authentic. Allegedly.</span>
+
+    <div class="device-panel reveal">
+      <div class="scanline" aria-hidden="true"></div>
+      <div class="device-grid">
+        <div class="device-cell">
+          <h4>◦ How it works</h4>
+          <p>The crew has a way of tapping into human consciousness. Someone on Earth drops deep into a meditation and suddenly — there they are, seeing these guys on a spaceship.</p>
+          <p>Through the device, the crew gets a full read on that person: not their opinions, but how they actually <em>see</em>. One consciousness per episode.</p>
+        </div>
+        <div class="device-cell">
+          <h4>◦ Running format — the misfire</h4>
+          <p>Every episode opens with a misfire. They aim for someone and lock onto someone else first — a short, comic read of a much simpler worldview — before they find the real guest. The contrast is the joke, and the point.</p>
+          <div class="lockup" aria-hidden="true">
+            <div class="aim">&gt; AIMING…</div>
+            <div class="mis">&gt; MISFIRE — worldview acquired (approx. 60 sec long)</div>
+            <div class="lock">&gt; RE-LOCK — real signal found ✦</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -410,61 +457,91 @@
 <section class="spread episodes" id="episodes">
   <div class="container">
     <div class="sec-head reveal">
-      <h2 class="sec-title">Season&nbsp;One&nbsp;<em>Catalog</em></h2>
-      <span class="sec-index">// 5 EPISODES — SKU AC-101 → AC-105</span>
+      <h2 class="sec-title">The First <em>Five</em></h2>
+      <span class="sec-index">// SIGNALS AC-101 → AC-105</span>
     </div>
 
     <div class="ep-list">
-      <!-- SWAP: real episode titles + loglines. Keep the 5-item structure. -->
       <article class="ep reveal">
         <div class="ep-still" style="--c1:#3350ff;--c2:#ff3d88"><span class="en">01</span></div>
         <div class="ep-body">
-          <span class="ep-sku">SKU · AC-101 · PILOT</span>
-          <h3>Or: How to Sell a Sunset</h3>
-          <p>The crew takes a suspiciously easy gig selling premium sunsets to a planet that's never seen one — and learns the hard way that the real thing is impossible to fake and even harder to price.</p>
+          <span class="ep-sku">AC-101 · PILOT · SUBJECT 01</span>
+          <span class="ep-theme">The Creative</span>
+          <h3>Rick Rubin</h3>
+          <p class="cold-open"><b>MISFIRE</b> — they lock first onto a famous builder-and-founder type whose entire worldview turns out to run about a minute long.</p>
+          <p>Then they find Rubin — and the depth and nuance of it stops the whole ship cold. He may understand what's happening on Earth right now better than anyone alive.</p>
         </div>
-        <div class="ep-meta"><span class="price">EP·01</span>RUNTIME 24:00<br>RATED&nbsp;TV-∞</div>
+        <div class="ep-meta"><span class="price">EP·01</span>PILOT<br>RATED&nbsp;TV-∞</div>
       </article>
 
       <article class="ep reveal">
         <div class="ep-still" style="--c1:#d6fb4f;--c2:#3350ff"><span class="en">02</span></div>
         <div class="ep-body">
-          <span class="ep-sku">SKU · AC-102</span>
-          <h3>The Authenticity Audit</h3>
-          <p>A galactic compliance drone boards the ship to certify the crew as "100% Genuine." Nobody passes. Turns out authenticity doesn't come with paperwork — which is a real problem when the auditor has a stapler.</p>
+          <span class="ep-sku">AC-102 · SUBJECT 02</span>
+          <span class="ep-theme">Artistry as Service</span>
+          <h3>Alicia Keys</h3>
+          <p>Artistry as service. What it looks like when creative expression and commercial success stop fighting each other and start feeding each other instead.</p>
         </div>
-        <div class="ep-meta"><span class="price">EP·02</span>RUNTIME 23:30<br>RATED&nbsp;TV-∞</div>
+        <div class="ep-meta"><span class="price">EP·02</span>SEASON 1<br>RATED&nbsp;TV-∞</div>
       </article>
 
       <article class="ep reveal">
         <div class="ep-still" style="--c1:#ff3d88;--c2:#141019"><span class="en">03</span></div>
         <div class="ep-body">
-          <span class="ep-sku">SKU · AC-103</span>
-          <h3>Knockoff Nebula</h3>
-          <p>Stranded in a region of space where everything is a slightly-wrong bootleg of itself, the crew must find the one original object left in the nebula before they forget what originals even felt like.</p>
+          <span class="ep-sku">AC-103 · SUBJECT 03</span>
+          <span class="ep-theme">The Long View</span>
+          <h3>Barack Obama</h3>
+          <p>The long view. How a planet actually moves — and why real progress so often looks like pure chaos from the inside.</p>
         </div>
-        <div class="ep-meta"><span class="price">EP·03</span>RUNTIME 25:10<br>RATED&nbsp;TV-∞</div>
+        <div class="ep-meta"><span class="price">EP·03</span>SEASON 1<br>RATED&nbsp;TV-∞</div>
       </article>
 
       <article class="ep reveal">
         <div class="ep-still" style="--c1:#141019;--c2:#d6fb4f"><span class="en">04</span></div>
         <div class="ep-body">
-          <span class="ep-sku">SKU · AC-104</span>
-          <h3>The Muse Is Out of Stock</h3>
-          <p>Inspiration is now a subscription service, and the ship's card just got declined. With the muse offline, the crew has to make something — anything — using only the ideas they already have. Chaos, obviously.</p>
+          <span class="ep-sku">AC-104 · SUBJECT 04</span>
+          <span class="ep-theme">Longevity as an Art Form</span>
+          <h3>Mick Jagger</h3>
+          <p>The ragtag one. Decades of a band that keeps breaking and getting patched back together. Longevity as an art form — and the very real business humming underneath it.</p>
         </div>
-        <div class="ep-meta"><span class="price">EP·04</span>RUNTIME 24:40<br>RATED&nbsp;TV-∞</div>
+        <div class="ep-meta"><span class="price">EP·04</span>SEASON 1<br>RATED&nbsp;TV-∞</div>
       </article>
 
       <article class="ep reveal">
         <div class="ep-still" style="--c1:#3350ff;--c2:#d6fb4f"><span class="en">05</span></div>
         <div class="ep-body">
-          <span class="ep-sku">SKU · AC-105 · FINALE</span>
-          <h3>Terms &amp; Conditions of the Heart</h3>
-          <p>Offered everything they ever wanted in exchange for the rights to their souls (perpetual, galaxy-wide, non-negotiable), the crew has to decide what "selling out" really costs — and whether the small print was ever the point.</p>
+          <span class="ep-sku">AC-105 · SEASON FINALE · SUBJECT TBD</span>
+          <span class="ep-theme">The Open Chair</span>
+          <h3>To Be Determined</h3>
+          <p>The open seat — where a satirical read on a world leader could live. Played for perspective, never for hate: the point is to make a worldview legible, not to dunk on anyone.</p>
         </div>
-        <div class="ep-meta"><span class="price">EP·05</span>RUNTIME 27:00<br>RATED&nbsp;TV-∞</div>
+        <div class="ep-meta"><span class="price">EP·05</span>FINALE<br>RATED&nbsp;TV-∞</div>
       </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============================ STILL OPEN ============================ -->
+<section class="spread still-open" id="open">
+  <div class="container">
+    <div class="sec-head reveal">
+      <h2 class="sec-title">Still <em>Being Built</em></h2>
+      <span class="sec-index">// LOOSE WIRES — WORK IN PROGRESS</span>
+    </div>
+    <p class="open-intro reveal">In the spirit of the ship, a few panels are still open — held together with tape, for now. Here's what we're still figuring out.</p>
+    <div class="open-cards">
+      <div class="open-card reveal">
+        <span class="qn">OPEN QUESTION 01</span>
+        <p>The full backstory of the utopian planet — how they solved everything, and how they got bored of it.</p>
+      </div>
+      <div class="open-card reveal">
+        <span class="qn">OPEN QUESTION 02</span>
+        <p>Where the device came from, and what its limits actually are.</p>
+      </div>
+      <div class="open-card reveal">
+        <span class="qn">OPEN QUESTION 03</span>
+        <p>Whether the crew is us — playing ourselves.</p>
+      </div>
     </div>
   </div>
 </section>
@@ -473,16 +550,16 @@
 <section class="signup" id="signup">
   <div class="container signup-inner">
     <div class="reveal">
-      <h2>Don't Miss<br>the Drop.</h2>
-      <p>Be first through the airlock. Get launch dates, behind-the-scenes wreckage, and the occasional transmission from deep space. No spam — we can barely afford the fuel.</p>
+      <h2>Earth's Getting<br>a Visit.</h2>
+      <p>Get launch dates, transmissions from the ship, and behind-the-scenes wreckage from the edit bay. No spam — the crew can barely keep the lights on.</p>
     </div>
     <div class="reveal">
       <form class="form" id="notify" novalidate>
         <input type="email" name="email" placeholder="you@somewhere.space" aria-label="Email address" required>
         <button type="submit">Notify Me</button>
       </form>
-      <div class="toast" id="toast">✦ You're on the manifest. Welcome aboard.</div>
-      <p class="form-note">By subscribing you agree to feel things. Unsubscribe anytime, though we'll be a little hurt.</p>
+      <div class="toast" id="toast">✦ You're on the manifest. See you aboard.</div>
+      <p class="form-note">By subscribing you agree to feel things. Unsubscribe anytime, though the crew will be a little hurt.</p>
     </div>
   </div>
 </section>
@@ -493,24 +570,23 @@
     <div class="colo-grid">
       <div>
         <div class="brandmark">ARTISTIC&nbsp;<b style="color:var(--pink)">COMMERCE</b></div>
-        <div class="kicker" style="margin-top:12px">A New Original Series</div>
+        <div class="kicker" style="margin-top:12px">An Original Series · In Development</div>
       </div>
       <div class="colo-links">
-        <a href="#synopsis">Synopsis</a>
-        <a href="#signal">The Vibe</a>
+        <a href="#idea">The Idea</a>
+        <a href="#mission">The Ship</a>
+        <a href="#device">The Device</a>
         <a href="#episodes">Episodes</a>
         <a href="#signup">Get Alerts</a>
       </div>
     </div>
-    <!-- SWAP: real credits / production company -->
     <p class="fineprint">
-      ARTISTIC COMMERCE and all associated marks, sunsets, and existential dread are placeholder property of their eventual creators. Contents may have settled during shipping. Not responsible for lost muses, creative differences, or feelings incurred while viewing. Artistic integrity is a registered trademark of nobody. This is a promotional prototype — copy, cast, and key art to follow. © <span id="yr">2026</span>. All rights reserved, most rights questioned. Void where prohibited. Batteries, meaning, and closure sold separately.
+      ARTISTIC COMMERCE is an original series in development — a work of comedy and imagination. Real names appear as the affectionate subjects of a fictional show and imply no endorsement, participation, or actual interstellar contact. Ship not to scale. Utopia results may vary. Contents may have settled in transit. Batteries, closure, and the meaning of it all sold separately — but the party's free. © <span id="yr">2026</span>. Made with integrity.
     </p>
   </div>
 </footer>
 
 <script>
-  // year
   document.getElementById('yr').textContent = new Date().getFullYear();
 
   // seamless ticker: duplicate content so -50% translate loops cleanly
@@ -536,7 +612,7 @@
     f.addEventListener('submit', function(ev){
       ev.preventDefault();
       var email = f.email.value.trim();
-      if(!email || email.indexOf('@') < 1){ f.email.focus(); f.email.style.borderColor = '#ff3d88'; return; }
+      if(!email || email.indexOf('@') < 1){ f.email.focus(); f.email.style.borderColor = '#3350ff'; return; }
       toast.classList.add('show'); f.reset();
     });
   })();
