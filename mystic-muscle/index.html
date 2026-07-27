@@ -3,9 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Mystic Muscle — a workout app for people fitness culture was never built for. Train the muscle underneath the muscle: commitment, self-trust, impact. In development, built on the Mystic Method.">
+<meta name="description" content="Mystic Muscle — a five-step method for building muscle that's really about feeling in control of your life. Become a stronger version of yourself.">
 <meta name="theme-color" content="#120E17">
-<title>Mystic Muscle — build the muscle underneath the muscle</title>
+<title>Mystic Muscle — become a stronger version of yourself</title>
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -25,6 +25,7 @@
     --aura-gold:#FFC24B;
     --aura-mint:#43E6C4;
     --aura-violet:#8B5CFF;
+    --accent:var(--aura-violet);
     --font-display:"Syne",system-ui,"Segoe UI",sans-serif;
     --font-body:"Hanken Grotesk",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
     --font-mono:"Space Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
@@ -34,109 +35,72 @@
   html{scroll-behavior:smooth}
   html,body{background:var(--iron);margin:0}
   body{
-    color:var(--ash);
-    font-family:var(--font-body);
-    line-height:1.6;
-    -webkit-font-smoothing:antialiased;
-    text-rendering:optimizeLegibility;
-    overflow-x:hidden;
+    color:var(--ash);font-family:var(--font-body);line-height:1.6;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:hidden;
   }
   ::selection{background:rgba(255,46,147,.28);color:#fff}
   em{font-style:italic;color:var(--ash)}
   strong{color:var(--ash)}
 
-  /* ---- type helpers ---- */
   .display{font-family:var(--font-display);font-weight:800;letter-spacing:-.01em}
-  .eyebrow{
-    font-family:var(--font-mono);
-    font-size:.72rem;letter-spacing:.28em;text-transform:uppercase;color:var(--muted);
-  }
+  .eyebrow{font-family:var(--font-mono);font-size:.72rem;letter-spacing:.28em;text-transform:uppercase;color:var(--muted)}
   .lead{font-size:1.08rem;color:var(--muted)}
   @media(min-width:768px){.lead{font-size:1.25rem}}
   .balance{text-wrap:balance}
 
-  /* ---- the oil-slick chrome wordmark: the one loud thing ---- */
   .slick{
-    background:linear-gradient(100deg,
-      var(--aura-violet) 0%, var(--aura-mag) 26%,
-      var(--aura-gold) 50%, var(--aura-mint) 74%, var(--aura-violet) 100%);
-    background-size:280% 100%;
-    -webkit-background-clip:text;background-clip:text;
-    color:transparent;-webkit-text-fill-color:transparent;
-    animation:slick 9s linear infinite;
-    filter:drop-shadow(0 2px 30px rgba(139,92,255,.28));
+    background:linear-gradient(100deg,var(--aura-violet) 0%,var(--aura-mag) 26%,var(--aura-gold) 50%,var(--aura-mint) 74%,var(--aura-violet) 100%);
+    background-size:280% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;
+    animation:slick 9s linear infinite;filter:drop-shadow(0 2px 30px rgba(139,92,255,.28));
   }
   @keyframes slick{to{background-position:280% 0}}
-  .slick-line{
-    height:1px;border:0;width:100%;
+  .slick-line{height:1px;border:0;width:100%;
     background:linear-gradient(90deg,transparent,var(--aura-mag),var(--aura-gold),var(--aura-mint),var(--aura-violet),transparent);
-    background-size:220% 100%;animation:slick 12s linear infinite;opacity:.8;
-  }
+    background-size:220% 100%;animation:slick 12s linear infinite;opacity:.8}
 
-  /* ---- the plate-halo: cast iron ring + oil-slick aura behind it ---- */
+  /* plate-halo */
   .halo{position:relative;display:grid;place-items:center;margin:0 auto}
-  .halo .aura{
-    position:absolute;inset:-32%;border-radius:50%;
+  .halo .aura{position:absolute;inset:-32%;border-radius:50%;
     background:conic-gradient(from 0deg,var(--aura-violet),var(--aura-mag),var(--aura-gold),var(--aura-mint),var(--aura-violet));
-    filter:blur(38px);opacity:.55;
-    animation:spin 18s linear infinite, breathe 5.5s ease-in-out infinite;
-  }
-  .halo .plate{
-    position:relative;width:100%;height:100%;border-radius:50%;
+    filter:blur(38px);opacity:.55;animation:spin 18s linear infinite, breathe 5.5s ease-in-out infinite}
+  .halo .plate{position:relative;width:100%;height:100%;border-radius:50%;
     background:radial-gradient(circle at 34% 28%, #3a3145, #1a141f 46%, #0c090f 72%);
     box-shadow:inset 0 0 0 2px rgba(200,185,220,.10),inset 0 8px 30px rgba(0,0,0,.7),0 24px 60px rgba(0,0,0,.55);
-    display:grid;place-items:center;
-  }
-  .halo .plate::before{
-    content:"";position:absolute;inset:6%;border-radius:50%;
-    border:3px solid rgba(210,196,230,.16);
-    box-shadow:inset 0 2px 8px rgba(255,255,255,.05),inset 0 -6px 14px rgba(0,0,0,.6);
-  }
-  .halo .hole{
-    width:26%;height:26%;border-radius:50%;
-    background:radial-gradient(circle at 40% 35%, #241c2c, #0a070d);
-    box-shadow:inset 0 3px 10px rgba(0,0,0,.9),0 0 0 6px rgba(0,0,0,.35);
-  }
+    display:grid;place-items:center}
+  .halo .plate::before{content:"";position:absolute;inset:6%;border-radius:50%;
+    border:3px solid rgba(210,196,230,.16);box-shadow:inset 0 2px 8px rgba(255,255,255,.05),inset 0 -6px 14px rgba(0,0,0,.6)}
+  .halo .hole{width:26%;height:26%;border-radius:50%;
+    background:radial-gradient(circle at 40% 35%, #241c2c, #0a070d);box-shadow:inset 0 3px 10px rgba(0,0,0,.9),0 0 0 6px rgba(0,0,0,.35)}
   @keyframes spin{to{transform:rotate(360deg)}}
   @keyframes breathe{0%,100%{opacity:.42;transform:scale(.97)}50%{opacity:.68;transform:scale(1.04)}}
   .halo.reading .aura{animation:spin 10s linear infinite, breathe 3.4s ease-in-out infinite;opacity:.7}
 
-  /* ---- surfaces & controls ---- */
   .card{background:linear-gradient(180deg,var(--iron-2),rgba(18,14,23,.6));border:1px solid var(--edge);border-radius:20px}
-  .field{
-    width:100%;background:var(--iron);border:1px solid var(--edge-strong);border-radius:14px;
-    color:var(--ash);font-family:var(--font-body);font-size:1.05rem;line-height:1.6;padding:16px 18px;resize:vertical;
-    transition:border-color .18s ease, box-shadow .18s ease;
-  }
+  .field{width:100%;background:var(--iron);border:1px solid var(--edge-strong);border-radius:14px;color:var(--ash);
+    font-family:var(--font-body);font-size:1.05rem;line-height:1.6;padding:16px 18px;resize:vertical;
+    transition:border-color .18s ease, box-shadow .18s ease}
   .field::placeholder{color:var(--faint)}
-  .field:focus{outline:none;border-color:var(--aura-violet);box-shadow:0 0 0 4px rgba(139,92,255,.22)}
+  .field:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 4px rgba(139,92,255,.22)}
 
   .btn{font-family:var(--font-display);font-weight:700;letter-spacing:.01em;border-radius:999px;cursor:pointer;border:0;
     transition:transform .12s ease, box-shadow .2s ease, background-position .2s ease, filter .2s ease}
-  .btn-primary{
-    color:#0b070f;background:linear-gradient(100deg,var(--aura-gold),var(--aura-mag) 55%,var(--aura-violet));
-    background-size:180% 100%;box-shadow:0 12px 34px rgba(255,46,147,.28),inset 0 1px 0 rgba(255,255,255,.4);
-    padding:15px 30px;font-size:1.02rem;
-  }
+  .btn-primary{color:#0b070f;background:linear-gradient(100deg,var(--aura-gold),var(--aura-mag) 55%,var(--aura-violet));
+    background-size:180% 100%;box-shadow:0 12px 34px rgba(255,46,147,.28),inset 0 1px 0 rgba(255,255,255,.4);padding:15px 30px;font-size:1.02rem}
   .btn-primary:hover{transform:translateY(-2px);background-position:100% 0;box-shadow:0 16px 44px rgba(255,46,147,.36)}
   .btn-primary:active{transform:translateY(0)}
   .btn-primary[disabled]{opacity:.45;cursor:not-allowed;transform:none;filter:saturate(.55)}
   .btn-ghost{color:var(--ash);background:transparent;border:1px solid var(--edge-strong);padding:13px 26px;font-weight:600;font-family:var(--font-body)}
   .btn-ghost:hover{border-color:var(--aura-mint);color:#fff}
-  .linkback{background:none;border:0;cursor:pointer;color:var(--faint)}
+  .linkback{background:none;border:0;cursor:pointer;color:var(--faint);font-family:var(--font-mono);font-size:.72rem;letter-spacing:.22em;text-transform:uppercase}
   .linkback:hover{color:var(--ash)}
 
   :where(a,button,textarea,input,[tabindex]):focus-visible{outline:2px solid var(--aura-mint);outline-offset:3px;border-radius:8px}
 
-  .check{
-    appearance:none;-webkit-appearance:none;width:26px;height:26px;flex:none;
-    border:1px solid var(--edge-strong);border-radius:8px;background:var(--iron);
-    display:grid;place-items:center;cursor:pointer;transition:.15s ease;
-  }
+  .check{appearance:none;-webkit-appearance:none;width:26px;height:26px;flex:none;border:1px solid var(--edge-strong);border-radius:8px;
+    background:var(--iron);display:grid;place-items:center;cursor:pointer;transition:.15s ease}
   .check:checked{background:linear-gradient(120deg,var(--aura-gold),var(--aura-mag),var(--aura-violet));border-color:transparent}
   .check:checked::after{content:"";width:7px;height:12px;border:solid #0b070f;border-width:0 3px 3px 0;transform:rotate(43deg) translateY(-1px)}
 
-  /* ---- layout ---- */
   .section{padding:88px 20px}
   @media(min-width:768px){.section{padding:128px 20px}}
   .wrap{max-width:54rem;margin:0 auto}
@@ -149,16 +113,14 @@
   @media(min-width:768px){.grid3{grid-template-columns:repeat(3,1fr)}}
   .end{display:flex;justify-content:flex-end}
 
-  .lake{background:
-    radial-gradient(120% 100% at 50% 120%, rgba(67,230,196,.10), transparent 60%),
-    linear-gradient(180deg, rgba(139,92,255,.05), rgba(10,7,13,.9));}
+  .lake{background:radial-gradient(120% 100% at 50% 120%, rgba(67,230,196,.10), transparent 60%),linear-gradient(180deg, rgba(139,92,255,.05), rgba(10,7,13,.9))}
   .river-box{position:relative;border:1px solid var(--edge);background:rgba(28,22,34,.5);border-radius:18px;padding:28px 20px;overflow:hidden;margin-bottom:6px}
   .river-words{display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:center}
   .river-word{color:var(--muted);opacity:.5;font-family:var(--font-mono);font-size:.8rem}
   .river-line{position:absolute;left:0;right:0;bottom:0}
 
   h1.hero{font-size:clamp(2.6rem,8vw,5.4rem);line-height:.95;margin:0}
-  .thesis{font-size:clamp(1.5rem,4.4vw,2.8rem);line-height:1.05;max-width:18ch;margin:24px auto 26px}
+  .thesis{font-size:clamp(1.6rem,4.6vw,2.9rem);line-height:1.05;max-width:16ch;margin:24px auto 26px}
   h2.big{font-size:clamp(1.9rem,5.5vw,3.2rem);line-height:1.08;margin:0}
   h2.mid{font-size:clamp(1.7rem,4.5vw,2.6rem);line-height:1.12;margin:0}
   h2.q{font-size:clamp(1.9rem,6vw,3rem);line-height:1.05;margin:0}
@@ -171,7 +133,15 @@
   .muscle-card .t{font-family:var(--font-display);font-weight:700;font-size:1.25rem;margin-bottom:8px}
   .muscle-card .d{color:var(--muted)}
 
-  /* ---- reveal + transitions ---- */
+  /* home: five-step strip */
+  .steps-list{display:flex;flex-direction:column;gap:2px;border:1px solid var(--edge);border-radius:18px;overflow:hidden}
+  .step-row{display:flex;gap:18px;align-items:baseline;padding:20px 22px;background:rgba(28,22,34,.4);transition:background .2s ease}
+  .step-row:hover{background:rgba(40,30,52,.6)}
+  .step-row .num{font-family:var(--font-mono);font-size:.85rem;color:var(--faint);flex:none;width:2.2em}
+  .step-row .nm{font-family:var(--font-display);font-weight:700;font-size:1.1rem;flex:none;min-width:9.5rem}
+  .step-row .ln{color:var(--muted);font-size:.98rem}
+  @media(max-width:640px){.step-row{flex-wrap:wrap;gap:4px 14px}.step-row .nm{min-width:0}}
+
   .reveal{opacity:0;transform:translateY(14px);transition:opacity .6s ease, transform .6s ease}
   .reveal.seen{opacity:1;transform:none}
   .view{animation:viewIn .55s cubic-bezier(.22,.9,.3,1) both}
@@ -187,27 +157,41 @@
   @keyframes pulse{0%,100%{opacity:.25;transform:translateY(0)}50%{opacity:1;transform:translateY(-4px)}}
 
   .grain{position:fixed;inset:0;z-index:50;pointer-events:none;opacity:.05;mix-blend-mode:overlay;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
 
-  .modal-back{position:fixed;inset:0;z-index:60;background:rgba(6,4,9,.72);backdrop-filter:blur(6px);
-    display:grid;place-items:center;padding:20px;animation:fadeIn .25s ease both}
+  .modal-back{position:fixed;inset:0;z-index:60;background:rgba(6,4,9,.72);backdrop-filter:blur(6px);display:grid;place-items:center;padding:20px;animation:fadeIn .25s ease both}
   .modal{width:100%;max-width:34rem;padding:28px}
   @media(min-width:768px){.modal{padding:34px}}
 
-  /* demo shell */
-  .demo-shell{min-height:100vh;padding:32px 20px 64px;background:radial-gradient(90% 60% at 50% -5%, rgba(139,92,255,.14), transparent 55%)}
-  .demo-wrap{max-width:46rem;margin:0 auto}
-  .demo-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:40px}
-  .progress{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:34px}
-  .progress i{height:4px;border-radius:99px;background:var(--iron-3);transition:.3s ease;display:block}
-  .progress i.on{background:linear-gradient(90deg,var(--aura-gold),var(--aura-mag))}
+  /* intro + app shell */
+  .shell{min-height:100vh;padding:26px 20px 64px;background:radial-gradient(90% 60% at 50% -5%, rgba(139,92,255,.14), transparent 55%);position:relative}
+  .shell-wrap{max-width:46rem;margin:0 auto}
+  .shell-top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:30px}
+  .progress{display:flex;align-items:center;justify-content:center;gap:8px;margin-bottom:30px}
+  .progress i{height:5px;border-radius:99px;background:var(--iron-3);transition:.35s ease;display:block;width:10px}
+  .progress i.on{background:linear-gradient(90deg,var(--aura-gold),var(--aura-mag));width:30px}
 
-  .hero-sec{position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:72px 20px 96px;overflow:hidden}
-  .hero-glow{position:absolute;inset:0;z-index:-1;background:
-    radial-gradient(80% 55% at 50% 8%, rgba(139,92,255,.16), transparent 60%),
-    radial-gradient(70% 50% at 80% 30%, rgba(255,46,147,.10), transparent 55%)}
+  /* intro step */
+  .intro-step{min-height:66vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+  .big-num{font-family:var(--font-display);font-weight:800;font-size:clamp(4rem,20vw,11rem);line-height:.8;letter-spacing:-.03em;margin-bottom:6px}
+  .step-name{font-size:clamp(1.9rem,6.5vw,3.4rem);line-height:1;margin:0 0 22px}
+  .step-line{font-size:clamp(1.15rem,3.2vw,1.5rem);max-width:24ch;color:var(--ash);margin:0 auto}
+  .motif{position:relative;width:200px;height:200px;margin:0 auto 30px}
+  .motif .ring{position:absolute;border-radius:50%;border:1px solid var(--edge-strong)}
+  .motif .star{position:absolute;width:16px;height:16px;border-radius:50%;background:var(--accent);box-shadow:0 0 24px 6px var(--accent);top:6%;left:50%;transform:translateX(-50%)}
+  .motif .beam{position:absolute;left:50%;top:10%;bottom:10%;width:3px;transform:translateX(-50%);
+    background:linear-gradient(180deg,transparent,var(--accent),transparent);box-shadow:0 0 20px 2px var(--accent);opacity:.9}
+  .motif .mirror{position:absolute;inset:0;border-radius:50%;
+    background:linear-gradient(90deg, rgba(139,92,255,.0) 49%, var(--edge-strong) 50%, rgba(139,92,255,0) 51%)}
+
+  .practice{display:flex;gap:16px;align-items:flex-start;padding:16px 18px;border:1px solid var(--edge);border-radius:14px;background:rgba(28,22,34,.4);text-align:left}
+  .practice .pn{font-family:var(--font-mono);color:var(--aura-mint);font-size:.9rem;flex:none;width:1.6em;padding-top:2px}
+  .practice .pt{display:block;font-family:var(--font-display);font-weight:700;margin-bottom:3px}
+  .practice .pd{display:block;color:var(--muted);font-size:.95rem}
 
   footer.site{padding:48px 20px;text-align:center;border-top:1px solid var(--edge)}
+  .hero-sec{position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:72px 20px 96px;overflow:hidden}
+  .hero-glow{position:absolute;inset:0;z-index:-1;background:radial-gradient(80% 55% at 50% 8%, rgba(139,92,255,.16), transparent 60%),radial-gradient(70% 50% at 80% 30%, rgba(255,46,147,.10), transparent 55%)}
 
   @media (prefers-reduced-motion: reduce){
     html{scroll-behavior:auto}
@@ -222,23 +206,37 @@
 <body>
 <div class="grain" aria-hidden="true"></div>
 
-<!-- ===================== PAGE 1 — THE PITCH ===================== -->
-<main id="pitch">
+<!-- ===================== HOME — THE PITCH ===================== -->
+<main id="home">
   <section class="hero-sec">
     <div class="hero-glow" aria-hidden="true"></div>
     <div class="eyebrow" style="margin-bottom:32px">Midlife Mystic presents</div>
-    <div style="margin-bottom:40px">
-      <div class="halo" style="width:210px;height:210px"><div class="aura"></div><div class="plate"><div class="hole"></div></div></div>
+    <div style="margin-bottom:38px">
+      <div class="halo" style="width:200px;height:200px"><div class="aura"></div><div class="plate"><div class="hole"></div></div></div>
     </div>
     <h1 class="hero display balance"><span class="slick">Mystic Muscle</span></h1>
-    <p class="thesis display balance">Build the muscle underneath the muscle.</p>
-    <p class="lead maxw-42">A workout app for people fitness culture was never built for. We train
-      commitment, self-trust, and the nerve to leap before you can see the whole staircase.
-      The body follows. It always does.</p>
-    <div style="margin-top:44px"><button class="btn btn-primary" data-start>Try an early preview</button></div>
-    <div class="eyebrow" style="margin-top:20px;opacity:.7">two honest questions · about 3 minutes</div>
+    <p class="thesis display balance">Become a stronger version of yourself.</p>
+    <p class="lead maxw-42">A five-step method for building muscle that's really about one thing:
+      feeling in control of your life. Physical strength is just the most honest place to start —
+      you build control here, in a healthy way, so you can learn to let go everywhere else.</p>
+    <div class="row center" style="margin-top:44px">
+      <button class="btn btn-primary" data-go="intro">Walk me through it</button>
+      <button class="btn btn-ghost" data-go="app">Skip to the experience →</button>
+    </div>
+    <div class="eyebrow" style="margin-top:20px;opacity:.7">five steps · the Mystic Method</div>
   </section>
 
+  <!-- five steps overview -->
+  <section class="section">
+    <div class="wrap reveal">
+      <div class="eyebrow center" style="margin-bottom:14px">The Mystic Method</div>
+      <h2 class="mid display balance center" style="margin-bottom:28px">Five steps to building muscle — and to feeling like yourself again.</h2>
+      <div class="steps-list" id="homeSteps"></div>
+      <div class="center" style="margin-top:32px"><button class="btn btn-primary" data-go="intro">Start the walkthrough</button></div>
+    </div>
+  </section>
+
+  <!-- river / lake -->
   <section class="lake section">
     <div class="wrap reveal">
       <div class="eyebrow" style="margin-bottom:24px">The river &amp; the lake</div>
@@ -258,14 +256,14 @@
         <p>When you want to change your body you reach for the <em>river</em> — the program, the macros,
            the supplement, whatever protocol somebody swears by this month. The river's real. It's just
            the surface: loud, busy, always moving, always the next thing.</p>
-        <p style="color:var(--muted)">The <em>lake</em> is underneath. It's the emotional and energetic truth about
-           whether any of this actually holds — whether you trust yourself enough to still be standing here
-           in five weeks. The river isn't the enemy. It's that almost nobody starts at the lake, and the lake
-           is where it's decided.</p>
+        <p style="color:var(--muted)">The <em>lake</em> is underneath. It's whether you feel in control — whether you
+           trust yourself enough to still be standing here in five weeks. The river isn't the enemy. It's that
+           almost nobody starts at the lake, and the lake is where it's decided.</p>
       </div>
     </div>
   </section>
 
+  <!-- who it's for -->
   <section class="section">
     <div class="narrow center reveal">
       <div class="eyebrow" style="margin-bottom:32px">Who this is for</div>
@@ -277,13 +275,14 @@
     </div>
   </section>
 
+  <!-- the muscle -->
   <section class="section" style="background:linear-gradient(180deg,transparent,rgba(28,22,34,.4),transparent)">
     <div class="wrap reveal">
       <div class="eyebrow center" style="margin-bottom:32px">The actual muscle</div>
       <div class="grid3" style="margin-bottom:36px">
         <div class="card muscle-card"><div class="t">Commitment</div><div class="d">Saying yes and then not spending three weeks negotiating your way back out of it.</div></div>
         <div class="card muscle-card"><div class="t">Self-trust</div><div class="d">Believing you'll still be here next week — enough to bother starting this one.</div></div>
-        <div class="card muscle-card"><div class="t">Impact</div><div class="d">Being willing to actually change something and not flinch when it works.</div></div>
+        <div class="card muscle-card"><div class="t">Control</div><div class="d">Feeling like your life is yours to steer — starting with the one thing you can move today.</div></div>
       </div>
       <p class="center maxw-48" style="font-size:1.1rem">That's the muscle. Physical strength is the visible proof —
         the part everyone can see — but it was never the point. Flex the one nobody's talking about, and the
@@ -291,351 +290,345 @@
     </div>
   </section>
 
+  <!-- what it is -->
   <section class="section">
     <div class="narrow center reveal">
       <div class="eyebrow" style="margin-bottom:32px">What it is, plainly</div>
       <p style="font-size:clamp(1.2rem,3vw,1.5rem);line-height:1.5;margin:0 0 24px">Mystic Muscle is an app,
-        in development, built on the <strong>Mystic Method</strong> — a five-step intuitive approach to actually
-        reaching what you're after.</p>
-      <p class="lead" style="margin:0 0 44px">The first two steps are the whole game: where you honestly are, and
-        where you honestly want to be. Honest A. Honest B. That's what this early preview is.</p>
-      <button class="btn btn-primary" data-start>Try an early preview</button>
+        in development, built on the <strong>Mystic Method</strong> — five intuitive steps for reaching what
+        you're after, in your body and out of it.</p>
+      <p class="lead" style="margin:0 0 44px">This early preview walks you through the first two: get clear on
+        your five-week goal, then get honest about where you're starting. Destination, then truth.</p>
+      <button class="btn btn-primary" data-go="intro">Walk me through it</button>
     </div>
   </section>
 
   <footer class="site">
     <div class="display" style="font-size:1.15rem;margin-bottom:4px"><span class="slick">Mystic Muscle</span></div>
-    <div class="eyebrow" style="opacity:.7">a Midlife Mystic thing · built for the ones who never fit the gym</div>
+    <div class="eyebrow" style="opacity:.7">a Midlife Mystic thing · become a stronger version of yourself</div>
   </footer>
 </main>
 
-<!-- ===================== PAGE 2 — THE EARLY PREVIEW DEMO ===================== -->
-<div id="demo" hidden></div>
-
-<!-- overlays get injected here -->
+<!-- ===================== INTRO + APP get rendered here ===================== -->
+<div id="stage" hidden></div>
 <div id="overlay"></div>
 
 <script>
 (function(){
   "use strict";
 
-  /* -------------------------------------------------------------- *
-   * Config. Deploy the reflection Worker (see mystic-muscle/README) *
-   * and paste its URL here to run live reflections on the static    *
-   * site. Left blank, the app tries the Anthropic API directly      *
-   * (works inside the Claude artifact runtime) and otherwise shows  *
-   * an honest, in-voice fallback. It never strands the visitor.     *
-   * -------------------------------------------------------------- */
   var WORKER_URL = "";
   var MODEL = "claude-sonnet-4-6";
 
-  var SYSTEM_NOW = "You are the voice of Mystic Muscle. Someone has just told you where they are with their body and their fitness. Reflect back what you heard — specifically, in their own terms, using their own details. Name the thing underneath what they said: the emotional or energetic reality, not the tactical one. Do not give advice. Do not suggest a workout, a diet, or a plan. Do not praise them for sharing. Do not use the words journey, empower, or unlock. Two to four sentences. Warm, direct, a little irreverent, and unmistakably not generic. If what they wrote is short or guarded, say something true about that instead of inventing depth that isn't there.";
-  var SYSTEM_GOAL = "You are the voice of Mystic Muscle. Someone has just told you where they want to be in five weeks with their body and themselves. Reflect back what you heard — specifically, in their own terms, using their own details. Name the thing underneath the goal: what they're really reaching for, the emotional or energetic want beneath the physical one. Do not give advice. Do not suggest a workout, a diet, or a plan. Do not congratulate them on the goal. Do not use the words journey, empower, or unlock. Two to four sentences. Warm, direct, a little irreverent, and unmistakably not generic. If what they wrote is short or guarded, say something true about that instead of inventing depth that isn't there.";
-
-  var FALLBACK = {
-    now: "The line dropped for a second there — that's on us, not on you. But you showed up and wrote the true thing, and that's the whole muscle we came here to build. Hold onto what you just said; it counts whether or not a screen reflected it back.",
-    goal: "We lost the signal for a beat — our fault, not yours. Doesn't change what matters: you named where you actually want to be, out loud, in five weeks and not five years. That's rarer than it sounds, and it's yours now."
+  var SYSTEM = {
+    encourage: "You are the voice of Mystic Muscle. Someone has told you a fitness goal they want to reach in five weeks, then described honestly where they are right now in relation to it. Respond using their own details, in their own terms. First reflect back what you genuinely heard about their real starting point — no flattery, no restating it verbatim. Then tell them the truth about five weeks: it's short, it's serious, and it is genuinely enough time to move meaningfully toward a goal like the one they named. Be encouraging without hype or empty praise, and specific to what they wrote. Do not give a workout, a diet, or a plan. Do not use the words journey, empower, or unlock. Three to five sentences. Warm, direct, a little irreverent, unmistakably not generic. If what they wrote is guarded or vague, say something true about that rather than inventing detail.",
+    now: "You are the voice of Mystic Muscle. Someone has just told you where they are with their body and their fitness. Reflect back what you heard, in their own terms, using their own details. Name the thing underneath: the emotional or energetic reality, not the tactical one. Do not give advice, a workout, a diet, or a plan. Do not praise them for sharing. Do not use the words journey, empower, or unlock. Two to four sentences. Warm, direct, a little irreverent, and not generic. If what they wrote is short or guarded, say something true about that instead of inventing depth."
   };
 
-  /* ---- tiny helpers ---- */
-  function el(id){ return document.getElementById(id); }
-  function esc(s){ return String(s).replace(/[&<>"]/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]; }); }
-  function halo(size, reading){
-    return '<div class="halo'+(reading?' reading':'')+'" style="width:'+size+'px;height:'+size+'px" aria-hidden="true">'
-      + '<div class="aura"></div><div class="plate"><div class="hole"></div></div></div>';
-  }
+  var FALLBACK = {
+    encourage: "The line dropped for a second — that's on us, not you. But here's what doesn't need a server: you named a real goal and you told the truth about where you're starting. Five weeks is short, and it's genuinely enough to move on something like that. The hard part was being honest, and you already did it.",
+    now: "We lost the signal for a beat — our fault. Doesn't change what matters: you showed up and wrote the true thing, and that's the whole muscle we came here to build. Hold onto what you just said; it counts."
+  };
 
-  /* ---- reflection call ---- */
+  var STEPS = [
+    { n:"01", name:"See Your Destination", line:"Get crystal clear on one fitness goal you can actually reach in the next five weeks.", accent:"var(--aura-violet)", motif:"star" },
+    { n:"02", name:"Visualize the Path", line:"Look honestly at the ways you could get there — the logistics, the options, the proven basics.", accent:"var(--aura-mint)", motif:"path",
+      practices:[
+        ["Progressive overload","Ask your body for a little more than last time — more weight, more reps, more control. Growth is a response to a demand."],
+        ["Protein, consistently","Give it the raw material: roughly 0.7–1g of protein per pound of bodyweight, most days. Muscle can't build from nothing."],
+        ["Enough volume, ~2× a week","Train each muscle about twice a week with enough hard sets. Frequency beats the occasional heroic session."],
+        ["Recover like it's the work","You grow in the rest, not the rep. Sleep 7–9 hours and leave a day between hammering the same muscle."],
+        ["Consistency outlasts intensity","Whoever shows up for months beats whoever goes berserk for two weeks. Adherence is the real program."]
+      ] },
+    { n:"03", name:"Feel the Transformation", line:"Notice that what you're really after isn't the body — it's how it feels to have your energy transformed.", accent:"var(--aura-mag)", motif:"aura" },
+    { n:"04", name:"Follow Your Strategy", line:"Act in alignment with what you said you'd do — intention plus follow-through gets you there faster.", accent:"var(--aura-gold)", motif:"beam" },
+    { n:"05", name:"Be Yourself", line:"The whole point: get stronger and end up feeling more like you — just a bolder version.", accent:"var(--aura-violet)", motif:"mirror" }
+  ];
+
+  /* helpers */
+  function el(id){ return document.getElementById(id); }
+  function esc(s){ return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];}); }
+  function halo(size, reading){ return '<div class="halo'+(reading?" reading":"")+'" style="width:'+size+'px;height:'+size+'px" aria-hidden="true"><div class="aura"></div><div class="plate"><div class="hole"></div></div></div>'; }
+
   function getReflection(kind, text){
-    var system = kind === "goal" ? SYSTEM_GOAL : SYSTEM_NOW;
+    var system = SYSTEM[kind] || SYSTEM.encourage;
     var ctrl = new AbortController();
     var timer = setTimeout(function(){ ctrl.abort(); }, 20000);
     var p;
     if (WORKER_URL){
-      p = fetch(WORKER_URL, {
-        method:"POST", headers:{ "content-type":"application/json" },
-        body: JSON.stringify({ kind: kind, text: text }), signal: ctrl.signal
-      }).then(function(r){ if(!r.ok) throw new Error("worker "+r.status); return r.json(); })
-        .then(function(d){ var o=((d&&d.reflection)||"").trim(); if(!o) throw new Error("empty"); return o; });
+      p = fetch(WORKER_URL, { method:"POST", headers:{ "content-type":"application/json" },
+        body: JSON.stringify({ kind:kind, text:text }), signal:ctrl.signal })
+        .then(function(r){ if(!r.ok) throw 0; return r.json(); })
+        .then(function(d){ var o=((d&&d.reflection)||"").trim(); if(!o) throw 0; return o; });
     } else {
-      p = fetch("https://api.anthropic.com/v1/messages", {
-        method:"POST",
-        headers:{ "content-type":"application/json", "anthropic-version":"2023-06-01", "anthropic-dangerous-direct-browser-access":"true" },
-        body: JSON.stringify({ model: MODEL, max_tokens: 1000, system: system, messages:[{ role:"user", content: text }] }),
-        signal: ctrl.signal
-      }).then(function(r){ if(!r.ok) throw new Error("api "+r.status); return r.json(); })
-        .then(function(d){ var o=((d&&d.content&&d.content[0]&&d.content[0].text)||"").trim(); if(!o) throw new Error("empty"); return o; });
+      p = fetch("https://api.anthropic.com/v1/messages", { method:"POST",
+        headers:{ "content-type":"application/json","anthropic-version":"2023-06-01","anthropic-dangerous-direct-browser-access":"true" },
+        body: JSON.stringify({ model:MODEL, max_tokens:1000, system:system, messages:[{role:"user",content:text}] }), signal:ctrl.signal })
+        .then(function(r){ if(!r.ok) throw 0; return r.json(); })
+        .then(function(d){ var o=((d&&d.content&&d.content[0]&&d.content[0].text)||"").trim(); if(!o) throw 0; return o; });
     }
-    return p.catch(function(){ return FALLBACK[kind === "goal" ? "goal" : "now"]; })
-            .then(function(v){ clearTimeout(timer); return v; });
+    return p.catch(function(){ return FALLBACK[kind] || FALLBACK.encourage; }).then(function(v){ clearTimeout(timer); return v; });
   }
 
-  /* ---- persistence (window.storage; never strands the visitor) ---- */
   function saveResponses(payload){
-    try{
-      if (window.storage && typeof window.storage.set === "function"){
-        return Promise.resolve(window.storage.set("responses:" + Date.now(), payload, { shared: true }))
-          .then(function(){ return true; }).catch(function(){ return false; });
-      }
+    try{ if (window.storage && typeof window.storage.set==="function"){
+      return Promise.resolve(window.storage.set("responses:"+Date.now(), payload, {shared:true})).then(function(){return true;}).catch(function(){return false;}); }
     }catch(e){}
     return Promise.resolve(false);
   }
   function saveFeedback(text){
-    try{
-      if (window.storage && typeof window.storage.set === "function"){
-        return Promise.resolve(window.storage.set("feedback:" + Date.now(), { text: text, when: new Date().toISOString() }, { shared: true })).catch(function(){});
-      }
+    try{ if (window.storage && typeof window.storage.set==="function"){
+      return Promise.resolve(window.storage.set("feedback:"+Date.now(), {text:text,when:new Date().toISOString()}, {shared:true})).catch(function(){}); }
     }catch(e){}
     return Promise.resolve();
   }
 
-  /* ---- demo state ---- */
-  var S = { step:"framing", a1:"", a2:"", r1:"", r2:"", shareAnon:false, email:"", savedShared:false };
-  var ORDER = ["framing","q1","reflect1","q2","reflect2","save","confirm"];
+  /* ---- state ---- */
+  var S = { view:"home", introStep:0, appStep:"goal", goal:"", now:"", reflection:"", shareAnon:false, email:"", savedShared:false };
 
-  function progress(){
-    var stops = [["framing",10],["q1",26],["q2",26],["save",26],["confirm",26]];
-    var stopKeys = ["framing","q1","q2","save","confirm"];
-    var cur = ORDER.indexOf(S.step);
-    var html = '<div class="progress" aria-hidden="true">';
-    stopKeys.forEach(function(k,i){
-      var on = cur >= ORDER.indexOf(k);
-      html += '<i class="'+(on?"on":"")+'" style="width:'+(on?26:10)+'px"></i>';
+  /* ---- home five-step strip ---- */
+  (function fillHomeSteps(){
+    var h = "";
+    STEPS.forEach(function(s){
+      h += '<div class="step-row"><span class="num">'+s.n+'</span><span class="nm">'+s.name+'</span><span class="ln">'+s.line+'</span></div>';
     });
-    return html + '</div>';
+    el("homeSteps").innerHTML = h;
+  })();
+
+  /* ---- intro ---- */
+  function motifHTML(step){
+    var m = step.motif, extra = "";
+    if (m==="star") extra = '<div class="star"></div>';
+    else if (m==="beam") extra = '<div class="beam"></div>';
+    else if (m==="mirror") extra = '<div class="mirror"></div>';
+    else if (m==="path") extra = '<div class="ring" style="inset:0"></div><div class="ring" style="inset:18%"></div><div class="ring" style="inset:36%"></div>';
+    // aura motif just uses the halo's own aura, larger
+    return '<div class="motif" style="--accent:'+step.accent+'">'+halo(m==="aura"?200:150,false)+extra+'</div>';
   }
 
-  function shell(inner){
-    return '<div class="demo-shell view"><div class="demo-wrap">'
-      + '<div class="demo-top"><button class="linkback eyebrow" data-exit>← Mystic Muscle</button>'
-      + '<div class="display"><span class="slick">Mystic Method</span></div></div>'
-      + progress() + '<div class="fade">' + inner + '</div></div></div>';
+  function introDots(){
+    var h = '<div class="progress" aria-hidden="true">';
+    STEPS.forEach(function(_,i){ h += '<i class="'+(i<=S.introStep?"on":"")+'"></i>'; });
+    return h + '</div>';
   }
 
-  function screenFraming(){
-    return '<div class="center">'
-      + '<div style="display:flex;justify-content:center;margin-bottom:32px">'+halo(150,false)+'</div>'
-      + '<h2 class="q display balance" style="margin-bottom:24px">Before we start — the honest version.</h2>'
-      + '<div class="card" style="text-align:left;padding:28px;margin-bottom:32px">'
-      +   '<div class="stack" style="font-size:1.05rem">'
-      +     '<p>This is an early preview. Two questions, that\'s it.</p>'
-      +     '<p style="color:var(--muted)">What you write shapes the first release — which parts we build, and whose '
-      +       'words we build them around. Each answer gets read back to you in the moment. And <em>only</em> if you '
-      +       'tick the box at the end, your responses are kept anonymously to help shape what comes next.</p>'
-      +     '<p style="color:var(--muted)">No plan gets sold to you here. No workout. Just two honest questions.</p>'
-      +   '</div></div>'
-      + '<button class="btn btn-primary" data-act="begin">Ask me the first one</button></div>';
-  }
-
-  function screenQuestion(opts){
-    return '<div>'
-      + '<div class="eyebrow" style="margin-bottom:16px">'+opts.label+'</div>'
-      + '<h2 class="q display balance" style="margin-bottom:16px">'+opts.heading+'</h2>'
-      + '<p class="lead" style="margin:0 0 24px">'+opts.prompt+'</p>'
-      + '<textarea id="answer" class="field" rows="8" placeholder="'+opts.placeholder+'">'+esc(opts.value)+'</textarea>'
-      + '<div class="end" style="margin-top:24px"><button class="btn btn-primary" data-act="'+opts.act+'"'+(opts.value.trim()?"":" disabled")+'>'+opts.cta+'</button></div>'
+  function renderIntro(){
+    var s = STEPS[S.introStep];
+    var last = S.introStep === STEPS.length-1;
+    var practices = "";
+    if (s.practices){
+      practices = '<div class="stack" style="margin-top:34px;text-align:left">'
+        + '<div class="eyebrow center" style="margin-bottom:2px">The basics everyone agrees on</div>'
+        + '<p class="center" style="color:var(--muted);margin:0 0 8px">Strip away the noise and nearly every coach, dietitian, and researcher lands on the same five:</p>';
+      s.practices.forEach(function(p,i){
+        practices += '<div class="practice"><span class="pn">'+(i+1)+'</span><span><span class="pt">'+p[0]+'</span><span class="pd">'+p[1]+'</span></span></div>';
+      });
+      practices += '</div>';
+    }
+    var inner = '<div class="shell-top">'
+      + '<button class="linkback" data-go="home">← Home</button>'
+      + '<button class="linkback" data-go="app">Skip intro →</button></div>'
+      + introDots()
+      + '<div class="intro-step fade" style="--accent:'+s.accent+'">'
+      +   motifHTML(s)
+      +   '<div class="eyebrow" style="margin-bottom:10px">The Mystic Method · Step '+s.n+'</div>'
+      +   '<div class="big-num slick">'+s.n+'</div>'
+      +   '<h2 class="step-name display balance">'+s.name+'</h2>'
+      +   '<p class="step-line">'+s.line+'</p>'
+      +   practices
+      + '</div>'
+      + '<div class="row center" style="margin-top:40px">'
+      +   (S.introStep>0 ? '<button class="btn btn-ghost" data-intro="back">Back</button>' : '')
+      +   (last ? '<button class="btn btn-primary" data-go="app">Start the experience</button>'
+              : '<button class="btn btn-primary" data-intro="next">Next</button>')
       + '</div>';
+    el("stage").innerHTML = '<div class="shell view"><div class="shell-wrap">'+inner+'</div></div>';
+    window.scrollTo(0,0);
   }
 
-  function screenReflection(text, nextLabel, act){
-    return '<div class="center">'
-      + '<div style="display:flex;justify-content:center;margin-bottom:32px">'+halo(130,false)+'</div>'
-      + '<div class="eyebrow" style="margin-bottom:24px">What we heard</div>'
-      + '<p class="display balance" style="font-size:clamp(1.4rem,4vw,2rem);line-height:1.35;max-width:26ch;margin:0 auto 40px">'+esc(text)+'</p>'
-      + '<button class="btn btn-primary" data-act="'+act+'">'+nextLabel+'</button></div>';
+  /* ---- app experience ---- */
+  function appShell(inner){
+    return '<div class="shell view"><div class="shell-wrap">'
+      + '<div class="shell-top"><button class="linkback" data-go="home">← Mystic Muscle</button>'
+      + '<div class="display"><span class="slick">Mystic Method</span></div></div>'
+      + inner + '</div></div>';
   }
 
-  function screenSave(){
-    return '<div>'
-      + '<div class="eyebrow center" style="margin-bottom:16px">That\'s honest A and honest B</div>'
-      + '<h2 class="mid display balance center" style="margin-bottom:16px">You just did the whole first step of the Mystic Method.</h2>'
-      + '<p class="center maxw-40" style="color:var(--muted);margin:0 0 36px;font-size:1.08rem">Where you honestly are, where you honestly want to be. Most people never write down either one.</p>'
-      + '<div class="card" style="padding:26px;margin-bottom:24px">'
+  function screenGoal(){
+    return appShell('<div class="fade">'
+      + '<div class="eyebrow" style="margin-bottom:16px">Step 01 · See Your Destination</div>'
+      + '<h2 class="q display balance" style="margin-bottom:16px">What do you want, five weeks from now?</h2>'
+      + '<p class="lead" style="margin:0 0 24px">Name one fitness goal you\'d genuinely like to reach in the next five weeks — something you actually believe is possible. Be concrete.</p>'
+      + '<textarea id="answer" class="field" rows="6" placeholder="In five weeks I want to…">'+esc(S.goal)+'</textarea>'
+      + '<div class="end" style="margin-top:24px"><button class="btn btn-primary" data-app="goalNext"'+(S.goal.trim()?"":" disabled")+'>That\'s my destination</button></div>'
+      + '</div>');
+  }
+  function screenNow(){
+    return appShell('<div class="fade">'
+      + '<div class="eyebrow" style="margin-bottom:16px">Step 02 · Visualize the Path</div>'
+      + '<h2 class="q display balance" style="margin-bottom:16px">Where are you right now with it?</h2>'
+      + '<p class="lead" style="margin:0 0 24px">Describe where you\'re starting from in relation to that goal — honestly, and in as much detail as you\'re comfortable with. No wrong answer, no judgement.</p>'
+      + '<textarea id="answer" class="field" rows="7" placeholder="Right now, honestly…">'+esc(S.now)+'</textarea>'
+      + '<div class="end" style="margin-top:24px"><button class="btn btn-primary" data-app="nowNext"'+(S.now.trim()?"":" disabled")+'>Continue</button></div>'
+      + '</div>');
+  }
+  function screenReflect(){
+    return appShell('<div class="fade center">'
+      + '<div style="display:flex;justify-content:center;margin-bottom:30px">'+halo(150,false)+'</div>'
+      + '<div class="eyebrow" style="margin-bottom:20px">Great — here\'s the truth about five weeks</div>'
+      + '<p class="display balance" style="font-size:clamp(1.3rem,3.6vw,1.9rem);line-height:1.4;max-width:30ch;margin:0 auto 40px">'+esc(S.reflection)+'</p>'
+      + '<button class="btn btn-primary" data-app="toInvite">Where this goes next</button>'
+      + '</div>');
+  }
+  function screenInvite(){
+    return appShell('<div class="fade">'
+      + '<div class="eyebrow center" style="margin-bottom:16px">That was steps one and two</div>'
+      + '<h2 class="mid display balance center" style="margin-bottom:16px">You just walked the start of the Mystic Method.</h2>'
+      + '<p class="center maxw-46" style="color:var(--muted);margin:0 0 34px;font-size:1.06rem">See Your Destination, and the beginning of Visualize the Path. Three steps left — Feel the Transformation, Follow Your Strategy, Be Yourself. We\'re building them now.</p>'
+      + '<div class="card" style="padding:26px;margin-bottom:22px">'
       +   '<label style="display:flex;align-items:flex-start;gap:16px;cursor:pointer">'
       +     '<input type="checkbox" class="check" id="shareAnon"'+(S.shareAnon?" checked":"")+'>'
-      +     '<span><span class="display" style="font-size:1.05rem">Share my responses anonymously to help shape Mystic Muscle</span>'
-      +       '<span style="display:block;margin-top:4px;font-size:.9rem;color:var(--muted)">Off by default. Tick it and your two answers go into the pile we build the first release from — no name attached.</span></span>'
+      +     '<span><span class="display" style="font-size:1.05rem">Share my answers anonymously to help shape Mystic Muscle</span>'
+      +       '<span style="display:block;margin-top:4px;font-size:.9rem;color:var(--muted)">Off by default. Tick it and your goal + starting point go into the pile we build from — no name attached.</span></span>'
       +   '</label></div>'
-      + '<div class="card" style="padding:26px;margin-bottom:32px">'
-      +   '<label class="eyebrow" for="email" style="display:block;margin-bottom:12px">Your email — optional</label>'
+      + '<div class="card" style="padding:26px;margin-bottom:30px">'
+      +   '<label class="eyebrow" for="email" style="display:block;margin-bottom:12px">Get the rest of the method</label>'
       +   '<input id="email" type="email" class="field" placeholder="you@somewhere.real" value="'+esc(S.email)+'">'
-      +   '<div style="margin-top:12px;font-size:.9rem;color:var(--muted)">Only so we can send updates as the first release comes together. One line, no spam, leave whenever.</div>'
-      +   '</div>'
-      + '<div class="center"><button class="btn btn-primary" data-act="save">Save</button></div></div>';
+      +   '<div style="margin-top:12px;font-size:.9rem;color:var(--muted)">One email as each new step comes together. No spam, leave whenever.</div></div>'
+      + '<div class="center"><button class="btn btn-primary" data-app="save">Save my spot</button></div>'
+      + '</div>');
   }
-
   function screenConfirm(){
     var body = S.savedShared
-      ? '<p>You ticked the box, so your words go into the pile that shapes the first release. That\'s not nothing — that\'s you having an impact on a thing before it even exists. Exactly the muscle.</p>'
-      : '<p>Kept just for this moment — nothing shared. That was your call and we mean it. What you wrote still counts; it counted the second you were honest about it.</p>';
-    if (S.email.trim()) body += '<p style="color:var(--muted)">We\'ll write when there\'s something real to show you. Not before.</p>';
-    return '<div class="center">'
-      + '<div style="display:flex;justify-content:center;margin-bottom:32px">'+halo(170,false)+'</div>'
-      + '<h2 class="big display balance" style="margin-bottom:24px">Saved. And genuinely — <span class="slick">thank you</span>.</h2>'
-      + '<div class="card" style="text-align:left;padding:28px;margin-bottom:36px"><div class="stack" style="font-size:1.08rem">'+body+'</div></div>'
-      + '<div class="row center"><button class="btn btn-ghost" data-act="feedback">Share feedback</button>'
-      + '<button class="btn btn-primary" data-act="restart">Back to the start</button></div></div>';
+      ? '<p>You ticked the box, so your goal and your honest starting point go into the pile that shapes what we build. That\'s you having an impact on a thing before it even exists — which, funny enough, is the whole muscle.</p>'
+      : '<p>Kept for you. Nothing shared — that was your call and we mean it. What you named still counts; it counted the second you were honest about it.</p>';
+    if (S.email.trim()) body += '<p style="color:var(--muted)">We\'ll write as each new step of the method comes together. Not before.</p>';
+    return appShell('<div class="fade center">'
+      + '<div style="display:flex;justify-content:center;margin-bottom:30px">'+halo(160,false)+'</div>'
+      + '<h2 class="big display balance" style="margin-bottom:22px">You\'re in. And genuinely — <span class="slick">thank you</span>.</h2>'
+      + '<div class="card" style="text-align:left;padding:26px;margin-bottom:32px"><div class="stack" style="font-size:1.06rem">'+body+'</div></div>'
+      + '<div class="row center"><button class="btn btn-ghost" data-app="feedback">Share feedback</button>'
+      + '<button class="btn btn-primary" data-go="home">Back to the start</button></div>'
+      + '</div>');
   }
 
-  function render(){
+  function renderApp(){
     var inner;
-    if (S.step === "framing") inner = screenFraming();
-    else if (S.step === "q1") inner = screenQuestion({
-      label:"Step 01 · Where you are", heading:"Where are you right now?",
-      prompt:"With your fitness, your body, your whole relationship to it. Not the status report — the true thing. What it actually feels like to live in your body this week.",
-      placeholder:"Say it how you’d say it to someone who already gets it…", value:S.a1, cta:"This is where I am", act:"submit1" });
-    else if (S.step === "reflect1") inner = screenReflection(S.r1, "Next question", "toq2");
-    else if (S.step === "q2") inner = screenQuestion({
-      label:"Step 02 · Where you’re headed", heading:"Where do you want to be?",
-      prompt:"Now five weeks out. Not five years, not the after-photo — five weeks. Where would you honestly like to be with your body and yourself by then? Say what you actually want, not what you think you’re allowed to want.",
-      placeholder:"Five weeks from now, honestly…", value:S.a2, cta:"That’s where I want to be", act:"submit2" });
-    else if (S.step === "reflect2") inner = screenReflection(S.r2, "Almost done", "tosave");
-    else if (S.step === "save") inner = screenSave();
-    else if (S.step === "confirm") inner = screenConfirm();
-
-    el("demo").innerHTML = shell(inner);
+    if (S.appStep==="goal") inner = screenGoal();
+    else if (S.appStep==="now") inner = screenNow();
+    else if (S.appStep==="reflect") inner = screenReflect();
+    else if (S.appStep==="invite") inner = screenInvite();
+    else inner = screenConfirm();
+    el("stage").innerHTML = inner;
     window.scrollTo(0,0);
     var ta = el("answer"); if (ta) ta.focus();
   }
 
-  /* ---- reading overlay ---- */
+  /* ---- overlays ---- */
   function showReading(){
     el("overlay").innerHTML = '<div class="modal-back" role="status" aria-live="polite"><div class="center">'
-      + '<div style="display:flex;justify-content:center;margin-bottom:32px">'+halo(190,true)+'</div>'
+      + '<div style="display:flex;justify-content:center;margin-bottom:30px">'+halo(180,true)+'</div>'
       + '<div class="display" style="font-size:1.5rem;margin-bottom:12px"><span class="slick">Reading you</span></div>'
       + '<div class="dots" aria-hidden="true"><span></span><span></span><span></span></div>'
-      + '<div class="eyebrow" style="margin-top:16px;color:var(--faint)">not a compliment generator · give it a second</div>'
-      + '</div></div>';
+      + '<div class="eyebrow" style="margin-top:16px;color:var(--faint)">weighing what you wrote · give it a second</div></div></div>';
   }
   function hideReading(){ el("overlay").innerHTML = ""; }
 
-  /* ---- feedback dialog ---- */
   function openFeedback(){
-    el("overlay").innerHTML = '<div class="modal-back" role="dialog" aria-modal="true" aria-label="Share feedback" id="fbback">'
-      + '<div class="card modal" id="fbcard">'
+    el("overlay").innerHTML = '<div class="modal-back" role="dialog" aria-modal="true" aria-label="Share feedback"><div class="card modal" id="fbcard">'
       + '<div class="eyebrow" style="margin-bottom:12px">Tell us straight</div>'
-      + '<h3 class="display" style="font-size:1.5rem;margin:0 0 16px">What worked, what didn’t?</h3>'
+      + '<h3 class="display" style="font-size:1.5rem;margin:0 0 16px">What worked, what didn\'t?</h3>'
       + '<textarea id="fbtext" class="field" rows="5" placeholder="No wrong answers. Blunt is welcome…"></textarea>'
       + '<div class="end" style="gap:12px;margin-top:20px"><button class="btn btn-ghost" data-fb="close">Not now</button>'
-      + '<button class="btn btn-primary" data-fb="send" disabled>Send</button></div>'
-      + '</div></div>';
-    var ta = el("fbtext"); if (ta) ta.focus();
+      + '<button class="btn btn-primary" data-fb="send" disabled>Send</button></div></div></div>';
+    var t = el("fbtext"); if (t) t.focus();
   }
-  function feedbackSentView(){
+  function feedbackSent(){
     el("fbcard").innerHTML = '<div class="center" style="padding:16px 0">'
       + '<div class="display" style="font-size:1.5rem;margin-bottom:12px"><span class="slick">Got it.</span></div>'
       + '<p style="color:var(--muted);margin:0 0 24px">That went straight to us. Genuinely useful — thank you.</p>'
       + '<button class="btn btn-primary" data-fb="close">Close</button></div>';
   }
 
-  /* ---- view switching ---- */
-  function enterDemo(){
-    S = { step:"framing", a1:"", a2:"", r1:"", r2:"", shareAnon:false, email:"", savedShared:false };
-    el("pitch").hidden = true;
-    el("demo").hidden = false;
-    render();
-  }
-  function exitDemo(){
-    el("overlay").innerHTML = "";
-    el("demo").hidden = true;
-    el("demo").innerHTML = "";
-    el("pitch").hidden = false;
-    window.scrollTo(0,0);
+  /* ---- navigation ---- */
+  function go(view){
+    grabInputs();
+    if (view==="home"){
+      S.view="home"; el("stage").hidden=true; el("stage").innerHTML=""; el("overlay").innerHTML="";
+      el("home").hidden=false; window.scrollTo(0,0); return;
+    }
+    el("home").hidden=true; el("stage").hidden=false; S.view=view;
+    if (view==="intro"){ S.introStep=0; renderIntro(); }
+    else if (view==="app"){
+      // fresh run of the experience
+      S.appStep="goal"; S.goal=""; S.now=""; S.reflection=""; S.shareAnon=false; S.email=""; S.savedShared=false;
+      renderApp();
+    }
   }
 
-  /* capture-in-progress answers before a re-render */
   function grabInputs(){
     var ta = el("answer");
-    if (ta){ if (S.step === "q1") S.a1 = ta.value; else if (S.step === "q2") S.a2 = ta.value; }
+    if (ta){ if (S.appStep==="goal") S.goal=ta.value; else if (S.appStep==="now") S.now=ta.value; }
     var sa = el("shareAnon"); if (sa) S.shareAnon = sa.checked;
     var em = el("email"); if (em) S.email = em.value;
   }
 
-  function runReflection(kind, textGetter, setKey, nextStep){
+  function doReflect(){
     grabInputs();
-    var text = textGetter();
-    if (!text.trim()) return;
+    var text = "My five-week goal:\n" + S.goal.trim() + "\n\nWhere I am right now with it:\n" + S.now.trim();
     showReading();
-    getReflection(kind, text).then(function(out){
-      S[setKey] = out; S.step = nextStep; hideReading(); render();
-    });
+    getReflection("encourage", text).then(function(out){ S.reflection=out; hideReading(); S.appStep="reflect"; renderApp(); });
   }
 
   function doSave(){
     grabInputs();
-    var payload = {
-      now: S.a1.trim(), goal: S.a2.trim(), reflectionNow: S.r1, reflectionGoal: S.r2,
-      shareConsent: S.shareAnon, email: S.email.trim() || null, when: new Date().toISOString()
-    };
-    // If they didn't consent to sharing, don't persist their raw answers anywhere —
-    // keep only the email (if any) so we can honour the "send me updates" ask.
-    var toStore = S.shareAnon ? payload : { shareConsent:false, email: payload.email, when: payload.when };
-
-    // Persist best-effort in the background. window.storage (Claude artifact runtime)
-    // and the optional Worker are both fire-and-forget; neither blocks the confirmation.
+    var payload = { goal:S.goal.trim(), now:S.now.trim(), reflection:S.reflection, shareConsent:S.shareAnon, email:S.email.trim()||null, when:new Date().toISOString() };
+    var toStore = S.shareAnon ? payload : { shareConsent:false, email:payload.email, when:payload.when };
     saveResponses(toStore);
-    if (WORKER_URL){
-      try{
-        fetch(WORKER_URL, {
-          method:"POST", headers:{ "content-type":"application/json" },
-          body: JSON.stringify({ op:"save", payload: toStore })
-        }).catch(function(){});
-      }catch(e){}
-    }
-
-    // Acknowledge their *choice* to contribute — not whether a write happened to land.
-    S.savedShared = S.shareAnon;
-    S.step = "confirm"; render();
+    if (WORKER_URL){ try{ fetch(WORKER_URL,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({op:"save",payload:toStore})}).catch(function(){}); }catch(e){} }
+    S.savedShared = S.shareAnon; S.appStep="confirm"; renderApp();
   }
 
-  /* ---- events (delegated) ---- */
+  /* ---- events ---- */
   document.addEventListener("click", function(e){
-    var t = e.target.closest("[data-start],[data-exit],[data-act],[data-fb]");
+    var t = e.target.closest("[data-go],[data-intro],[data-app],[data-fb]");
     if (!t) return;
-    if (t.hasAttribute("data-start")) return enterDemo();
-    if (t.hasAttribute("data-exit")) return exitDemo();
-    if (t.hasAttribute("data-fb")){
-      var fb = t.getAttribute("data-fb");
-      if (fb === "close") return (el("overlay").innerHTML = "");
-      if (fb === "send"){
-        var v = (el("fbtext").value || "").trim(); if (!v) return;
-        return saveFeedback(v).then(feedbackSentView);
-      }
+    if (t.hasAttribute("data-go")) return go(t.getAttribute("data-go"));
+    if (t.hasAttribute("data-intro")){
+      var d = t.getAttribute("data-intro");
+      if (d==="next" && S.introStep < STEPS.length-1){ S.introStep++; return renderIntro(); }
+      if (d==="back" && S.introStep > 0){ S.introStep--; return renderIntro(); }
       return;
     }
-    var act = t.getAttribute("data-act");
-    if (act === "begin"){ S.step = "q1"; return render(); }
-    if (act === "submit1") return runReflection("now", function(){ return S.a1 = el("answer").value; }, "r1", "reflect1");
-    if (act === "toq2"){ S.step = "q2"; return render(); }
-    if (act === "submit2") return runReflection("goal", function(){ return S.a2 = el("answer").value; }, "r2", "reflect2");
-    if (act === "tosave"){ S.step = "save"; return render(); }
-    if (act === "save") return doSave();
-    if (act === "feedback") return openFeedback();
-    if (act === "restart") return exitDemo();
+    if (t.hasAttribute("data-app")){
+      var a = t.getAttribute("data-app");
+      if (a==="goalNext"){ grabInputs(); if(!S.goal.trim())return; S.appStep="now"; return renderApp(); }
+      if (a==="nowNext"){ grabInputs(); if(!S.now.trim())return; return doReflect(); }
+      if (a==="toInvite"){ S.appStep="invite"; return renderApp(); }
+      if (a==="save") return doSave();
+      if (a==="feedback") return openFeedback();
+      return;
+    }
+    if (t.hasAttribute("data-fb")){
+      var f = t.getAttribute("data-fb");
+      if (f==="close") return (el("overlay").innerHTML="");
+      if (f==="send"){ var v=(el("fbtext").value||"").trim(); if(!v)return; return saveFeedback(v).then(feedbackSent); }
+    }
   });
 
-  // enable/disable the primary button live, and keep state in sync
   document.addEventListener("input", function(e){
-    if (e.target.id === "answer"){
-      var btn = document.querySelector('[data-act="submit1"],[data-act="submit2"]');
-      if (btn) btn.disabled = !e.target.value.trim();
+    if (e.target.id==="answer"){
+      var b = document.querySelector('[data-app="goalNext"],[data-app="nowNext"]');
+      if (b) b.disabled = !e.target.value.trim();
     }
-    if (e.target.id === "fbtext"){
-      var s = document.querySelector('[data-fb="send"]');
-      if (s) s.disabled = !e.target.value.trim();
-    }
+    if (e.target.id==="fbtext"){ var s=document.querySelector('[data-fb="send"]'); if(s) s.disabled=!e.target.value.trim(); }
   });
-  document.addEventListener("change", function(e){
-    if (e.target.id === "shareAnon") S.shareAnon = e.target.checked;
-  });
-  document.addEventListener("keydown", function(e){
-    if (e.key === "Escape" && el("overlay").innerHTML) el("overlay").innerHTML = "";
-  });
+  document.addEventListener("change", function(e){ if (e.target.id==="shareAnon") S.shareAnon=e.target.checked; });
+  document.addEventListener("keydown", function(e){ if (e.key==="Escape" && el("overlay").innerHTML) el("overlay").innerHTML=""; });
 
-  /* ---- reveal-on-scroll for the pitch ---- */
   var io = new IntersectionObserver(function(entries){
     entries.forEach(function(en){ if (en.isIntersecting){ en.target.classList.add("seen"); io.unobserve(en.target); } });
-  }, { threshold:.16 });
+  }, { threshold:.14 });
   document.querySelectorAll(".reveal").forEach(function(n){ io.observe(n); });
 })();
 </script>
