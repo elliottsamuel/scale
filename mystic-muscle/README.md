@@ -2,6 +2,8 @@
 
 **Build the muscle underneath the muscle.**
 
+**Live:** https://elliottsamuel.github.io/scale/mystic-muscle/
+
 Mystic Muscle is a workout app — in development — for people fitness culture was
 never built for. It trains commitment, self-trust, and the nerve to leap before
 you can see the whole staircase. Physical strength is the visible proof, not the
