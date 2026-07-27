@@ -1,62 +1,64 @@
 # 💪✨ Mystic Muscle
 
-**Build the muscle underneath the muscle.**
+**Become a stronger version of yourself.**
 
 **Live:** https://elliottsamuel.github.io/scale/mystic-muscle/
 
-Mystic Muscle is a workout app — in development — for people fitness culture was
-never built for. It trains commitment, self-trust, and the nerve to leap before
-you can see the whole staircase. Physical strength is the visible proof, not the
-point.
+Mystic Muscle is a five-step method for building muscle that's really about one
+thing: feeling in control of your life. Physical strength is the most honest
+place to start — you build control here, in a healthy way, so you can learn to
+let go everywhere else.
 
 It sits under the personal brand **Midlife Mystic** and is built on the **Mystic
-Method**, a five-step intuitive approach to reaching what you're after. This page
-is the launch pitch plus an interactive **early preview** of the Method's first
-two steps: where you honestly are, and where you honestly want to be. Honest A,
-honest B.
+Method**. This page is the launch pitch, an interactive intro to the whole
+method, and an early-preview experience of its first two steps.
 
-## The idea: the river and the lake
+## The Mystic Method
 
-When people want to change their body they reach for the *river* — the program,
-the macros, the supplement, the protocol of the month. That's the visible,
-tactical surface. The *lake* is underneath: the emotional and energetic reality
-that decides whether any of it holds. The river isn't the enemy; almost nobody
-just starts at the lake, and the lake is where it's decided.
+1. **See Your Destination** — get clear on one fitness goal you can reach in five weeks.
+2. **Visualize the Path** — look honestly at how you could get there (holds the five
+   expert-consensus muscle-building practices below).
+3. **Feel the Transformation** — what you're really after is your energy transformed.
+4. **Follow Your Strategy** — act in alignment with what you said you'd do.
+5. **Be Yourself** — get stronger and end up feeling more like you, a bolder version.
+
+### The five practices (inside Step 2)
+
+The basics nearly every coach, dietitian, and researcher agrees on: **progressive
+overload**, **enough protein** (~0.7–1g/lb most days), **enough volume ~2×/week**
+per muscle, **recovery** (7–9h sleep, rest between sessions), and **consistency**
+over intensity.
 
 ## What's on the page
 
-- **The pitch** — a single scrolling page: the thesis, the river/lake idea, who
-  it's for, what the deeper muscle is (commitment, self-trust, impact), and what
-  it is practically.
-- **The early preview** — opens from the CTA with an animated transition (no new
-  route). A short honest framing, then two open questions. Each answer is
-  **reflected back** in Mystic Muscle's voice — naming the thing underneath what
-  you wrote, not a chatbot compliment. Then a save screen (optional anonymous
-  sharing + optional email) and a proper confirmation with a feedback dialog.
+- **Home** — the pitch (thesis, the river/lake idea, who it's for, the deeper
+  muscle, what it is) plus a glanceable five-step overview. Two entry points:
+  walk the method, or skip straight to the experience.
+- **Intro sequence** — one page per step, one sentence each, with per-step motifs
+  and a persistent Skip. Step 2 surfaces the five practices.
+- **The experience** — get clear on your five-week goal, then get honest about
+  where you're starting; the app reflects back an encouraging, specific read on
+  how reachable that is in five weeks, then teases steps 3–5 with an updates
+  capture. Reachable directly via "skip intro."
 
 ## Running it
 
 A single self-contained file — no build step, no dependencies (same as the rest
-of this repo).
-
-- **Open locally:** open `index.html` in any browser.
-- **Host it:** serve the folder statically (e.g. GitHub Pages); it's served at
-  `/mystic-muscle/`.
-- **On your phone:** open the URL and use "Add to Home Screen."
+of this repo). Open `index.html` in any browser, or serve the folder statically;
+it's live at `/mystic-muscle/`.
 
 ## The reflection (the moment it lives or dies)
 
-The reflection calls a live model. The app resolves it in this order, and never
-strands the visitor:
+The encouragement after the two questions calls a live model. The app resolves it
+in this order, and never strands the visitor:
 
 1. **`WORKER_URL` set** → posts to the Cloudflare Worker in `worker/`, which
    proxies to the Anthropic Messages API (`claude-sonnet-4-6`) with your key kept
    server-side. This is how you get real reflections on the live static site.
-2. **`WORKER_URL` blank** → tries the Anthropic API directly. This works inside
-   the Claude artifact runtime (where the key is handled for you) and is skipped
-   elsewhere.
-3. **Anything fails or times out** → an honest fallback message in brand voice,
-   so the demo never shows a spinner forever or a raw error.
+2. **`WORKER_URL` blank** → tries the Anthropic API directly (works inside the
+   Claude artifact runtime) and is skipped elsewhere.
+3. **Anything fails or times out (20s)** → an honest fallback in brand voice, so
+   the demo never shows a spinner forever or a raw error.
 
 To turn on live reflections on the deployed site:
 
@@ -65,36 +67,27 @@ To turn on live reflections on the deployed site:
 3. Paste the Worker URL into `WORKER_URL` near the top of the `<script>` in
    `index.html`.
 
-See `worker/worker.js` for details, including the optional KV binding that
-aggregates the anonymous submissions people choose to share.
+The worker also accepts the goal + starting-point kind (`encourage`) and an
+optional `{op:"save"}` for aggregating shared submissions via KV.
 
 ## Where responses go
 
-Nothing is stored unless someone ticks **"Share my responses anonymously"** (off
-by default); if they don't, only an email they explicitly gave is kept, so we can
-send updates. Persistence is best-effort and never blocks the confirmation:
-
-- `window.storage` (shared) when it's available — that's the Claude artifact
-  runtime.
-- The Worker's optional KV store when `WORKER_URL` is configured — that's how
-  submissions actually aggregate on the live static site.
+Nothing is stored unless someone ticks **"Share my answers anonymously"** (off by
+default); if they don't, only an email they explicitly gave is kept. Persistence
+is best-effort and never blocks the confirmation: `window.storage` when available
+(Claude artifact runtime), and the Worker's optional KV store when `WORKER_URL`
+is configured.
 
 ## Design
 
-**"Molten Chrome & Aura."** A dark, warm cast-iron ground (`#120E17`, not pure
-black) with a four-stop **oil-slick aura** — magenta `#FF2E93`, liquid gold
-`#FFC24B`, aura-mint `#43E6C4`, electric violet `#8B5CFF` — spent in one place so
-everything around it stays disciplined. Display face **Syne**, body **Hanken
-Grotesk**, ritual labels in **Space Mono**.
+**"Molten Chrome & Aura."** A dark, warm cast-iron ground (`#120E17`) with a
+four-stop oil-slick aura — magenta `#FF2E93`, gold `#FFC24B`, mint `#43E6C4`,
+violet `#8B5CFF` — spent on the signature elements: the breathing **plate-halo**
+(with a per-step motif in the intro) and the **waterline** (the river/lake split).
+Display face **Syne**, body **Hanken Grotesk**, ritual labels in **Space Mono**.
+Responsive, visible focus states, `prefers-reduced-motion` respected.
 
-Two signature elements collide the mystical and the physical:
+## Next up (not built yet)
 
-- **The plate-halo** — a cast-iron weight plate with the oil-slick aura bleeding
-  out behind it. It's the hero centerpiece, and in the demo it *breathes* as the
-  "being read" loading state — the physical proof (the plate) and the energy
-  underneath (the aura) in one object.
-- **The waterline** — the river/lake idea made literal: busy tactical fragments
-  above a shimmering iridescent line, a calm deep field below.
-
-Motion is frozen under `prefers-reduced-motion`; focus states are visible; the
-layout is responsive to mobile.
+Five daily-refreshed articles — one per practice — spanning psychology, logistics,
+and nutrition, with at least one easy at-home workout mapping to Step 4.
