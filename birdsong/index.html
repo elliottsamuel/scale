@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Birdsong — a bird-watching life-list app for heads. Build a list of every bird you ever see and get better at knowing them by name.">
+<meta name="theme-color" content="#1B1030">
+<title>Birdsong</title>
+</head>
+<body>
+<style>
+  :root{
+    /* tie-dye rainbow — original art, GD-evoking */
+    --sun:#FFB627;      /* marigold */
+    --rose:#E4572E;     /* rose-vermilion */
+    --magenta:#C42D78;  /* psychedelic pink */
+    --teal:#2EC4B6;     /* peacock teal */
+    --violet:#7B4FB5;   /* tie-dye violet */
+
+    /* light (parchment) — the default outdoor-friendly world */
+    --ground:#FBF3E2;
+    --ground-2:#F4E8CD;
+    --card:#FFFDF6;
+    --ink:#3A2A1C;
+    --ink-soft:#7A6650;
+    --ink-faint:#A2896C;
+    --line:rgba(58,42,28,.14);
+    --line-strong:rgba(58,42,28,.24);
+    --accent:var(--rose);
+    --accent-ink:#FFFDF6;
+    --shadow:0 10px 30px rgba(80,50,20,.14);
+    --shadow-lg:0 22px 60px rgba(80,45,15,.22);
+    --halo:radial-gradient(1200px 640px at 50% -18%, rgba(196,45,120,.14), transparent 58%),
+           radial-gradient(900px 560px at 88% 4%, rgba(255,182,39,.20), transparent 55%),
+           radial-gradient(820px 620px at 4% 96%, rgba(46,196,182,.14), transparent 55%);
+    --radius:20px;
+    --radius-sm:13px;
+    --maxw:480px;
+    --font-body:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,system-ui,sans-serif;
+    --font-serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+  }
+
+  @media (prefers-color-scheme: dark){
+    :root{
+      --ground:#160C28;
+      --ground-2:#1E1136;
+      --card:#241640;
+      --ink:#F6EEFF;
+      --ink-soft:#C6B4E4;
+      --ink-faint:#8C79B4;
+      --line:rgba(214,196,255,.16);
+      --line-strong:rgba(214,196,255,.30);
+      --accent:var(--sun);
+      --accent-ink:#231331;
+      --shadow:0 12px 34px rgba(0,0,0,.42);
+      --shadow-lg:0 26px 70px rgba(0,0,0,.55);
+      --halo:radial-gradient(1200px 660px at 50% -16%, rgba(196,45,120,.34), transparent 60%),
+             radial-gradient(940px 580px at 86% 2%, rgba(123,79,181,.36), transparent 58%),
+             radial-gradient(820px 620px at 6% 98%, rgba(46,196,182,.20), transparent 56%);
+    }
+  }
+
+  /* explicit toggle wins in both directions */
+  :root[data-theme="light"]{
+    --ground:#FBF3E2;--ground-2:#F4E8CD;--card:#FFFDF6;
+    --ink:#3A2A1C;--ink-soft:#7A6650;--ink-faint:#A2896C;
+    --line:rgba(58,42,28,.14);--line-strong:rgba(58,42,28,.24);
+    --accent:var(--rose);--accent-ink:#FFFDF6;
+    --shadow:0 10px 30px rgba(80,50,20,.14);--shadow-lg:0 22px 60px rgba(80,45,15,.22);
+    --halo:radial-gradient(1200px 640px at 50% -18%, rgba(196,45,120,.14), transparent 58%),
+           radial-gradient(900px 560px at 88% 4%, rgba(255,182,39,.20), transparent 55%),
+           radial-gradient(820px 620px at 4% 96%, rgba(46,196,182,.14), transparent 55%);
+  }
+  :root[data-theme="dark"]{
+    --ground:#160C28;--ground-2:#1E1136;--card:#241640;
+    --ink:#F6EEFF;--ink-soft:#C6B4E4;--ink-faint:#8C79B4;
+    --line:rgba(214,196,255,.16);--line-strong:rgba(214,196,255,.30);
+    --accent:var(--sun);--accent-ink:#231331;
+    --shadow:0 12px 34px rgba(0,0,0,.42);--shadow-lg:0 26px 70px rgba(0,0,0,.55);
+    --halo:radial-gradient(1200px 660px at 50% -16%, rgba(196,45,120,.34), transparent 60%),
+           radial-gradient(940px 580px at 86% 2%, rgba(123,79,181,.36), transparent 58%),
+           radial-gradient(820px 620px at 6% 98%, rgba(46,196,182,.20), transparent 56%);
+  }
+
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--ground)}
+  body{
+    font-family:var(--font-body);color:var(--ink);line-height:1.5;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+    min-height:100vh;
+    background:
+      var(--halo),
+      linear-gradient(180deg,var(--ground),var(--ground-2));
+    background-attachment:fixed;
+  }
+  button{font-family:inherit}
+  ::selection{background:var(--magenta);color:#fff}
+
+  .app{max-width:var(--maxw);margin:0 auto;min-height:100vh;
+    display:flex;flex-direction:column;
+    padding:max(14px,env(safe-area-inset-top)) 18px calc(28px + env(safe-area-inset-bottom));}
+
+  /* ---------- top bar ---------- */
+  .topbar{display:flex;align-items:center;gap:10px;min-height:44px;margin-bottom:6px}
+  .topbar .spacer{flex:1}
+  .iconbtn{
+    -webkit-appearance:none;appearance:none;border:1px solid var(--line);
+    background:var(--card);color:var(--ink);width:40px;height:40px;border-radius:12px;
+    display:grid;place-items:center;cursor:pointer;font-size:17px;box-shadow:var(--shadow);
+    transition:transform .12s ease, border-color .12s ease;
+  }
+  .iconbtn:active{transform:scale(.94)}
+  .iconbtn:focus-visible{outline:3px solid var(--magenta);outline-offset:2px}
+  .brandmini{display:flex;align-items:center;gap:9px;cursor:pointer}
+  .brandmini .mark{width:30px;height:30px;flex:0 0 auto}
+  .brandmini .wm{font-weight:800;letter-spacing:.2px;font-size:18px}
+  .brandmini .wm b{background:linear-gradient(92deg,var(--magenta),var(--rose) 42%,var(--sun));-webkit-background-clip:text;background-clip:text;color:transparent}
+
+  /* ---------- screen transitions ---------- */
+  main{flex:1;display:flex;flex-direction:column}
+  .screen{animation:rise .42s cubic-bezier(.2,.7,.2,1) both}
+  @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion: reduce){
+    .screen{animation:none}
+    *{scroll-behavior:auto !important}
+  }
+
+  /* ---------- welcome ---------- */
+  .welcome{flex:1;display:flex;flex-direction:column;justify-content:center;gap:22px;padding:20px 2px 6px;text-align:center}
+  .hero-mark{width:132px;height:132px;margin:0 auto;filter:drop-shadow(0 14px 30px rgba(196,45,120,.35))}
+  @media (prefers-reduced-motion: no-preference){
+    .hero-mark{animation:sway 7s ease-in-out infinite}
+  }
+  @keyframes sway{0%,100%{transform:rotate(-3deg)}50%{transform:rotate(3deg)}}
+  .wordmark{font-size:clamp(44px,15vw,60px);font-weight:800;line-height:.92;letter-spacing:-1px;margin:0;text-wrap:balance}
+  .wordmark span{background:linear-gradient(96deg,var(--violet),var(--magenta) 30%,var(--rose) 58%,var(--sun));-webkit-background-clip:text;background-clip:text;color:transparent}
+  .tagline{font-family:var(--font-serif);font-size:19px;color:var(--ink-soft);font-style:italic;margin:-4px 0 0}
+  .tagline .head{font-style:normal;font-weight:700;color:var(--ink);border-bottom:2px dotted var(--magenta);cursor:pointer;padding-bottom:1px}
+  .ethos{font-size:15.5px;color:var(--ink-soft);max-width:33ch;margin:0 auto;line-height:1.62}
+  .ethos b{color:var(--ink);font-weight:650}
+
+  .cta{
+    -webkit-appearance:none;appearance:none;border:0;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;gap:11px;
+    width:100%;padding:19px 22px;border-radius:var(--radius);
+    font-size:19px;font-weight:800;letter-spacing:.2px;color:#fff;
+    background:linear-gradient(96deg,var(--violet),var(--magenta) 46%,var(--rose));
+    box-shadow:var(--shadow-lg),inset 0 1px 0 rgba(255,255,255,.28);
+    transition:transform .14s ease, filter .14s ease;
+  }
+  .cta:active{transform:translateY(2px) scale(.99);filter:brightness(1.05)}
+  .cta:focus-visible{outline:3px solid var(--sun);outline-offset:3px}
+  .cta .plus{font-size:23px;line-height:1;margin-top:-2px}
+  .cta.sun{background:linear-gradient(96deg,var(--sun),var(--rose));color:var(--accent-ink)}
+
+  .ghostbtn{
+    -webkit-appearance:none;appearance:none;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;gap:9px;
+    width:100%;padding:15px 18px;border-radius:var(--radius);
+    font-size:16px;font-weight:700;color:var(--ink);
+    background:var(--card);border:1px solid var(--line-strong);box-shadow:var(--shadow);
+    transition:transform .12s ease,border-color .12s ease;
+  }
+  .ghostbtn:active{transform:scale(.985)}
+  .ghostbtn:focus-visible{outline:3px solid var(--magenta);outline-offset:2px}
+  .ghostbtn .n{color:var(--accent);font-weight:800}
+
+  .welcome-foot{font-size:12.5px;color:var(--ink-faint);margin-top:4px}
+  .welcome-foot .rose{color:var(--rose)}
+
+  /* info popover */
+  .pop-back{position:fixed;inset:0;background:rgba(20,8,34,.5);backdrop-filter:blur(3px);
+    display:none;align-items:flex-end;justify-content:center;z-index:40;padding:16px}
+  .pop-back.open{display:flex;animation:fade .2s both}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  .pop{background:var(--card);border:1px solid var(--line-strong);border-radius:22px;
+    max-width:var(--maxw);width:100%;padding:24px 22px 20px;box-shadow:var(--shadow-lg);
+    animation:pop .32s cubic-bezier(.2,.8,.2,1) both}
+  @keyframes pop{from{transform:translateY(24px);opacity:0}to{transform:none;opacity:1}}
+  .pop h3{margin:0 0 10px;font-size:19px;display:flex;align-items:center;gap:9px}
+  .pop p{margin:0 0 12px;font-size:15px;color:var(--ink-soft);line-height:1.62}
+  .pop p b{color:var(--ink)}
+  .pop .done{margin-top:6px}
+
+  /* ---------- section header ---------- */
+  .sec-head{margin:6px 2px 16px}
+  .sec-head h1{font-size:27px;margin:0;letter-spacing:-.5px;font-weight:800;text-wrap:balance}
+  .sec-head .sub{color:var(--ink-soft);font-size:14.5px;margin-top:3px;display:flex;align-items:center;gap:7px}
+  .count-pill{display:inline-flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--line);
+    padding:3px 10px;border-radius:999px;font-weight:700;font-size:13px;color:var(--ink);
+    font-variant-numeric:tabular-nums}
+  .count-pill .dot{width:8px;height:8px;border-radius:50%;background:linear-gradient(var(--sun),var(--rose))}
+
+  /* ---------- life list ---------- */
+  .list{display:flex;flex-direction:column;gap:12px;padding-bottom:16px}
+  .bird-card{
+    display:flex;align-items:center;gap:14px;text-align:left;width:100%;cursor:pointer;
+    background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:11px;box-shadow:var(--shadow);-webkit-appearance:none;appearance:none;color:inherit;
+    position:relative;overflow:hidden;transition:transform .12s ease,border-color .12s ease;
+    animation:card-in .4s cubic-bezier(.2,.7,.2,1) both;
+  }
+  @keyframes card-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .bird-card:active{transform:scale(.99)}
+  .bird-card:focus-visible{outline:3px solid var(--magenta);outline-offset:2px}
+  .bird-card .band{position:absolute;left:0;top:0;bottom:0;width:5px}
+  .thumb{width:66px;height:66px;border-radius:14px;flex:0 0 auto;background-size:cover;background-position:center;
+    background-color:var(--ground-2);display:grid;place-items:center;font-size:26px;color:var(--ink-faint);
+    border:1px solid var(--line)}
+  .bird-card .meta{flex:1;min-width:0}
+  .bird-card .nm{font-weight:750;font-size:17px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .bird-card .dl{color:var(--ink-soft);font-size:13px;margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .bird-card .chev{color:var(--ink-faint);font-size:20px;flex:0 0 auto;padding-right:2px}
+
+  .empty{text-align:center;padding:40px 16px;color:var(--ink-soft)}
+  .empty .feather{font-size:46px;display:block;margin-bottom:10px}
+  .empty p{margin:0 0 4px;font-size:15px}
+
+  .list-add{position:sticky;bottom:8px;margin-top:8px}
+
+  /* ---------- form ---------- */
+  .form{display:flex;flex-direction:column;gap:16px}
+  .photo-zone{position:relative;border-radius:var(--radius);overflow:hidden;
+    background:var(--ground-2);border:1px dashed var(--line-strong);
+    aspect-ratio:4/3;display:grid;place-items:center;box-shadow:var(--shadow)}
+  .photo-zone.has img{display:block}
+  .photo-zone img{width:100%;height:100%;object-fit:cover;display:none;position:absolute;inset:0}
+  .photo-empty{text-align:center;color:var(--ink-faint);padding:16px;z-index:1}
+  .photo-empty .big{font-size:40px;display:block;margin-bottom:6px}
+  .photo-actions{position:absolute;left:0;right:0;bottom:0;display:flex;gap:8px;padding:10px;z-index:2;
+    background:linear-gradient(transparent,rgba(0,0,0,.34))}
+  .photo-zone:not(.has) .photo-actions{position:static;background:none;padding:12px 12px 0}
+  .pill-btn{flex:1;-webkit-appearance:none;appearance:none;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;gap:7px;
+    padding:11px 10px;border-radius:12px;font-size:14px;font-weight:700;
+    background:var(--card);color:var(--ink);border:1px solid var(--line-strong);box-shadow:var(--shadow)}
+  .pill-btn:active{transform:scale(.97)}
+  .pill-btn:focus-visible{outline:3px solid var(--magenta);outline-offset:2px}
+
+  .field label{display:block;font-size:13px;font-weight:700;color:var(--ink-soft);margin-bottom:6px;letter-spacing:.02em}
+  .field label .req{color:var(--rose)}
+  .field input,.field textarea{
+    width:100%;font-family:inherit;font-size:16px;color:var(--ink);
+    background:var(--card);border:1px solid var(--line-strong);border-radius:13px;
+    padding:13px 14px;box-shadow:var(--shadow);transition:border-color .12s ease}
+  .field textarea{resize:vertical;min-height:58px;line-height:1.5}
+  .field input:focus,.field textarea:focus{outline:none;border-color:var(--magenta);box-shadow:0 0 0 3px rgba(196,45,120,.16)}
+  .field input::placeholder,.field textarea::placeholder{color:var(--ink-faint)}
+  .field-row{display:flex;gap:12px}
+  .field-row .field{flex:1;min-width:0}
+
+  .form-actions{display:flex;gap:12px;margin-top:4px}
+  .form-actions .cta{flex:2}
+  .form-actions .ghostbtn{flex:1}
+  .cta:disabled{opacity:.5;filter:grayscale(.3);cursor:not-allowed}
+
+  /* ---------- detail ---------- */
+  .detail-hero{border-radius:var(--radius);overflow:hidden;position:relative;box-shadow:var(--shadow-lg);
+    aspect-ratio:4/3;background:var(--ground-2);display:grid;place-items:center}
+  .detail-hero img{width:100%;height:100%;object-fit:cover;display:block}
+  .detail-hero .noimg{font-size:64px;color:var(--ink-faint)}
+  .detail-hero .band{position:absolute;left:0;right:0;bottom:0;height:6px}
+  .detail-title{margin:18px 2px 2px}
+  .detail-title h1{font-size:30px;margin:0;letter-spacing:-.6px;font-weight:800;text-wrap:balance}
+  .detail-title .when{color:var(--ink-soft);font-size:14px;margin-top:4px;display:flex;flex-wrap:wrap;gap:5px 12px}
+  .detail-title .when span{display:inline-flex;align-items:center;gap:5px}
+
+  .song-btn{
+    -webkit-appearance:none;appearance:none;border:0;cursor:pointer;width:100%;margin-top:18px;
+    display:flex;align-items:center;gap:14px;padding:15px 18px;border-radius:var(--radius);
+    color:var(--accent-ink);text-align:left;
+    background:linear-gradient(96deg,var(--sun),var(--rose) 78%);
+    box-shadow:var(--shadow),inset 0 1px 0 rgba(255,255,255,.3);
+    transition:transform .12s ease}
+  .song-btn:active{transform:scale(.99)}
+  .song-btn:focus-visible{outline:3px solid var(--magenta);outline-offset:3px}
+  .song-btn .ico{width:44px;height:44px;flex:0 0 auto;border-radius:50%;display:grid;place-items:center;
+    background:rgba(255,255,255,.28);font-size:20px}
+  .song-btn .txt b{display:block;font-size:17px;font-weight:800}
+  .song-btn .txt small{font-size:12.5px;opacity:.85}
+  .song-btn.playing .ico{animation:pulse 1s ease-in-out infinite}
+  @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(255,255,255,.5)}50%{box-shadow:0 0 0 12px rgba(255,255,255,0)}}
+
+  .info-card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:16px 17px;box-shadow:var(--shadow);margin-top:16px}
+  .info-card h4{margin:0 0 7px;font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint)}
+  .info-card p{margin:0;font-size:15.5px;color:var(--ink);line-height:1.6;white-space:pre-wrap;word-break:break-word}
+  .info-card p.empty-note{color:var(--ink-faint);font-style:italic}
+
+  .detail-tools{display:flex;gap:12px;margin-top:20px}
+  .detail-tools .ghostbtn{flex:1}
+  .danger{color:var(--rose)!important;border-color:rgba(228,87,46,.4)!important}
+
+  .toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);
+    background:var(--ink);color:var(--ground);padding:12px 20px;border-radius:999px;font-weight:700;font-size:14px;
+    box-shadow:var(--shadow-lg);opacity:0;pointer-events:none;transition:.3s cubic-bezier(.2,.8,.2,1);z-index:60;max-width:88vw}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
+</style>
+
+<div class="app">
+  <header class="topbar" id="topbar"></header>
+  <main id="main"></main>
+</div>
+
+<!-- info popover -->
+<div class="pop-back" id="popback" role="dialog" aria-modal="true" aria-labelledby="poptitle">
+  <div class="pop">
+    <h3 id="poptitle">🌹 What's a “head”?</h3>
+    <p><b>“Head”</b> is short for <b>Deadhead</b>. The Grateful Dead built something bigger than
+      music — a traveling family. Birdsong carries that spirit: <b>kind, caring, supportive
+      people united by a love of the songs all around us.</b></p>
+    <p>You don't have to know the Dead. The only requirement is that you want good company and
+      beautiful music — including the music our bird friends make.</p>
+    <button class="ghostbtn done" onclick="closePop()">Right on 👍</button>
+  </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<!-- hidden file inputs -->
+<input type="file" id="fileCamera" accept="image/*" capture="environment" class="sr-only" tabindex="-1">
+<input type="file" id="fileLibrary" accept="image/*" class="sr-only" tabindex="-1">
+
+<script>
+(function(){
+  "use strict";
+
+  /* ---------------- storage ---------------- */
+  var KEY = "birdsong.lifelist.v1";
+  var HUES = ["var(--rose)","var(--sun)","var(--teal)","var(--magenta)","var(--violet)"];
+  var BAND = [
+    "linear-gradient(var(--rose),var(--sun))",
+    "linear-gradient(var(--sun),var(--teal))",
+    "linear-gradient(var(--teal),var(--violet))",
+    "linear-gradient(var(--magenta),var(--rose))",
+    "linear-gradient(var(--violet),var(--magenta))"
+  ];
+
+  function load(){
+    try{ var r = localStorage.getItem(KEY); return r ? JSON.parse(r) : []; }
+    catch(e){ return []; }
+  }
+  function save(list){
+    try{ localStorage.setItem(KEY, JSON.stringify(list)); }
+    catch(e){ toast("Storage is full — try deleting an older photo."); }
+  }
+
+  var state = { view:"welcome", list: load(), current:null, draftPhoto:null, editId:null };
+
+  /* ---------------- helpers ---------------- */
+  function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){
+    return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+
+  function uid(){ return "b" + Math.random().toString(36).slice(2,9) + (state.list.length); }
+
+  function todayISO(){
+    var d = new Date(), p = function(n){return (n<10?"0":"")+n;};
+    return d.getFullYear()+"-"+p(d.getMonth()+1)+"-"+p(d.getDate());
+  }
+  function prettyDate(iso){
+    if(!iso) return "";
+    var parts = iso.split("-"); if(parts.length<3) return iso;
+    var d = new Date(+parts[0], +parts[1]-1, +parts[2]);
+    if(isNaN(d)) return iso;
+    return d.toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"});
+  }
+  function hueFor(id){
+    var n=0; for(var i=0;i<id.length;i++){ n=(n+id.charCodeAt(i))%1000; }
+    return n % HUES.length;
+  }
+
+  var toastTimer;
+  function toast(msg){
+    var t = document.getElementById("toast");
+    t.textContent = msg; t.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ t.classList.remove("show"); }, 2400);
+  }
+
+  /* ---------------- brand mark (original tie-dye songbird roundel) ---------------- */
+  function markSVG(){
+    return '<svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">'
+      + '<defs>'
+      + '<linearGradient id="tie" x1="8" y1="10" x2="112" y2="112" gradientUnits="userSpaceOnUse">'
+      + '<stop stop-color="#7B4FB5"/><stop offset=".34" stop-color="#C42D78"/>'
+      + '<stop offset=".64" stop-color="#E4572E"/><stop offset="1" stop-color="#FFB627"/>'
+      + '</linearGradient>'
+      + '<linearGradient id="bolt" x1="52" y1="18" x2="70" y2="104" gradientUnits="userSpaceOnUse">'
+      + '<stop stop-color="#FFF6D8"/><stop offset="1" stop-color="#FFD36B"/></linearGradient>'
+      + '</defs>'
+      + '<circle cx="60" cy="60" r="54" fill="url(#tie)"/>'
+      + '<circle cx="60" cy="60" r="54" stroke="rgba(255,255,255,.55)" stroke-width="3"/>'
+      + '<circle cx="60" cy="60" r="44" stroke="rgba(255,255,255,.30)" stroke-width="2"/>'
+      /* lightning bolt through the middle */
+      + '<path d="M64 14 L40 62 L57 62 L50 106 L84 50 L65 50 Z" fill="url(#bolt)" stroke="rgba(120,40,20,.35)" stroke-width="1.5" stroke-linejoin="round"/>'
+      /* songbird silhouette */
+      + '<path d="M30 74 c0 -12 9 -21 21 -21 c4 0 7 1 10 3 l11 -8 c1 5 -1 9 -4 12 c5 3 8 8 8 14 c0 3 -2 5 -6 5 l-24 0 c-9 0 -16 -5 -16 -0 z" fill="#231331" opacity=".92"/>'
+      + '<path d="M51 56 c4 0 7 2 9 5" stroke="#FFB627" stroke-width="2" stroke-linecap="round"/>'
+      + '<circle cx="66" cy="60" r="2.2" fill="#FFF6D8"/>'
+      /* three little music notes rising */
+      + '<circle cx="90" cy="40" r="3" fill="#FFF6D8"/><rect x="92" y="28" width="2" height="13" rx="1" fill="#FFF6D8"/>'
+      + '<circle cx="98" cy="30" r="2.4" fill="#FFF6D8" opacity=".85"/>'
+      + '</svg>';
+  }
+
+  /* ---------------- topbar ---------------- */
+  function renderTop(){
+    var top = document.getElementById("topbar");
+    var back = "";
+    if(state.view !== "welcome"){
+      var to = (state.view==="detail") ? "list" : (state.view==="add" ? (state.list.length?"list":"welcome") : "welcome");
+      back = '<button class="iconbtn" id="backBtn" aria-label="Back">‹</button>';
+    }
+    top.innerHTML =
+      back +
+      '<div class="brandmini" id="homeBtn" role="button" tabindex="0" aria-label="Birdsong home">'
+        + '<span class="mark">'+markSVG()+'</span>'
+        + '<span class="wm"><b>Birdsong</b></span>'
+      + '</div>'
+      + '<span class="spacer"></span>'
+      + '<button class="iconbtn" id="themeBtn" aria-label="Switch light or dark">◐</button>';
+
+    var b = document.getElementById("backBtn");
+    if(b) b.onclick = goBack;
+    document.getElementById("homeBtn").onclick = function(){ go("welcome"); };
+    document.getElementById("homeBtn").onkeydown = function(e){ if(e.key==="Enter"||e.key===" "){e.preventDefault();go("welcome");} };
+    document.getElementById("themeBtn").onclick = toggleTheme;
+  }
+
+  function goBack(){
+    if(state.view==="detail"){ go("list"); }
+    else if(state.view==="add"){ go(state.list.length ? "list" : "welcome"); }
+    else { go("welcome"); }
+  }
+
+  /* ---------------- theme toggle ---------------- */
+  function toggleTheme(){
+    var root = document.documentElement;
+    var cur = root.getAttribute("data-theme");
+    if(!cur){
+      cur = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark":"light";
+    }
+    var next = cur==="dark" ? "light":"dark";
+    root.setAttribute("data-theme", next);
+    try{ localStorage.setItem("birdsong.theme", next); }catch(e){}
+    setThemeColor(next);
+  }
+  function setThemeColor(t){
+    var m = document.querySelector('meta[name="theme-color"]');
+    if(m) m.setAttribute("content", t==="dark"?"#1B1030":"#FBF3E2");
+  }
+  (function initTheme(){
+    try{ var t = localStorage.getItem("birdsong.theme"); if(t){ document.documentElement.setAttribute("data-theme",t);
+      setThemeColor(t); } }catch(e){}
+  })();
+
+  /* ---------------- router ---------------- */
+  function go(view){ state.view = view; render(); window.scrollTo(0,0); }
+
+  function render(){
+    renderTop();
+    var m = document.getElementById("main");
+    if(state.view==="welcome") m.innerHTML = viewWelcome();
+    else if(state.view==="list") m.innerHTML = viewList();
+    else if(state.view==="add") m.innerHTML = viewForm();
+    else if(state.view==="detail") m.innerHTML = viewDetail();
+    wire();
+  }
+
+  /* ---------------- views ---------------- */
+  function viewWelcome(){
+    var n = state.list.length;
+    var secondary = n ? '<button class="ghostbtn" id="toList">View my life list <span class="n">'+n+'</span></button>' : '';
+    return '<section class="screen welcome">'
+      + '<div class="hero-mark">'+markSVG()+'</div>'
+      + '<h1 class="wordmark"><span>Birdsong</span></h1>'
+      + '<p class="tagline">A bird-watching app for <span class="head" id="headTip" role="button" tabindex="0">heads<span class="sr-only"> — what\'s a head?</span></span> 🐦</p>'
+      + '<p class="ethos"><b>Birdsong helps you build your life list</b> — a record of every bird you ever see — and get better at knowing them by name. Go walk with someone who loves birds, and start your list.</p>'
+      + '<div style="display:flex;flex-direction:column;gap:12px;margin-top:4px">'
+        + '<button class="cta" id="addBtn"><span class="plus">+</span> Add a new bird</button>'
+        + secondary
+      + '</div>'
+      + '<p class="welcome-foot">Made with <span class="rose">🌹</span> for heads · your list stays on your phone</p>'
+      + '</section>';
+  }
+
+  function viewList(){
+    var n = state.list.length;
+    var body;
+    if(!n){
+      body = '<div class="empty"><span class="feather">🪶</span>'
+        + '<p>Your life list is empty.</p>'
+        + '<p style="color:var(--ink-faint);font-size:14px">Add the first bird you see and it\'ll live here.</p></div>';
+    } else {
+      var cards = state.list.map(function(b,i){
+        var h = hueFor(b.id);
+        var thumb = b.photo
+          ? '<div class="thumb" style="background-image:url('+b.photo+')"></div>'
+          : '<div class="thumb">🐦</div>';
+        var sub = [prettyDate(b.date), b.place].filter(Boolean).join(" · ");
+        return '<button class="bird-card" data-id="'+b.id+'" style="animation-delay:'+Math.min(i*45,360)+'ms">'
+          + '<span class="band" style="background:'+BAND[h]+'"></span>'
+          + thumb
+          + '<span class="meta"><span class="nm">'+esc(b.name)+'</span><span class="dl">'+esc(sub||"Tap for details")+'</span></span>'
+          + '<span class="chev">›</span>'
+          + '</button>';
+      }).join("");
+      body = '<div class="list">'+cards+'</div>';
+    }
+    return '<section class="screen">'
+      + '<div class="sec-head"><h1>My Life List</h1>'
+        + '<div class="sub"><span class="count-pill"><span class="dot"></span>'+n+' '+(n===1?'bird':'birds')+'</span> and counting</div></div>'
+      + body
+      + '<button class="cta sun list-add" id="addBtn"><span class="plus">+</span> Add a new bird</button>'
+      + '</section>';
+  }
+
+  function viewForm(){
+    var editing = !!state.editId;
+    var b = editing ? findBird(state.editId) : null;
+    var photo = state.draftPhoto || (b && b.photo) || null;
+    var v = function(k){ return b && b[k] ? esc(b[k]) : ""; };
+    return '<section class="screen">'
+      + '<div class="sec-head"><h1>'+(editing?"Edit bird":"Add a new bird")+'</h1>'
+        + '<div class="sub">Snap a photo, or just jot down what you saw or heard.</div></div>'
+      + '<form class="form" id="birdForm" autocomplete="off">'
+        + '<div class="photo-zone'+(photo?' has':'')+'" id="photoZone">'
+          + '<img id="photoImg" src="'+(photo||"")+'" alt="">'
+          + (photo?'':'<div class="photo-empty"><span class="big">🐦</span>Add a photo (optional)</div>')
+          + '<div class="photo-actions">'
+            + '<button type="button" class="pill-btn" id="btnCamera">📷 Take a photo</button>'
+            + '<button type="button" class="pill-btn" id="btnLibrary">🖼️ Choose photo</button>'
+          + '</div>'
+        + '</div>'
+        + '<div class="field"><label for="fName">Bird name <span class="req">*</span></label>'
+          + '<input id="fName" name="name" placeholder="American Robin" value="'+v("name")+'" required></div>'
+        + '<div class="field-row">'
+          + '<div class="field"><label for="fDate">Date seen</label>'
+            + '<input id="fDate" name="date" type="date" value="'+(b?esc(b.date):todayISO())+'"></div>'
+          + '<div class="field"><label for="fPlace">Where</label>'
+            + '<input id="fPlace" name="place" placeholder="the trail" value="'+v("place")+'"></div>'
+        + '</div>'
+        + '<div class="field"><label for="fWith">Who you were with</label>'
+          + '<input id="fWith" name="seenWith" placeholder="my son" value="'+v("seenWith")+'"></div>'
+        + '<div class="field"><label for="fTraits">What it looked or sounded like</label>'
+          + '<textarea id="fTraits" name="traits" placeholder="Orange belly, dark head, a cheerful rolling whistle.">'+v("traits")+'</textarea></div>'
+        + '<div class="field"><label for="fNotes">Notes</label>'
+          + '<textarea id="fNotes" name="notes" placeholder="A memory from the walk…">'+v("notes")+'</textarea></div>'
+        + '<div class="form-actions">'
+          + '<button type="submit" class="cta" id="saveBtn"'+(b&&b.name?'':' disabled')+'><span>💾</span> '+(editing?"Save changes":"Add to my list")+'</button>'
+          + '<button type="button" class="ghostbtn" id="cancelBtn">Cancel</button>'
+        + '</div>'
+      + '</form>'
+      + '</section>';
+  }
+
+  function viewDetail(){
+    var b = state.current; if(!b) return viewList();
+    var h = hueFor(b.id);
+    var hero = b.photo
+      ? '<img src="'+b.photo+'" alt="Photo of '+esc(b.name)+'">'
+      : '<span class="noimg">🐦</span>';
+    var when = [];
+    if(b.date) when.push('<span>📅 '+esc(prettyDate(b.date))+'</span>');
+    if(b.place) when.push('<span>📍 '+esc(b.place)+'</span>');
+    if(b.seenWith) when.push('<span>🤝 with '+esc(b.seenWith)+'</span>');
+
+    var traits = b.traits
+      ? '<p>'+esc(b.traits)+'</p>'
+      : '<p class="empty-note">Add what it looked or sounded like — a note here helps you remember it next time.</p>';
+    var notes = b.notes ? '<div class="info-card"><h4>Notes</h4><p>'+esc(b.notes)+'</p></div>' : '';
+
+    return '<section class="screen">'
+      + '<div class="detail-hero">'+hero+'<span class="band" style="background:'+BAND[h]+'"></span></div>'
+      + '<div class="detail-title"><h1>'+esc(b.name)+'</h1>'
+        + (when.length?'<div class="when">'+when.join("")+'</div>':'')+'</div>'
+      + '<button class="song-btn" id="songBtn">'
+        + '<span class="ico">▶</span>'
+        + '<span class="txt"><b>Hear its song</b><small>a little tune of its own · real recordings coming soon</small></span>'
+      + '</button>'
+      + '<div class="info-card"><h4>Identifying characteristics</h4>'+traits+'</div>'
+      + notes
+      + '<div class="detail-tools">'
+        + '<button class="ghostbtn" id="editBtn">✎ Edit</button>'
+        + '<button class="ghostbtn danger" id="delBtn">🗑 Remove</button>'
+      + '</div>'
+      + '</section>';
+  }
+
+  /* ---------------- wiring ---------------- */
+  function wire(){
+    var add = document.getElementById("addBtn");
+    if(add) add.onclick = startAdd;
+    var toList = document.getElementById("toList");
+    if(toList) toList.onclick = function(){ go("list"); };
+
+    var tip = document.getElementById("headTip");
+    if(tip){ tip.onclick = openPop; tip.onkeydown = function(e){ if(e.key==="Enter"||e.key===" "){e.preventDefault();openPop();} }; }
+
+    // list cards
+    Array.prototype.forEach.call(document.querySelectorAll(".bird-card"), function(c){
+      c.onclick = function(){ openDetail(c.getAttribute("data-id")); };
+    });
+
+    // form
+    var form = document.getElementById("birdForm");
+    if(form){
+      var nameEl = document.getElementById("fName");
+      var saveBtn = document.getElementById("saveBtn");
+      nameEl.addEventListener("input", function(){ saveBtn.disabled = !nameEl.value.trim(); });
+      form.addEventListener("submit", onSave);
+      document.getElementById("cancelBtn").onclick = function(){ state.draftPhoto=null; goBack(); };
+      document.getElementById("btnCamera").onclick = function(){ document.getElementById("fileCamera").click(); };
+      document.getElementById("btnLibrary").onclick = function(){ document.getElementById("fileLibrary").click(); };
+    }
+
+    // detail
+    var song = document.getElementById("songBtn");
+    if(song) song.onclick = function(){ playSong(state.current, song); };
+    var edit = document.getElementById("editBtn");
+    if(edit) edit.onclick = function(){ startEdit(state.current.id); };
+    var del = document.getElementById("delBtn");
+    if(del) del.onclick = function(){ removeBird(state.current.id); };
+  }
+
+  function startAdd(){ state.editId=null; state.draftPhoto=null; go("add"); }
+  function startEdit(id){ state.editId=id; state.draftPhoto=null; go("add"); }
+
+  function openDetail(id){ state.current = findBird(id); if(state.current) go("detail"); }
+  function findBird(id){ for(var i=0;i<state.list.length;i++){ if(state.list[i].id===id) return state.list[i]; } return null; }
+
+  function onSave(e){
+    e.preventDefault();
+    var f = e.target;
+    var name = f.name.value.trim();
+    if(!name){ toast("Give your bird a name first."); return; }
+    var data = {
+      name:name,
+      date:f.date.value || todayISO(),
+      place:f.place.value.trim(),
+      seenWith:f.seenWith.value.trim(),
+      traits:f.traits.value.trim(),
+      notes:f.notes.value.trim()
+    };
+    if(state.editId){
+      var b = findBird(state.editId);
+      for(var k in data){ b[k]=data[k]; }
+      if(state.draftPhoto!==null) b.photo = state.draftPhoto;
+      save(state.list);
+      state.current = b; state.editId=null; state.draftPhoto=null;
+      go("detail"); toast("Updated ✓");
+    } else {
+      data.id = uid();
+      data.photo = state.draftPhoto || null;
+      data.created = Date.now();
+      state.list.unshift(data);
+      save(state.list);
+      state.draftPhoto=null;
+      go("list"); toast(name + " added to your list 🎉");
+    }
+  }
+
+  function removeBird(id){
+    var b = findBird(id);
+    if(!b) return;
+    if(!window.confirm('Remove "'+b.name+'" from your life list?')) return;
+    state.list = state.list.filter(function(x){ return x.id!==id; });
+    save(state.list);
+    go("list"); toast("Removed");
+  }
+
+  /* ---------------- photo capture + downscale ---------------- */
+  function handleFile(file){
+    if(!file) return;
+    var reader = new FileReader();
+    reader.onload = function(ev){
+      var img = new Image();
+      img.onload = function(){
+        var max = 1100;
+        var w = img.width, h = img.height;
+        if(w>h && w>max){ h = Math.round(h*max/w); w = max; }
+        else if(h>=w && h>max){ w = Math.round(w*max/h); h = max; }
+        var cv = document.createElement("canvas");
+        cv.width=w; cv.height=h;
+        cv.getContext("2d").drawImage(img,0,0,w,h);
+        var out;
+        try{ out = cv.toDataURL("image/jpeg", 0.82); }
+        catch(err){ out = ev.target.result; }
+        state.draftPhoto = out;
+        var zone = document.getElementById("photoZone");
+        var pi = document.getElementById("photoImg");
+        if(zone && pi){
+          pi.src = out; zone.classList.add("has");
+          var pe = zone.querySelector(".photo-empty"); if(pe) pe.remove();
+        }
+      };
+      img.onerror = function(){ toast("Couldn't read that image."); };
+      img.src = ev.target.result;
+    };
+    reader.onerror = function(){ toast("Couldn't read that file."); };
+    reader.readAsDataURL(file);
+  }
+  document.getElementById("fileCamera").addEventListener("change", function(e){ handleFile(e.target.files[0]); e.target.value=""; });
+  document.getElementById("fileLibrary").addEventListener("change", function(e){ handleFile(e.target.files[0]); e.target.value=""; });
+
+  /* ---------------- info popover ---------------- */
+  function openPop(){ document.getElementById("popback").classList.add("open"); }
+  window.closePop = function(){ document.getElementById("popback").classList.remove("open"); };
+  document.getElementById("popback").addEventListener("click", function(e){ if(e.target===this) closePop(); });
+  document.addEventListener("keydown", function(e){ if(e.key==="Escape") closePop(); });
+
+  /* ---------------- generative birdsong (Web Audio) ---------------- */
+  var audioCtx=null;
+  function seedFrom(str){ var h=2166136261; for(var i=0;i<str.length;i++){ h^=str.charCodeAt(i); h=Math.imul(h,16777619); } return (h>>>0); }
+  function rng(seed){ var s=seed||1; return function(){ s=(s*1664525+1013904223)>>>0; return s/4294967296; }; }
+
+  function playSong(bird, btn){
+    if(!bird) return;
+    try{
+      audioCtx = audioCtx || new (window.AudioContext||window.webkitAudioContext)();
+      if(audioCtx.state==="suspended") audioCtx.resume();
+    }catch(e){ toast("Audio isn't available on this device."); return; }
+
+    var seed = seedFrom(bird.id + "|" + bird.name);
+    var rnd = rng(seed);
+    // pleasant pentatonic, upper register like real birds
+    var scale = [784.0, 880.0, 987.8, 1174.7, 1318.5, 1568.0, 1760.0];
+    var master = audioCtx.createGain();
+    master.gain.value = 0.0001;
+    master.connect(audioCtx.destination);
+    var t0 = audioCtx.currentTime + 0.03;
+    master.gain.setValueAtTime(0.0001, t0);
+    master.gain.exponentialRampToValueAtTime(0.9, t0+0.05);
+
+    var phrases = 2 + Math.floor(rnd()*2);   // 2–3 phrases
+    var t = t0;
+    for(var p=0;p<phrases;p++){
+      var notes = 3 + Math.floor(rnd()*3);   // 3–5 chirps per phrase
+      for(var i=0;i<notes;i++){
+        var f = scale[Math.floor(rnd()*scale.length)];
+        var dur = 0.09 + rnd()*0.10;
+        chirp(t, f, dur, master, rnd);
+        t += dur + 0.02 + rnd()*0.05;
+      }
+      t += 0.14 + rnd()*0.12;                // breath between phrases
+    }
+    // fade master out at the end
+    master.gain.setValueAtTime(0.9, t);
+    master.gain.exponentialRampToValueAtTime(0.0001, t+0.2);
+
+    if(btn){
+      btn.classList.add("playing");
+      var ms = Math.max(600, (t - audioCtx.currentTime)*1000);
+      setTimeout(function(){ btn.classList.remove("playing"); }, ms);
+    }
+  }
+
+  function chirp(t, freq, dur, dest, rnd){
+    var osc = audioCtx.createOscillator();
+    osc.type = rnd()>0.5 ? "triangle" : "sine";
+    var g = audioCtx.createGain();
+    // little pitch glide up then settle — very bird-like
+    var bend = 1 + (rnd()*0.16 - 0.02);
+    osc.frequency.setValueAtTime(freq, t);
+    osc.frequency.linearRampToValueAtTime(freq*bend, t+dur*0.35);
+    osc.frequency.linearRampToValueAtTime(freq*(0.97+rnd()*0.04), t+dur);
+    // fast attack, soft decay
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(0.5, t+0.012);
+    g.gain.exponentialRampToValueAtTime(0.0001, t+dur);
+    osc.connect(g); g.connect(dest);
+    osc.start(t); osc.stop(t+dur+0.02);
+  }
+
+  /* ---------------- boot ---------------- */
+  render();
+})();
+</script>
+</body>
+</html>
