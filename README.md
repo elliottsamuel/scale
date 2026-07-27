@@ -68,3 +68,13 @@ Everything lives in `index.html`: a cosmic dark theme, an animated starfield,
 the `SCALE` progress rail, and a small state-driven screen router in vanilla JS.
 The flow is defined as a list of screens with per-use-case copy, so adding
 Steps 2–5 means extending those data structures rather than rewriting the shell.
+
+## Also in this repo
+
+Other self-contained single-file apps, each served from its own folder:
+
+- [`mystic-muscle/`](mystic-muscle/) — **Mystic Muscle**, a launch page and
+  interactive early-preview demo for a workout app built on the Mystic Method.
+  Served at `/mystic-muscle/`.
+- [`birdsong/`](birdsong/) — **Birdsong**, a bird-watching life-list app.
+  Served at `/birdsong/`.

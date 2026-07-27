@@ -1,0 +1,23 @@
+# Cloudflare Worker config for the Mystic Muscle reflection endpoint.
+#
+# Deploy with the CLI:   cd mystic-muscle/worker && npx wrangler deploy
+# Or paste worker.js into a Worker in the Cloudflare dashboard.
+#
+# Required: your Anthropic API key, stored as a secret (never commit it):
+#   npx wrangler secret put ANTHROPIC_API_KEY
+
+name = "mystic-muscle-ai"
+main = "worker.js"
+compatibility_date = "2026-01-01"
+
+# Optional: lock CORS to your site instead of allowing any origin.
+# [vars]
+# ALLOWED_ORIGIN = "https://elliottsamuel.github.io"
+
+# Optional: to actually aggregate the anonymous submissions people opt into
+# sharing, create a KV namespace and bind it as SUBMISSIONS.
+#   npx wrangler kv namespace create SUBMISSIONS
+# then paste the returned id below and uncomment:
+# [[kv_namespaces]]
+# binding = "SUBMISSIONS"
+# id = "<your-kv-namespace-id>"
