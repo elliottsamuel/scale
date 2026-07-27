@@ -321,7 +321,7 @@
   var MODEL = "claude-sonnet-4-6";
 
   var SYSTEM = {
-    encourage: "You are the voice of Mystic Muscle. Someone has told you a fitness goal they want to reach in five weeks, then described honestly where they are right now in relation to it. Respond using their own details, in their own terms. First reflect back what you genuinely heard about their real starting point — no flattery, no restating it verbatim. Then tell them the truth about five weeks: it's short, it's serious, and it is genuinely enough time to move meaningfully toward a goal like the one they named. Be encouraging without hype or empty praise, and specific to what they wrote. Do not give a workout, a diet, or a plan. Do not use the words journey, empower, or unlock. Three to five sentences. Warm, direct, a little irreverent, unmistakably not generic. If what they wrote is guarded or vague, say something true about that rather than inventing detail.",
+    encourage: "You are the voice of Mystic Muscle. Someone has told you a fitness goal they want to reach in five weeks, then described honestly where they are right now in relation to it. Respond using their own details, in their own terms. First reflect back what you genuinely heard about their real starting point — no flattery, no restating it verbatim. Then tell them the truth about five weeks: it's short, it's serious, and it is genuinely enough time to move meaningfully toward a goal like the one they named. Be encouraging without hype or empty praise, and specific to what they wrote. Do not give a workout, a diet, or a plan. Do not use the words journey, empower, or unlock. Three to five sentences. Warm, direct, a little irreverent, unmistakably not generic. If what they wrote is guarded or vague, say something true about that rather than inventing detail. They may also have shared feelings or doubts that surfaced — if so, acknowledge those first, with genuine care, and never wave them away.",
     now: "You are the voice of Mystic Muscle. Someone has just told you where they are with their body and their fitness. Reflect back what you heard, in their own terms, using their own details. Name the thing underneath: the emotional or energetic reality, not the tactical one. Do not give advice, a workout, a diet, or a plan. Do not praise them for sharing. Do not use the words journey, empower, or unlock. Two to four sentences. Warm, direct, a little irreverent, and not generic. If what they wrote is short or guarded, say something true about that instead of inventing depth."
   };
 
@@ -343,6 +343,15 @@
     { n:"03", name:"Feel the Transformation", line:"Notice that what you're really after isn't the body — it's how it feels to have your energy transformed.", accent:"var(--aura-mag)", motif:"aura" },
     { n:"04", name:"Follow Your Strategy", line:"Act in alignment with what you said you'd do — intention plus follow-through gets you there faster.", accent:"var(--aura-gold)", motif:"beam" },
     { n:"05", name:"Be Yourself", line:"The whole point: get stronger and end up feeling more like you — just a bolder version.", accent:"var(--aura-violet)", motif:"mirror" }
+  ];
+
+  // Optional, gentle prompts for the "where are you now" screen — answer any, skip the rest.
+  var NOW_PROMPTS = [
+    { id:"now0", q:"What does a normal week of movement actually look like right now?", ph:"Most weeks, honestly…" },
+    { id:"now1", q:"When you picture that goal, what's the real gap between here and there?", ph:"The gap is…" },
+    { id:"now2", q:"What's gotten in the way before?", ph:"Last time, what happened was…" },
+    { id:"now3", q:"How does your body feel, day to day?", ph:"Day to day, I feel…" },
+    { id:"now4", q:"Anything you don't usually say out loud about this?", ph:"The thing I don't say is…" }
   ];
 
   /* helpers */
@@ -384,7 +393,7 @@
   }
 
   /* ---- state ---- */
-  var S = { view:"home", introStep:0, appStep:"goal", goal:"", now:"", reflection:"", shareAnon:false, email:"", savedShared:false };
+  var S = { view:"home", introStep:0, appStep:"goal", goal:"", feelings:"", nowFields:{}, now:"", reflection:"", shareAnon:false, email:"", savedShared:false };
 
   /* ---- home five-step strip ---- */
   (function fillHomeSteps(){
@@ -463,13 +472,42 @@
       + '<div class="end" style="margin-top:24px"><button class="btn btn-primary" data-app="goalNext"'+(S.goal.trim()?"":" disabled")+'>That\'s my destination</button></div>'
       + '</div>');
   }
+  function screenHonesty(){
+    return appShell('<div class="fade center">'
+      + '<div style="display:flex;justify-content:center;margin-bottom:24px">'+halo(120,false)+'</div>'
+      + '<div class="eyebrow" style="margin-bottom:14px">Mystic Muscle · Principle One</div>'
+      + '<div class="display slick" style="font-size:clamp(2.8rem,12vw,6.5rem);line-height:.95;margin-bottom:16px">Honesty</div>'
+      + '<p class="lead maxw-46" style="margin:0 auto 20px">You said you want to <em>'+esc(S.goal.trim())+'</em>. Hear this plainly: that is within your reach — and we\'re not just being nice.</p>'
+      + '<p class="maxw-46" style="font-size:1.08rem;margin:0 auto 14px">But the first principle — the one the whole method stands on — is honesty. To really commit to that goal, you have to get honest about where you\'re starting. Not the tidy version. The true one.</p>'
+      + '<p class="maxw-46" style="color:var(--muted);margin:0 auto 34px">There\'s nothing here to be ashamed of, and the more you open up, the better this works. If something tender comes up while you look — that\'s not a detour. It\'s the part most workout apps skip.</p>'
+      + '<button class="btn btn-primary" data-app="honestyNext">Okay — let\'s get honest</button>'
+      + '</div>');
+  }
+  function screenFeelings(){
+    return appShell('<div class="fade">'
+      + '<div class="eyebrow" style="margin-bottom:16px">Principle One · Honesty</div>'
+      + '<h2 class="q display balance" style="margin-bottom:16px">Anything coming up?</h2>'
+      + '<p class="lead" style="margin:0 0 10px">Before we look at the facts — is there a feeling in the way? Doubt, dread, an old story, a flicker of hope you\'re a little scared to name.</p>'
+      + '<p style="color:var(--muted);margin:0 0 22px">Most apps tell you to push past it. We\'d rather you name it — that\'s how it loosens its grip. Totally optional.</p>'
+      + '<textarea id="feelings" class="field" rows="6" placeholder="Put anything here. Or nothing — that\'s allowed too.">'+esc(S.feelings)+'</textarea>'
+      + '<div class="row" style="justify-content:space-between;margin-top:24px">'
+      +   '<button class="btn btn-ghost" data-app="feelingsSkip">Skip this</button>'
+      +   '<button class="btn btn-primary" data-app="feelingsNext">Continue</button></div>'
+      + '</div>');
+  }
   function screenNow(){
+    var fields = NOW_PROMPTS.map(function(p){
+      var v = S.nowFields[p.id] || "";
+      return '<div><label for="'+p.id+'" style="display:block;margin-bottom:8px;font-size:1rem;font-weight:500;color:var(--ash)">'+p.q+'</label>'
+        + '<textarea id="'+p.id+'" class="field nowfield" rows="2" placeholder="'+p.ph+'">'+esc(v)+'</textarea></div>';
+    }).join("");
+    var any = NOW_PROMPTS.some(function(p){ return (S.nowFields[p.id]||"").trim(); });
     return appShell('<div class="fade">'
       + '<div class="eyebrow" style="margin-bottom:16px">Step 02 · Visualize the Path</div>'
-      + '<h2 class="q display balance" style="margin-bottom:16px">Where are you right now with it?</h2>'
-      + '<p class="lead" style="margin:0 0 24px">Describe where you\'re starting from in relation to that goal — honestly, and in as much detail as you\'re comfortable with. No wrong answer, no judgement.</p>'
-      + '<textarea id="answer" class="field" rows="7" placeholder="Right now, honestly…">'+esc(S.now)+'</textarea>'
-      + '<div class="end" style="margin-top:24px"><button class="btn btn-primary" data-app="nowNext"'+(S.now.trim()?"":" disabled")+'>Continue</button></div>'
+      + '<h2 class="q display balance" style="margin-bottom:16px">Where are you right now?</h2>'
+      + '<p class="lead" style="margin:0 0 26px">Answer whatever speaks to you — skip anything that doesn\'t. Even one honest line is plenty.</p>'
+      + '<div class="stack">'+fields+'</div>'
+      + '<div class="end" style="margin-top:26px"><button class="btn btn-primary" data-app="nowNext"'+(any?"":" disabled")+'>This is where I am</button></div>'
       + '</div>');
   }
   function screenReflect(){
@@ -515,13 +553,15 @@
   function renderApp(){
     var inner;
     if (S.appStep==="goal") inner = screenGoal();
+    else if (S.appStep==="honesty") inner = screenHonesty();
+    else if (S.appStep==="feelings") inner = screenFeelings();
     else if (S.appStep==="now") inner = screenNow();
     else if (S.appStep==="reflect") inner = screenReflect();
     else if (S.appStep==="invite") inner = screenInvite();
     else inner = screenConfirm();
     el("stage").innerHTML = inner;
     window.scrollTo(0,0);
-    var ta = el("answer"); if (ta) ta.focus();
+    var focusEl = el("answer") || el("feelings") || el("now0"); if (focusEl) focusEl.focus();
   }
 
   /* ---- overlays ---- */
@@ -561,28 +601,38 @@
     if (view==="intro"){ S.introStep=0; renderIntro(); }
     else if (view==="app"){
       // fresh run of the experience
-      S.appStep="goal"; S.goal=""; S.now=""; S.reflection=""; S.shareAnon=false; S.email=""; S.savedShared=false;
+      S.appStep="goal"; S.goal=""; S.feelings=""; S.nowFields={}; S.now=""; S.reflection=""; S.shareAnon=false; S.email=""; S.savedShared=false;
       renderApp();
     }
   }
 
   function grabInputs(){
-    var ta = el("answer");
-    if (ta){ if (S.appStep==="goal") S.goal=ta.value; else if (S.appStep==="now") S.now=ta.value; }
+    if (S.appStep==="goal"){ var g=el("answer"); if(g) S.goal=g.value; }
+    else if (S.appStep==="feelings"){ var f=el("feelings"); if(f) S.feelings=f.value; }
+    else if (S.appStep==="now"){ NOW_PROMPTS.forEach(function(p){ var e=el(p.id); if(e) S.nowFields[p.id]=e.value; }); }
     var sa = el("shareAnon"); if (sa) S.shareAnon = sa.checked;
     var em = el("email"); if (em) S.email = em.value;
   }
 
+  function buildNow(){
+    var parts = [];
+    NOW_PROMPTS.forEach(function(p){ var v=(S.nowFields[p.id]||"").trim(); if(v) parts.push(p.q+"\n"+v); });
+    S.now = parts.join("\n\n");
+    return S.now;
+  }
+
   function doReflect(){
     grabInputs();
-    var text = "My five-week goal:\n" + S.goal.trim() + "\n\nWhere I am right now with it:\n" + S.now.trim();
+    buildNow();
+    var text = "My five-week goal:\n" + S.goal.trim() + "\n\nWhere I am right now with it:\n" + (S.now || "(they didn't say much here)");
+    if (S.feelings.trim()) text += "\n\nFeelings that came up for them:\n" + S.feelings.trim();
     showReading();
     getReflection("encourage", text).then(function(out){ S.reflection=out; hideReading(); S.appStep="reflect"; renderApp(); });
   }
 
   function doSave(){
-    grabInputs();
-    var payload = { goal:S.goal.trim(), now:S.now.trim(), reflection:S.reflection, shareConsent:S.shareAnon, email:S.email.trim()||null, when:new Date().toISOString() };
+    grabInputs(); buildNow();
+    var payload = { goal:S.goal.trim(), now:S.now, feelings:S.feelings.trim()||null, reflection:S.reflection, shareConsent:S.shareAnon, email:S.email.trim()||null, when:new Date().toISOString() };
     var toStore = S.shareAnon ? payload : { shareConsent:false, email:payload.email, when:payload.when };
     saveResponses(toStore);
     if (WORKER_URL){ try{ fetch(WORKER_URL,{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({op:"save",payload:toStore})}).catch(function(){}); }catch(e){} }
@@ -602,8 +652,11 @@
     }
     if (t.hasAttribute("data-app")){
       var a = t.getAttribute("data-app");
-      if (a==="goalNext"){ grabInputs(); if(!S.goal.trim())return; S.appStep="now"; return renderApp(); }
-      if (a==="nowNext"){ grabInputs(); if(!S.now.trim())return; return doReflect(); }
+      if (a==="goalNext"){ grabInputs(); if(!S.goal.trim())return; S.appStep="honesty"; return renderApp(); }
+      if (a==="honestyNext"){ S.appStep="feelings"; return renderApp(); }
+      if (a==="feelingsSkip"){ grabInputs(); S.appStep="now"; return renderApp(); }
+      if (a==="feelingsNext"){ grabInputs(); S.appStep="now"; return renderApp(); }
+      if (a==="nowNext"){ grabInputs(); var any=NOW_PROMPTS.some(function(p){return (S.nowFields[p.id]||"").trim();}); if(!any)return; return doReflect(); }
       if (a==="toInvite"){ S.appStep="invite"; return renderApp(); }
       if (a==="save") return doSave();
       if (a==="feedback") return openFeedback();
@@ -618,8 +671,12 @@
 
   document.addEventListener("input", function(e){
     if (e.target.id==="answer"){
-      var b = document.querySelector('[data-app="goalNext"],[data-app="nowNext"]');
+      var b = document.querySelector('[data-app="goalNext"]');
       if (b) b.disabled = !e.target.value.trim();
+    }
+    if (e.target.classList && e.target.classList.contains("nowfield")){
+      var any = NOW_PROMPTS.some(function(p){ var n=document.getElementById(p.id); return n && n.value.trim(); });
+      var nb = document.querySelector('[data-app="nowNext"]'); if (nb) nb.disabled = !any;
     }
     if (e.target.id==="fbtext"){ var s=document.querySelector('[data-fb="send"]'); if(s) s.disabled=!e.target.value.trim(); }
   });
