@@ -193,6 +193,18 @@
   .hero-sec{position:relative;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:72px 20px 96px;overflow:hidden}
   .hero-glow{position:absolute;inset:0;z-index:-1;background:radial-gradient(80% 55% at 50% 8%, rgba(139,92,255,.16), transparent 60%),radial-gradient(70% 50% at 80% 30%, rgba(255,46,147,.10), transparent 55%)}
 
+  /* today's exercises */
+  .today-card{display:flex;flex-wrap:wrap;align-items:center;gap:18px;justify-content:space-between;padding:24px 26px}
+  .daynav{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:20px}
+  .daynav .nav{width:44px;height:44px;border-radius:50%;border:1px solid var(--edge-strong);background:transparent;color:var(--ash);font-size:1.2rem;cursor:pointer;display:grid;place-items:center;transition:.15s ease;font-family:var(--font-body)}
+  .daynav .nav:hover:not([disabled]){border-color:var(--aura-mint);color:#fff}
+  .daynav .nav[disabled]{opacity:.3;cursor:not-allowed}
+  .daynav .dl{min-width:13rem;text-align:center}
+  .ex-item{display:flex;gap:16px;align-items:flex-start;padding:18px 20px;border:1px solid var(--edge);border-radius:16px;background:rgba(28,22,34,.45)}
+  .ex-item .exn{font-family:var(--font-mono);font-size:1rem;flex:none;width:1.6em;padding-top:3px}
+  .ex-item .ext{display:block;font-family:var(--font-display);font-weight:700;font-size:1.1rem;margin-bottom:3px}
+  .ex-item .exc{display:block;color:var(--muted);font-size:.96rem}
+
   @media (prefers-reduced-motion: reduce){
     html{scroll-behavior:auto}
     .slick,.slick-line{animation:none;background-position:20% 0}
@@ -224,6 +236,20 @@
       <button class="btn btn-ghost" data-go="app">Skip to the experience →</button>
     </div>
     <div class="eyebrow" style="margin-top:20px;opacity:.7">five steps · the Mystic Method</div>
+  </section>
+
+  <!-- today's exercises entry -->
+  <section class="section" style="padding-top:0">
+    <div class="wrap">
+      <div class="card today-card">
+        <div>
+          <div class="eyebrow" id="todayTheme" style="margin-bottom:6px">Today</div>
+          <div class="display" style="font-size:1.5rem">Today's five exercises</div>
+          <div class="lead" id="todayBlurb" style="font-size:1rem;margin-top:4px">A fresh themed set, every day.</div>
+        </div>
+        <button class="btn btn-primary" data-go="today">View today's five →</button>
+      </div>
+    </div>
   </section>
 
   <!-- five steps overview -->
@@ -355,6 +381,73 @@
     { id:"now4", cat:"Emotions", q:"What's the emotional weather around this goal — excitement, dread, doubt, an old story?", ph:"What's really here is…" }
   ];
 
+  // Themed daily exercises. Each calendar day maps deterministically to a theme
+  // and five picks — same for everyone, reproducible for any past day, no backend
+  // needed. The date itself is the database.
+  var THEMES = [
+    { key:"strength", name:"Strength Day", blurb:"Ask the muscle for a little more than yesterday.", accent:"var(--aura-gold)", pool:[
+      ["Push-ups","As many clean reps as you've got — knees down still counts."],
+      ["Bodyweight squats","Sit back like there's a chair behind you. Three slow sets."],
+      ["Plank","Hold one straight line. Beat yesterday by five seconds."],
+      ["Glute bridges","Drive through the heels, squeeze hard at the top."],
+      ["Split lunges","Step, sink, drive up. Both legs, no rushing."],
+      ["Bent-over rows","Pull something heavy to your ribs. Pinch the shoulder blades."],
+      ["Wall sit","Sit on the invisible chair until it burns — then a little more."],
+      ["Calf raises","Slow up, slower down. Feel every single rep."],
+      ["Superman holds","Lift chest and legs, hold, breathe, lower."]
+    ]},
+    { key:"movement", name:"Movement Day", blurb:"Get the blood moving. Fun counts as cardio.", accent:"var(--aura-mint)", pool:[
+      ["Brisk walk","Twenty minutes at a pace that makes talking slightly annoying."],
+      ["Stair intervals","Up with purpose, down easy. Repeat till your legs talk back."],
+      ["Shadow boxing","Three rounds. Throw hands, move your feet, have fun."],
+      ["Jump rope","Two minutes on, one off — real rope or imaginary."],
+      ["One full song of dancing","Whole song, no phone. Look ridiculous on purpose."],
+      ["Easy bike ride","Spin gently or chase a hill. Your call."],
+      ["Incline walk","Find the steepest thing near you and take it on."],
+      ["Sprint bursts","Six rounds: ten seconds hard, walk it off between."]
+    ]},
+    { key:"recovery", name:"Recovery Day", blurb:"You grow in the rest, not the rep.", accent:"var(--aura-violet)", pool:[
+      ["Legs up the wall","Five minutes. Let everything drain downhill."],
+      ["Foam roll","Find the sore spot, park there, breathe into it."],
+      ["Gentle stretch flow","Hips, hamstrings, shoulders. No forcing anything."],
+      ["Plan tonight's sleep","Pick your bedtime now. That's today's real work."],
+      ["Hot shower, cold finish","Heat first; end with thirty seconds of cold if you dare."],
+      ["Twenty-minute nap","Guilt-free. Rest is training too."],
+      ["Refuel","A big glass of water and a real, protein-shaped meal."],
+      ["Aimless slow walk","Ten minutes, no pace, no destination."]
+    ]},
+    { key:"mystic", name:"Mystic Day", blurb:"Train the muscle underneath the muscle.", accent:"var(--aura-mag)", pool:[
+      ["Box breathing","In four, hold four, out four, hold four. Ten rounds."],
+      ["Ten-minute sit","Sit. Notice the breath. Come back each time you wander."],
+      ["Forest bathing","Go be among trees. No goal, no phone, no clock."],
+      ["Cold exposure","End the shower cold. Thirty seconds. Meet the resistance."],
+      ["Gratitude, by hand","Three true things, written on paper — not a screen."],
+      ["Morning light","Ten minutes of daylight on your face, early."],
+      ["Body scan","Head to toe, notice each part without fixing it."],
+      ["Set one intention","Name one thing you'll act in alignment with today."]
+    ]},
+    { key:"mobility", name:"Mobility Day", blurb:"Open the hinges you forgot you had.", accent:"var(--aura-mint)", pool:[
+      ["Cat-cow","Flow with the breath. Spine moving like a wave."],
+      ["Hip openers","90/90, a pigeon, whatever your hips are asking for."],
+      ["Shoulder circles","Big, slow circles. Open the chest at the top."],
+      ["World's greatest stretch","Lunge, reach, rotate. Both sides, unhurried."],
+      ["Deep squat hold","Sit in the bottom of a squat and breathe. One to two minutes."],
+      ["Ankle & wrist rolls","The joints nobody trains. Give them a full minute."],
+      ["Neck releases","Gentle — ear toward shoulder, hold, switch."],
+      ["Thoracic rotations","On all fours, hand behind head, open toward the ceiling."]
+    ]}
+  ];
+
+  function mulberry32(a){ return function(){ a|=0; a=a+0x6D2B79F5|0; var t=Math.imul(a^a>>>15,1|a); t=t+Math.imul(t^t>>>7,61|t)^t; return ((t^t>>>14)>>>0)/4294967296; }; }
+  function dayNumFor(d){ var m=new Date(d.getFullYear(),d.getMonth(),d.getDate()); return Math.round(m.getTime()/86400000); }
+  function dateForOffset(off){ var d=new Date(); d.setDate(d.getDate()-off); return d; }
+  function themeForDay(n){ return THEMES[((n%THEMES.length)+THEMES.length)%THEMES.length]; }
+  function pickFive(pool, seed){
+    var arr=pool.slice(), rnd=mulberry32(seed>>>0);
+    for(var i=arr.length-1;i>0;i--){ var j=Math.floor(rnd()*(i+1)); var t=arr[i]; arr[i]=arr[j]; arr[j]=t; }
+    return arr.slice(0,5);
+  }
+
   /* helpers */
   function el(id){ return document.getElementById(id); }
   function esc(s){ return String(s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];}); }
@@ -394,7 +487,7 @@
   }
 
   /* ---- state ---- */
-  var S = { view:"home", introStep:0, appStep:"goal", goal:"", nowFields:{}, now:"", transform:"", reflection:"", shareAnon:false, email:"", savedShared:false };
+  var S = { view:"home", introStep:0, appStep:"goal", goal:"", nowFields:{}, now:"", transform:"", reflection:"", shareAnon:false, email:"", savedShared:false, todayOffset:0 };
 
   /* ---- home five-step strip ---- */
   (function fillHomeSteps(){
@@ -403,6 +496,13 @@
       h += '<div class="step-row"><span class="num">'+s.n+'</span><span class="nm">'+s.name+'</span><span class="ln">'+s.line+'</span></div>';
     });
     el("homeSteps").innerHTML = h;
+  })();
+
+  /* ---- home "today's exercises" teaser ---- */
+  (function fillToday(){
+    var th = themeForDay(dayNumFor(new Date()));
+    var e = el("todayTheme"); if (e) e.textContent = "Today · " + th.name;
+    var b = el("todayBlurb"); if (b) b.textContent = th.blurb;
   })();
 
   /* ---- intro ---- */
@@ -453,6 +553,33 @@
               : '<button class="btn btn-primary" data-intro="next">Next</button>')
       + '</div>';
     el("stage").innerHTML = '<div class="shell view"><div class="shell-wrap">'+inner+'</div></div>';
+    window.scrollTo(0,0);
+  }
+
+  /* ---- today's exercises ---- */
+  function renderToday(){
+    var off = S.todayOffset;
+    var d = dateForOffset(off);
+    var dn = dayNumFor(d);
+    var theme = themeForDay(dn);
+    var five = pickFive(theme.pool, dn * 7 + theme.key.length);
+    var dateLabel = off === 0 ? "Today" : d.toLocaleDateString(undefined, { weekday:"long", month:"short", day:"numeric" });
+    var items = five.map(function(e,i){
+      return '<div class="ex-item"><span class="exn" style="color:'+theme.accent+'">'+(i+1)+'</span>'
+        + '<span><span class="ext">'+esc(e[0])+'</span><span class="exc">'+esc(e[1])+'</span></span></div>';
+    }).join("");
+    var inner = '<div class="shell-top"><button class="linkback" data-go="home">← Mystic Muscle</button>'
+      + '<div class="display"><span class="slick">Today\'s Five</span></div></div>'
+      + '<div class="daynav">'
+      +   '<button class="nav" data-today="prev" aria-label="Previous day">‹</button>'
+      +   '<div class="dl"><div class="eyebrow" style="margin-bottom:3px">'+dateLabel+'</div>'
+      +     '<div class="display" style="font-size:1.2rem;color:'+theme.accent+'">'+theme.name+'</div></div>'
+      +   '<button class="nav" data-today="next" aria-label="Next day"'+(off===0?" disabled":"")+'>›</button>'
+      + '</div>'
+      + '<p class="center lead" style="margin:0 auto 30px;max-width:34ch">'+theme.blurb+'</p>'
+      + '<div class="stack">'+items+'</div>'
+      + '<p class="center eyebrow" style="margin-top:28px;color:var(--faint)">Five new ones every day · step back through any day you like</p>';
+    el("stage").innerHTML = '<div class="shell view" style="--accent:'+theme.accent+'"><div class="shell-wrap">'+inner+'</div></div>';
     window.scrollTo(0,0);
   }
 
@@ -600,6 +727,7 @@
     }
     el("home").hidden=true; el("stage").hidden=false; S.view=view;
     if (view==="intro"){ S.introStep=0; renderIntro(); }
+    else if (view==="today"){ S.todayOffset=0; renderToday(); }
     else if (view==="app"){
       // fresh run of the experience
       S.appStep="goal"; S.goal=""; S.nowFields={}; S.now=""; S.transform=""; S.reflection=""; S.shareAnon=false; S.email=""; S.savedShared=false;
@@ -643,9 +771,15 @@
 
   /* ---- events ---- */
   document.addEventListener("click", function(e){
-    var t = e.target.closest("[data-go],[data-intro],[data-app],[data-fb]");
+    var t = e.target.closest("[data-go],[data-intro],[data-app],[data-fb],[data-today]");
     if (!t) return;
     if (t.hasAttribute("data-go")) return go(t.getAttribute("data-go"));
+    if (t.hasAttribute("data-today")){
+      var dd = t.getAttribute("data-today");
+      if (dd==="prev"){ S.todayOffset++; return renderToday(); }
+      if (dd==="next" && S.todayOffset>0){ S.todayOffset--; return renderToday(); }
+      return;
+    }
     if (t.hasAttribute("data-intro")){
       var d = t.getAttribute("data-intro");
       if (d==="next" && S.introStep < STEPS.length-1){ S.introStep++; return renderIntro(); }
