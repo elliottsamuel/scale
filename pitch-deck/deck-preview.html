@@ -1,0 +1,374 @@
+<title>Investor Deck — The Case (Look &amp; Feel Preview)</title>
+<style>
+  :root {
+    --paper: #F5F4F1;
+    --paper-rail: #EFEEE9;
+    --ink: #24302E;
+    --ink-soft: #5E6B68;
+    --teal: #3E8E8E;
+    --teal-deep: #2E6A6A;
+    --teal-tint: #E4EDEB;
+    --warm: #C98B5E;
+    --warm-deep: #A8663B;
+    --warm-tint: #F0E4D6;
+    --line: rgba(36, 48, 46, 0.12);
+    --track: rgba(36, 48, 46, 0.09);
+
+    --stage: #E7E4DE;
+    --stage-2: #EFEDE8;
+    --chrome-fg: #2A302E;
+    --chrome-soft: #6C736F;
+    --chrome-line: rgba(36, 48, 46, 0.14);
+    --chrome-card: #F7F6F2;
+
+    --font-display: "Charter", "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, "Times New Roman", serif;
+    --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+
+    --maxw: 1040px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --stage: #16191A; --stage-2: #1E2223;
+      --chrome-fg: #E7E7E3; --chrome-soft: #9AA09D;
+      --chrome-line: rgba(255, 255, 255, 0.12); --chrome-card: #212526;
+    }
+  }
+  :root[data-theme="light"] {
+    --stage: #E7E4DE; --stage-2: #EFEDE8;
+    --chrome-fg: #2A302E; --chrome-soft: #6C736F;
+    --chrome-line: rgba(36, 48, 46, 0.14); --chrome-card: #F7F6F2;
+  }
+  :root[data-theme="dark"] {
+    --stage: #16191A; --stage-2: #1E2223;
+    --chrome-fg: #E7E7E3; --chrome-soft: #9AA09D;
+    --chrome-line: rgba(255, 255, 255, 0.12); --chrome-card: #212526;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    font-family: var(--font-sans);
+    color: var(--chrome-fg);
+    background: radial-gradient(1200px 700px at 50% -10%, var(--stage-2), transparent 70%), var(--stage);
+    -webkit-font-smoothing: antialiased;
+    line-height: 1.5;
+  }
+
+  .bar {
+    position: sticky; top: 0; z-index: 10;
+    display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+    gap: 12px 20px;
+    padding: 14px clamp(16px, 4vw, 40px);
+    background: color-mix(in srgb, var(--stage) 82%, transparent);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--chrome-line);
+  }
+  .bar__id { display: flex; align-items: center; gap: 12px; }
+  .bar__dot { width: 9px; height: 9px; border-radius: 50%; background: var(--teal); flex: none; }
+  .bar__title { font-weight: 650; font-size: 0.95rem; letter-spacing: -0.01em; }
+  .bar__sub { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.16em; color: var(--chrome-soft); }
+  .swatches { display: flex; align-items: center; gap: 7px; }
+  .swatch { width: 20px; height: 20px; border-radius: 4px; border: 1px solid var(--chrome-line); }
+
+  main {
+    max-width: var(--maxw);
+    margin: 0 auto;
+    padding: clamp(22px, 4vw, 48px) clamp(16px, 4vw, 40px) 12px;
+    display: flex; flex-direction: column;
+    gap: clamp(20px, 3vw, 34px);
+  }
+
+  .section-label {
+    font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.2em;
+    color: var(--chrome-soft);
+    display: flex; align-items: center; gap: 12px;
+  }
+  .section-label::after { content: ""; flex: 1; height: 1px; background: var(--chrome-line); }
+
+  .slide {
+    position: relative;
+    min-height: min(566px, 58vw);
+    background: var(--paper);
+    color: var(--ink);
+    border-radius: 6px;
+    border: 1px solid var(--line);
+    box-shadow: 0 1px 0 rgba(0,0,0,0.02), 0 22px 50px -30px rgba(20, 40, 38, 0.45);
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: minmax(150px, 0.3fr) 1fr;
+    opacity: 0; transform: translateY(14px);
+  }
+  .slide.in { animation: rise 0.7s cubic-bezier(0.22, 0.61, 0.36, 1) forwards; }
+  @keyframes rise { to { opacity: 1; transform: none; } }
+
+  .rail {
+    position: relative;
+    padding: clamp(18px, 2.6vw, 40px);
+    background: var(--teal-tint);
+    border-right: 1px solid var(--line);
+    display: flex; flex-direction: column; justify-content: space-between;
+    gap: 20px;
+  }
+  .rail::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--slide-key); }
+  .rail__section { font-size: clamp(0.6rem, 0.9vw, 0.7rem); text-transform: uppercase; letter-spacing: 0.22em; font-weight: 600; color: var(--slide-key-deep); }
+  .rail__index { display: flex; align-items: baseline; gap: 6px; }
+  .rail__num { font-family: var(--font-display); font-weight: 600; font-size: clamp(2.4rem, 1.2rem + 5vw, 4.6rem); line-height: 0.9; letter-spacing: -0.02em; color: var(--slide-key); font-variant-numeric: tabular-nums; }
+  .rail__of { font-size: 0.8rem; color: var(--ink-soft); font-variant-numeric: tabular-nums; letter-spacing: 0.06em; }
+
+  .stage {
+    padding: clamp(22px, 3.6vw, 56px);
+    display: flex; flex-direction: column; justify-content: center;
+    gap: clamp(14px, 1.8vw, 22px);
+  }
+  .headline {
+    font-family: var(--font-display); font-weight: 600;
+    font-size: clamp(1.45rem, 1rem + 2.5vw, 2.7rem);
+    line-height: 1.08; letter-spacing: -0.015em; text-wrap: balance;
+    margin: 0; color: var(--ink);
+  }
+  .framing {
+    font-style: italic;
+    font-size: clamp(0.94rem, 0.85rem + 0.5vw, 1.18rem);
+    line-height: 1.45; color: var(--ink); max-width: 50ch; margin: 0;
+  }
+  .support { font-size: clamp(0.9rem, 0.84rem + 0.4vw, 1.05rem); line-height: 1.55; color: var(--ink-soft); max-width: 52ch; margin: 0; }
+  b { color: var(--ink); font-weight: 700; }
+
+  /* Pull quote */
+  blockquote {
+    margin: 4px 0 0; border-left: 3px solid var(--slide-key); padding-left: clamp(16px, 2vw, 24px);
+  }
+  blockquote p {
+    font-family: var(--font-display); font-style: italic;
+    font-size: clamp(1.1rem, 0.9rem + 1.2vw, 1.7rem); line-height: 1.32; color: var(--ink); margin: 0;
+    text-wrap: balance;
+  }
+  blockquote cite { display: block; margin-top: 14px; font-style: normal; font-size: 0.74rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--slide-key-deep); font-weight: 600; }
+
+  /* Comparison bars */
+  .bars { display: flex; flex-direction: column; gap: clamp(14px, 2vw, 22px); margin-top: 2px; }
+  .bar-row { display: flex; flex-direction: column; gap: 7px; }
+  .bar-top { display: flex; justify-content: space-between; align-items: baseline; gap: 14px; }
+  .bar-lbl { font-size: clamp(0.78rem, 0.72rem + 0.3vw, 0.92rem); color: var(--ink-soft); }
+  .bar-val { font-family: var(--font-display); font-weight: 600; color: var(--slide-key-deep); font-variant-numeric: tabular-nums; letter-spacing: -0.01em; font-size: clamp(1.15rem, 0.95rem + 1vw, 1.7rem); white-space: nowrap; }
+  .bar-track { height: 9px; border-radius: 100px; background: var(--track); overflow: hidden; }
+  .bar-fill { height: 100%; border-radius: 100px; background: var(--slide-key); width: 0; min-width: 3px; }
+  .bar-fill--muted { background: rgba(36, 48, 46, 0.22); }
+  .slide.in .bar-fill { width: var(--w); transition: width 1.05s cubic-bezier(0.22, 0.61, 0.36, 1) 0.15s; }
+
+  /* Hero stat + downtime cluster (slide 4) */
+  .hero { display: flex; flex-direction: column; gap: 8px; }
+  .hero__num { font-family: var(--font-display); font-weight: 600; font-size: clamp(2.4rem, 1.3rem + 5vw, 4.3rem); line-height: 0.95; letter-spacing: -0.02em; color: var(--slide-key-deep); font-variant-numeric: tabular-nums; }
+  .hero__cap { font-size: clamp(0.85rem, 0.8rem + 0.35vw, 1rem); line-height: 1.5; color: var(--ink-soft); max-width: 46ch; }
+  .minis { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px 22px; }
+  .mini { display: flex; flex-direction: column; gap: 3px; border-top: 1px solid var(--line); padding-top: 11px; }
+  .mini__num { font-family: var(--font-display); font-weight: 600; font-size: clamp(1.25rem, 1rem + 1.2vw, 1.9rem); line-height: 1; color: var(--slide-key-deep); font-variant-numeric: tabular-nums; }
+  .mini__lbl { font-size: clamp(0.74rem, 0.7rem + 0.2vw, 0.84rem); color: var(--ink-soft); line-height: 1.35; }
+  .turn { font-family: var(--font-display); font-style: italic; font-size: clamp(1.05rem, 0.9rem + 0.9vw, 1.5rem); line-height: 1.3; color: var(--ink); border-top: 1px solid var(--line); padding-top: 16px; text-wrap: balance; }
+  .turn b { color: var(--slide-key-deep); font-weight: 600; font-style: italic; }
+
+  /* Evidence grid (slide 5) */
+  .ev-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(232px, 1fr)); gap: 18px 28px; margin-top: 2px; }
+  .ev { display: flex; flex-direction: column; gap: 6px; border-top: 1px solid var(--line); padding-top: 12px; }
+  .ev__lbl { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.16em; font-weight: 700; color: var(--slide-key-deep); }
+  .ev p { margin: 0; font-size: clamp(0.84rem, 0.8rem + 0.25vw, 0.96rem); line-height: 1.5; color: var(--ink-soft); }
+
+  /* Per-slide key color */
+  .slide { --slide-key: var(--teal); --slide-key-deep: var(--teal-deep); }
+  .slide[data-mood="warm"] { --slide-key: var(--warm); --slide-key-deep: var(--warm-deep); }
+  .slide[data-mood="warm"] .rail { background: var(--warm-tint); }
+
+  @media (max-width: 640px) {
+    .slide { grid-template-columns: 1fr; min-height: 0; }
+    .rail { flex-direction: row; align-items: center; gap: 16px; border-right: none; border-bottom: 1px solid var(--line); }
+    .rail__num { font-size: 2.6rem; }
+    .minis { grid-template-columns: 1fr 1fr; }
+  }
+
+  .notes {
+    max-width: var(--maxw);
+    margin: clamp(20px, 4vw, 40px) auto 0;
+    padding: 22px clamp(16px, 4vw, 40px) 60px;
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20px 32px;
+    border-top: 1px solid var(--chrome-line);
+  }
+  .note h3 { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.16em; color: var(--chrome-soft); margin: 0 0 8px; }
+  .note p { margin: 0; font-size: 0.86rem; color: var(--chrome-fg); line-height: 1.5; }
+  .note .mono { font-variant-numeric: tabular-nums; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .slide { opacity: 1; transform: none; animation: none; }
+    .slide.in .bar-fill { transition: none; }
+  }
+</style>
+
+<header class="bar">
+  <div class="bar__id">
+    <span class="bar__dot"></span>
+    <div>
+      <div class="bar__title">Families Navigating Medical Crisis</div>
+      <div class="bar__sub">Investor Deck · The Case · Slides 01–05</div>
+    </div>
+  </div>
+  <div class="swatches" aria-label="Palette">
+    <span class="swatch" style="background:#F5F4F1" title="Canvas #F5F4F1"></span>
+    <span class="swatch" style="background:#24302E" title="Ink #24302E"></span>
+    <span class="swatch" style="background:#3E8E8E" title="Teal #3E8E8E"></span>
+    <span class="swatch" style="background:#2E6A6A" title="Teal deep #2E6A6A"></span>
+    <span class="swatch" style="background:#C98B5E" title="Warm accent #C98B5E"></span>
+  </div>
+</header>
+
+<main>
+  <div class="section-label">Look &amp; feel preview — text-led, no imagery · your updated copy, slides 01–05</div>
+
+  <!-- 01 — Insight -->
+  <article class="slide" data-mood="cool">
+    <div class="rail">
+      <div class="rail__section">The Insight</div>
+      <div class="rail__index"><span class="rail__num">01</span><span class="rail__of">/ 05</span></div>
+    </div>
+    <div class="stage">
+      <h2 class="headline">Support arrives all at once at diagnosis.</h2>
+      <p class="framing">Medicine is organized around events. So is everyone around it.</p>
+      <blockquote>
+        <p>&ldquo;Support arrives all at once at diagnosis. Then everyone goes back to their lives.&rdquo;</p>
+        <cite>Director of Child Life, UCLA</cite>
+      </blockquote>
+    </div>
+  </article>
+
+  <!-- 02 — Scale -->
+  <article class="slide" data-mood="cool">
+    <div class="rail">
+      <div class="rail__section">The Scale</div>
+      <div class="rail__index"><span class="rail__num">02</span><span class="rail__of">/ 05</span></div>
+    </div>
+    <div class="stage">
+      <h2 class="headline">The sickest children spend more time in the hospital than everyone else combined.</h2>
+      <p class="framing">Medically complex kids &mdash; the ones whose treatment lasts years, not days. And there are more of them every year, because medicine keeps getting better at saving them.</p>
+      <div class="bars">
+        <div class="bar-row">
+          <div class="bar-top"><span class="bar-lbl">Share of American children</span><span class="bar-val">&lt;1%</span></div>
+          <div class="bar-track"><div class="bar-fill" style="--w:1%"></div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-top"><span class="bar-lbl">Share of all days children spend in hospital beds</span><span class="bar-val">54%</span></div>
+          <div class="bar-track"><div class="bar-fill" style="--w:54%"></div></div>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- 03 — Cost -->
+  <article class="slide" data-mood="cool">
+    <div class="rail">
+      <div class="rail__section">The Cost</div>
+      <div class="rail__index"><span class="rail__num">03</span><span class="rail__of">/ 05</span></div>
+    </div>
+    <div class="stage">
+      <h2 class="headline">They are the most expensive patients in pediatrics.</h2>
+      <p class="framing">Under 1% of children. A third of everything spent on children&rsquo;s health.</p>
+      <div class="bars">
+        <div class="bar-row">
+          <div class="bar-top"><span class="bar-lbl">U.S. pediatric hospitalizations, per year</span><span class="bar-val">$36.3B</span></div>
+          <div class="bar-track"><div class="bar-fill bar-fill--muted" style="--w:100%"></div></div>
+        </div>
+        <div class="bar-row">
+          <div class="bar-top"><span class="bar-lbl">Attributable to medically complex children</span><span class="bar-val">$20B · 57%</span></div>
+          <div class="bar-track"><div class="bar-fill" style="--w:57%"></div></div>
+        </div>
+      </div>
+    </div>
+  </article>
+
+  <!-- 04 — Opportunity -->
+  <article class="slide" data-mood="warm">
+    <div class="rail">
+      <div class="rail__section">The Opportunity</div>
+      <div class="rail__index"><span class="rail__num">04</span><span class="rail__of">/ 05</span></div>
+    </div>
+    <div class="stage">
+      <h2 class="headline">What if you could shorten these stays by 10%?</h2>
+      <p class="framing">Not with a drug. Not with a device. With the hours nobody has ever tried to use.</p>
+      <div class="hero">
+        <div class="hero__num">$300–500M<span style="font-size:0.4em; color:var(--ink-soft); font-family:var(--font-sans); font-weight:600;">&nbsp;/ year</span></div>
+        <div class="hero__cap">Conservatively, in avoided hospital days &mdash; before counting readmissions, where these children are <b>71% of all unplanned returns.</b></div>
+      </div>
+      <div class="minis">
+        <div class="mini"><span class="mini__num">22 min</span><span class="mini__lbl">of direct bedside care the average patient receives a day</span></div>
+        <div class="mini"><span class="mini__num">75%</span><span class="mini__lbl">of the day spent in their room</span></div>
+        <div class="mini"><span class="mini__num">65%</span><span class="mini__lbl">of the day spent alone</span></div>
+      </div>
+      <p class="turn">What if the greatest untapped opportunity for healing lives <b>inside patient downtime?</b></p>
+    </div>
+  </article>
+
+  <!-- 05 — Thesis -->
+  <article class="slide" data-mood="cool">
+    <div class="rail">
+      <div class="rail__section">The Thesis</div>
+      <div class="rail__index"><span class="rail__num">05</span><span class="rail__of">/ 05</span></div>
+    </div>
+    <div class="stage">
+      <h2 class="headline">The greatest opportunity in medicine is in the waiting.</h2>
+      <p class="framing">Everything we know about how people heal points at the time we&rsquo;ve designed the least.</p>
+      <div class="ev-grid">
+        <div class="ev">
+          <span class="ev__lbl">Empowerment</span>
+          <p>Across 33,000 patients, those most engaged in their own care cost <b>31% less</b> and scored better on <b>9 of 13</b> health outcomes.</p>
+        </div>
+        <div class="ev">
+          <span class="ev__lbl">Expression</span>
+          <p>Adults given identical wounds who wrote about their feelings 20 minutes a day: <b>76% fully healed by day 11.</b></p>
+        </div>
+        <div class="ev">
+          <span class="ev__lbl">Immersion</span>
+          <p>In a randomized trial of children, how absorbed a child was in an experience <b>directly predicted how much less pain</b> they reported.</p>
+        </div>
+        <div class="ev">
+          <span class="ev__lbl">Connection</span>
+          <p>Across 148 studies and 308,849 people, strong relationships predicted a <b>50% higher likelihood of survival.</b></p>
+        </div>
+        <div class="ev">
+          <span class="ev__lbl">Laughter</span>
+          <p>A meta-analysis of 912 children found play significantly reduced anxiety &mdash; in the children <b>and their parents.</b></p>
+        </div>
+      </div>
+    </div>
+  </article>
+</main>
+
+<section class="notes">
+  <div class="note">
+    <h3>Narrative arc</h3>
+    <p>The rail names each beat &mdash; Insight → Scale → Cost → Opportunity → Thesis &mdash; so the argument&rsquo;s structure is visible as you move through it.</p>
+  </div>
+  <div class="note">
+    <h3>Data treatment</h3>
+    <p>Big figures pulled out in the serif; comparison bars for share-of-whole stats; a downtime cluster and a five-part evidence grid. Numbers lead.</p>
+  </div>
+  <div class="note">
+    <h3>Colour</h3>
+    <p class="mono">Teal throughout; the single warm slide is 04 &mdash; the pivot from problem to opportunity. Canvas #F5F4F1 · Ink #24302E · Teal #3E8E8E.</p>
+  </div>
+  <div class="note">
+    <h3>Next</h3>
+    <p>React to layout &amp; tone, then this ports into Beautiful.ai. Send slides 06&ndash;10 whenever you&rsquo;re ready.</p>
+  </div>
+</section>
+
+<script>
+  const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduce) {
+    document.querySelectorAll(".slide").forEach(function (s) { s.classList.add("in"); });
+  } else {
+    const io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); } });
+    }, { threshold: 0.16 });
+    document.querySelectorAll(".slide").forEach(function (s) { io.observe(s); });
+  }
+</script>
