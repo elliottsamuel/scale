@@ -78,3 +78,6 @@ Other self-contained single-file apps, each served from its own folder:
   Served at `/mystic-muscle/`.
 - [`birdsong/`](birdsong/) — **Birdsong**, a bird-watching life-list app.
   Served at `/birdsong/`.
+- [`perch/`](perch/) — **Perch**, a wellness app that helps you arrive at a
+  healthy vantage point on a health or healing goal — name it, feel it, and
+  build the plan. Served at `/perch/`.

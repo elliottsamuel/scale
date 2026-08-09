@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Perch — arrive at a healthy vantage point on whatever you're navigating. Name your goal, build the plan, and cultivate the feeling that guides you there.">
+<meta name="theme-color" content="#FAF5EC">
+<title>Perch</title>
+</head>
+<body>
+<style>
+  :root{
+    /* dawn palette — original art, calm & warm */
+    --dawn:#F4845F;     /* coral horizon */
+    --gold:#F3B94D;     /* rising sun */
+    --sky:#5B93B5;      /* clear sky blue */
+    --sage:#6FA287;     /* branch green */
+    --plum:#8874B0;     /* dusk plum */
+
+    /* light (daybreak) — the default */
+    --ground:#FAF5EC;
+    --ground-2:#F1E6D3;
+    --card:#FFFFFF;
+    --ink:#2B3245;
+    --ink-soft:#5C6579;
+    --ink-faint:#93A0AA;
+    --line:rgba(43,50,69,.12);
+    --line-strong:rgba(43,50,69,.22);
+    --accent:var(--dawn);
+    --accent-ink:#FFFFFF;
+    --shadow:0 10px 28px rgba(60,50,30,.10);
+    --shadow-lg:0 22px 56px rgba(60,50,30,.16);
+    --halo:radial-gradient(1100px 600px at 12% -12%, rgba(244,132,95,.22), transparent 58%),
+           radial-gradient(900px 560px at 92% 0%, rgba(243,185,77,.22), transparent 55%),
+           radial-gradient(820px 620px at 50% 108%, rgba(91,147,181,.16), transparent 55%);
+    --radius:20px;
+    --radius-sm:13px;
+    --maxw:480px;
+    --font-body:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,system-ui,sans-serif;
+    --font-serif:"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",Georgia,serif;
+  }
+
+  @media (prefers-color-scheme: dark){
+    :root{
+      --ground:#141A28;
+      --ground-2:#1B2333;
+      --card:#212B40;
+      --ink:#F1EFEA;
+      --ink-soft:#B7C0D2;
+      --ink-faint:#7C8598;
+      --line:rgba(220,226,240,.14);
+      --line-strong:rgba(220,226,240,.26);
+      --accent:var(--gold);
+      --accent-ink:#241A0C;
+      --shadow:0 12px 32px rgba(0,0,0,.40);
+      --shadow-lg:0 26px 66px rgba(0,0,0,.50);
+      --halo:radial-gradient(1100px 620px at 10% -14%, rgba(136,116,176,.32), transparent 60%),
+             radial-gradient(900px 560px at 94% 0%, rgba(243,185,77,.20), transparent 55%),
+             radial-gradient(820px 620px at 50% 110%, rgba(91,147,181,.24), transparent 55%);
+    }
+  }
+  :root[data-theme="light"]{
+    --ground:#FAF5EC;--ground-2:#F1E6D3;--card:#FFFFFF;
+    --ink:#2B3245;--ink-soft:#5C6579;--ink-faint:#93A0AA;
+    --line:rgba(43,50,69,.12);--line-strong:rgba(43,50,69,.22);
+    --accent:var(--dawn);--accent-ink:#FFFFFF;
+    --shadow:0 10px 28px rgba(60,50,30,.10);--shadow-lg:0 22px 56px rgba(60,50,30,.16);
+    --halo:radial-gradient(1100px 600px at 12% -12%, rgba(244,132,95,.22), transparent 58%),
+           radial-gradient(900px 560px at 92% 0%, rgba(243,185,77,.22), transparent 55%),
+           radial-gradient(820px 620px at 50% 108%, rgba(91,147,181,.16), transparent 55%);
+  }
+  :root[data-theme="dark"]{
+    --ground:#141A28;--ground-2:#1B2333;--card:#212B40;
+    --ink:#F1EFEA;--ink-soft:#B7C0D2;--ink-faint:#7C8598;
+    --line:rgba(220,226,240,.14);--line-strong:rgba(220,226,240,.26);
+    --accent:var(--gold);--accent-ink:#241A0C;
+    --shadow:0 12px 32px rgba(0,0,0,.40);--shadow-lg:0 26px 66px rgba(0,0,0,.50);
+    --halo:radial-gradient(1100px 620px at 10% -14%, rgba(136,116,176,.32), transparent 60%),
+           radial-gradient(900px 560px at 94% 0%, rgba(243,185,77,.20), transparent 55%),
+           radial-gradient(820px 620px at 50% 110%, rgba(91,147,181,.24), transparent 55%);
+  }
+
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--ground)}
+  body{
+    font-family:var(--font-body);color:var(--ink);line-height:1.5;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+    min-height:100vh;
+    background:var(--halo), linear-gradient(180deg,var(--ground),var(--ground-2));
+    background-attachment:fixed;
+  }
+  button,input,textarea{font-family:inherit}
+  ::selection{background:var(--dawn);color:#fff}
+
+  .app{max-width:var(--maxw);margin:0 auto;min-height:100vh;
+    display:flex;flex-direction:column;
+    padding:max(14px,env(safe-area-inset-top)) 18px 28px;}
+  .app.with-nav{padding-bottom:calc(90px + env(safe-area-inset-bottom))}
+
+  /* ---------- top bar ---------- */
+  .topbar{display:flex;align-items:center;gap:8px;min-height:44px;margin-bottom:6px}
+  .topbar .spacer{flex:1}
+  .iconbtn{
+    -webkit-appearance:none;appearance:none;border:1px solid var(--line);
+    background:var(--card);color:var(--ink);width:40px;height:40px;border-radius:12px;
+    display:grid;place-items:center;cursor:pointer;font-size:17px;box-shadow:var(--shadow);
+    transition:transform .12s ease, border-color .12s ease;
+  }
+  .iconbtn:active{transform:scale(.94)}
+  .iconbtn:focus-visible{outline:3px solid var(--dawn);outline-offset:2px}
+  .brandmini{display:flex;align-items:center;gap:9px;cursor:pointer;-webkit-appearance:none;appearance:none;border:0;background:none;padding:0}
+  .brandmini .mark{width:30px;height:30px;flex:0 0 auto}
+  .brandmini .wm{font-weight:800;letter-spacing:.2px;font-size:18px;color:var(--ink)}
+  .wm b,.wordmark span{background:linear-gradient(96deg,var(--dawn),var(--gold) 55%,var(--sky));-webkit-background-clip:text;background-clip:text;color:transparent}
+
+  /* ---------- screen transitions ---------- */
+  main{flex:1;display:flex;flex-direction:column}
+  .screen{animation:rise .42s cubic-bezier(.2,.7,.2,1) both}
+  @keyframes rise{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion: reduce){ .screen{animation:none} *{scroll-behavior:auto !important} }
+
+  /* ---------- onboarding ---------- */
+  .welcome{flex:1;display:flex;flex-direction:column;justify-content:center;gap:20px;padding:14px 2px 6px;text-align:center}
+  .hero-mark{width:120px;height:120px;margin:0 auto;filter:drop-shadow(0 14px 30px rgba(244,132,95,.35))}
+  @media (prefers-reduced-motion: no-preference){ .hero-mark{animation:sway 7s ease-in-out infinite} }
+  @keyframes sway{0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)}}
+  .wordmark{font-size:clamp(42px,14vw,58px);font-weight:800;line-height:.92;letter-spacing:-1px;margin:0}
+  .tagline{font-family:var(--font-serif);font-size:18px;color:var(--ink-soft);font-style:italic;margin:-2px 0 0}
+  .ethos{font-size:15px;color:var(--ink-soft);max-width:34ch;margin:0 auto;line-height:1.62}
+  .ethos b{color:var(--ink);font-weight:650}
+
+  .onboard-form{display:flex;flex-direction:column;gap:14px;text-align:left;margin-top:6px}
+  .field label{display:block;font-size:13px;font-weight:700;color:var(--ink-soft);margin-bottom:6px;letter-spacing:.02em}
+  .field textarea,.field input[type=text]{
+    width:100%;font-family:inherit;font-size:16px;color:var(--ink);
+    background:var(--card);border:1px solid var(--line-strong);border-radius:13px;
+    padding:13px 14px;box-shadow:var(--shadow);transition:border-color .12s ease}
+  .field textarea{resize:vertical;min-height:84px;line-height:1.5}
+  .field textarea:focus,.field input:focus{outline:none;border-color:var(--dawn);box-shadow:0 0 0 3px rgba(244,132,95,.16)}
+  .field textarea::placeholder,.field input::placeholder{color:var(--ink-faint)}
+
+  .chip-row{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{-webkit-appearance:none;appearance:none;cursor:pointer;border:1px solid var(--line-strong);
+    background:var(--card);color:var(--ink);border-radius:999px;padding:9px 14px;font-size:14px;font-weight:650;
+    display:inline-flex;align-items:center;gap:6px;box-shadow:var(--shadow);transition:transform .1s ease,border-color .12s ease,background .12s ease}
+  .chip:active{transform:scale(.96)}
+  .chip:focus-visible{outline:3px solid var(--dawn);outline-offset:2px}
+  .chip.selected{background:linear-gradient(96deg,var(--dawn),var(--gold));border-color:transparent;color:#2B1706}
+  .chip.suggest.selected{background:linear-gradient(96deg,var(--sage),var(--sky));color:#fff}
+  .chip .x{opacity:.7;font-weight:800}
+
+  .cta{
+    -webkit-appearance:none;appearance:none;border:0;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;gap:11px;
+    width:100%;padding:18px 22px;border-radius:var(--radius);
+    font-size:18px;font-weight:800;letter-spacing:.2px;color:#fff;
+    background:linear-gradient(96deg,var(--dawn),var(--gold) 90%);
+    box-shadow:var(--shadow-lg),inset 0 1px 0 rgba(255,255,255,.28);
+    transition:transform .14s ease, filter .14s ease;
+  }
+  .cta:active{transform:translateY(2px) scale(.99);filter:brightness(1.04)}
+  .cta:focus-visible{outline:3px solid var(--sky);outline-offset:3px}
+  .cta:disabled{opacity:.5;filter:grayscale(.3);cursor:not-allowed}
+
+  .ghostbtn{
+    -webkit-appearance:none;appearance:none;cursor:pointer;
+    display:flex;align-items:center;justify-content:center;gap:9px;
+    width:100%;padding:14px 18px;border-radius:var(--radius);
+    font-size:15.5px;font-weight:700;color:var(--ink);
+    background:var(--card);border:1px solid var(--line-strong);box-shadow:var(--shadow);
+    transition:transform .12s ease,border-color .12s ease;
+  }
+  .ghostbtn:active{transform:scale(.985)}
+  .ghostbtn:focus-visible{outline:3px solid var(--dawn);outline-offset:2px}
+  .ghostbtn.danger{color:var(--dawn)!important;border-color:rgba(244,132,95,.4)!important}
+
+  .welcome-foot{font-size:12.5px;color:var(--ink-faint);margin-top:2px}
+
+  /* ---------- section header / breadcrumb ---------- */
+  .crumbs{display:flex;flex-wrap:wrap;align-items:center;gap:4px;font-size:12.5px;color:var(--ink-faint);margin:2px 2px 8px}
+  .crumbs button{-webkit-appearance:none;appearance:none;border:0;background:none;color:var(--ink-faint);
+    font-size:12.5px;font-weight:650;cursor:pointer;padding:2px 0}
+  .crumbs button:hover{color:var(--ink-soft);text-decoration:underline}
+  .crumbs .sep{opacity:.6}
+  .crumbs .here{color:var(--ink-soft);font-weight:700}
+
+  .sec-head{margin:0 2px 16px}
+  .sec-head h1{font-size:25px;margin:0;letter-spacing:-.4px;font-weight:800;text-wrap:balance;line-height:1.18}
+  .sec-head .sub{color:var(--ink-soft);font-size:14px;margin-top:5px;line-height:1.5}
+
+  /* ---------- home / vantage ---------- */
+  .vantage-card{position:relative;overflow:hidden;background:var(--card);border:1px solid var(--line);
+    border-radius:24px;padding:26px 22px 22px;box-shadow:var(--shadow-lg);text-align:center;margin-bottom:20px}
+  .vantage-card .glow{position:absolute;inset:0;background:linear-gradient(180deg,rgba(244,132,95,.10),transparent 60%);pointer-events:none}
+  .vantage-mark{width:64px;height:64px;margin:0 auto 12px}
+  .vantage-eyebrow{font-size:12px;letter-spacing:.10em;text-transform:uppercase;color:var(--ink-faint);font-weight:700;margin-bottom:8px}
+  .vantage-title{font-size:24px;font-weight:800;letter-spacing:-.4px;line-height:1.28;text-wrap:balance;margin:0 0 10px;
+    position:relative}
+  .vantage-title .edit{-webkit-appearance:none;appearance:none;border:0;background:none;cursor:pointer;
+    color:var(--ink-faint);font-size:14px;margin-left:6px;vertical-align:middle}
+  .vantage-meta{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;margin-top:4px}
+  .for-pill{display:inline-flex;align-items:center;gap:5px;background:var(--ground-2);border:1px solid var(--line);
+    padding:4px 11px;border-radius:999px;font-size:12.5px;font-weight:650;color:var(--ink-soft)}
+  .since{font-size:12px;color:var(--ink-faint)}
+
+  .branch-head{display:flex;align-items:baseline;justify-content:space-between;margin:6px 2px 12px}
+  .branch-head h2{font-size:16px;margin:0;font-weight:800}
+  .branch-head .cnt{font-size:12.5px;color:var(--ink-faint)}
+
+  .goal-list{display:flex;flex-direction:column;gap:10px;margin-bottom:8px}
+  .goal-card{display:flex;align-items:center;gap:12px;text-align:left;width:100%;cursor:pointer;
+    background:var(--card);border:1px solid var(--line);border-radius:var(--radius-sm);
+    padding:13px 14px;box-shadow:var(--shadow);-webkit-appearance:none;appearance:none;color:inherit;
+    transition:transform .12s ease,border-color .12s ease;animation:card-in .4s cubic-bezier(.2,.7,.2,1) both}
+  @keyframes card-in{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  .goal-card:active{transform:scale(.99)}
+  .goal-card:focus-visible{outline:3px solid var(--dawn);outline-offset:2px}
+  .goal-card .leaf{width:38px;height:38px;border-radius:11px;flex:0 0 auto;display:grid;place-items:center;
+    background:linear-gradient(150deg,var(--sage),var(--sky));font-size:17px;color:#fff}
+  .goal-card .meta{flex:1;min-width:0}
+  .goal-card .nm{font-weight:700;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .goal-card .dl{color:var(--ink-faint);font-size:12.5px;margin-top:2px}
+  .goal-card .chev{color:var(--ink-faint);font-size:19px;flex:0 0 auto}
+
+  .empty{text-align:center;padding:30px 14px;color:var(--ink-soft)}
+  .empty .ico{font-size:38px;display:block;margin-bottom:8px}
+  .empty p{margin:0 0 4px;font-size:14.5px}
+  .empty .faint{color:var(--ink-faint);font-size:13px}
+
+  /* ---------- bottom nav ---------- */
+  .bottomnav{position:fixed;left:50%;bottom:0;transform:translateX(-50%);width:100%;max-width:var(--maxw);
+    display:flex;background:var(--card);border-top:1px solid var(--line);box-shadow:0 -8px 24px rgba(0,0,0,.06);
+    padding:6px 10px calc(6px + env(safe-area-inset-bottom));z-index:30}
+  .navbtn{flex:1;-webkit-appearance:none;appearance:none;border:0;background:none;cursor:pointer;
+    display:flex;flex-direction:column;align-items:center;gap:3px;padding:7px 4px;border-radius:12px;color:var(--ink-faint)}
+  .navbtn .ic{font-size:20px;line-height:1}
+  .navbtn .lb{font-size:11px;font-weight:700;letter-spacing:.01em}
+  .navbtn[aria-current="true"]{color:var(--dawn)}
+  .navbtn:focus-visible{outline:3px solid var(--dawn);outline-offset:-2px}
+
+  /* ---------- plan ---------- */
+  .item-list{display:flex;flex-direction:column;gap:10px;padding-bottom:10px}
+  .item-card{display:flex;align-items:flex-start;gap:11px;background:var(--card);border:1px solid var(--line);
+    border-radius:var(--radius-sm);padding:12px 13px;box-shadow:var(--shadow);animation:card-in .35s cubic-bezier(.2,.7,.2,1) both}
+  .item-card.done{opacity:.6}
+  .item-check{-webkit-appearance:none;appearance:none;flex:0 0 auto;width:22px;height:22px;border-radius:7px;
+    border:2px solid var(--line-strong);background:var(--card);cursor:pointer;display:grid;place-items:center;margin-top:1px}
+  .item-check.on{background:linear-gradient(135deg,var(--sage),var(--sky));border-color:transparent;color:#fff;font-size:13px;font-weight:800}
+  .item-body{flex:1;min-width:0}
+  .item-text{font-size:15px;line-height:1.45;white-space:pre-wrap;word-break:break-word}
+  .item-card.done .item-text{text-decoration:line-through;color:var(--ink-soft)}
+  .item-tools{display:flex;align-items:center;gap:10px;margin-top:7px}
+  .item-tools button{-webkit-appearance:none;appearance:none;border:0;background:none;cursor:pointer;
+    font-size:12px;font-weight:700;color:var(--ink-faint);padding:2px 0;display:inline-flex;align-items:center;gap:4px}
+  .item-tools button:hover{color:var(--ink-soft)}
+  .item-tools .promote:hover{color:var(--sage)}
+  .item-tools .del:hover{color:var(--dawn)}
+  .item-badge{display:inline-flex;align-items:center;gap:4px;background:var(--ground-2);border:1px solid var(--line);
+    border-radius:999px;padding:3px 10px;font-size:11.5px;font-weight:700;color:var(--sage);cursor:pointer;margin-top:6px}
+
+  .composer{position:sticky;bottom:0;display:flex;gap:8px;background:var(--card);border:1px solid var(--line-strong);
+    border-radius:16px;padding:8px 8px 8px 14px;box-shadow:var(--shadow-lg);margin-top:10px}
+  .composer textarea{flex:1;border:0;background:none;resize:none;font-size:15px;color:var(--ink);
+    line-height:1.4;max-height:110px;padding:8px 0}
+  .composer textarea:focus{outline:none}
+  .composer textarea::placeholder{color:var(--ink-faint)}
+  .composer button{-webkit-appearance:none;appearance:none;border:0;cursor:pointer;flex:0 0 auto;
+    width:42px;height:42px;border-radius:12px;align-self:flex-end;
+    background:linear-gradient(135deg,var(--dawn),var(--gold));color:#fff;font-size:19px;font-weight:800;
+    display:grid;place-items:center;box-shadow:var(--shadow)}
+  .composer button:disabled{opacity:.4;cursor:not-allowed}
+  .composer button:active{transform:scale(.93)}
+
+  /* ---------- feel ---------- */
+  .feel-prompt{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:20px 20px 18px;box-shadow:var(--shadow);text-align:center;margin-bottom:18px}
+  .feel-prompt p{margin:0;font-family:var(--font-serif);font-style:italic;font-size:17.5px;color:var(--ink);line-height:1.55}
+  .feel-prompt .goalname{font-weight:700;font-style:normal;color:var(--dawn)}
+
+  .feel-section{margin-bottom:20px}
+  .feel-section h3{font-size:12.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint);
+    font-weight:700;margin:0 0 10px}
+  .word-list{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+  .word-list:empty{display:none}
+  .word-tag{display:inline-flex;align-items:center;gap:7px;background:linear-gradient(96deg,var(--dawn),var(--gold));
+    color:#2B1706;border-radius:999px;padding:8px 8px 8px 14px;font-size:14px;font-weight:700}
+  .word-tag button{-webkit-appearance:none;appearance:none;border:0;background:rgba(43,23,6,.14);color:inherit;
+    cursor:pointer;width:20px;height:20px;border-radius:50%;font-size:12px;line-height:1;display:grid;place-items:center}
+  .word-add{display:flex;gap:8px}
+  .word-add input{flex:1;font-size:15px;color:var(--ink);background:var(--card);border:1px solid var(--line-strong);
+    border-radius:12px;padding:11px 13px;box-shadow:var(--shadow)}
+  .word-add input:focus{outline:none;border-color:var(--dawn);box-shadow:0 0 0 3px rgba(244,132,95,.16)}
+  .word-add button{-webkit-appearance:none;appearance:none;border:1px solid var(--line-strong);background:var(--card);
+    color:var(--ink);border-radius:12px;padding:0 16px;font-weight:700;cursor:pointer;box-shadow:var(--shadow)}
+
+  .feel-note textarea{width:100%;font-family:inherit;font-size:15px;color:var(--ink);background:var(--card);
+    border:1px solid var(--line-strong);border-radius:13px;padding:13px 14px;box-shadow:var(--shadow);
+    min-height:100px;line-height:1.55;resize:vertical}
+  .feel-note textarea:focus{outline:none;border-color:var(--dawn);box-shadow:0 0 0 3px rgba(244,132,95,.16)}
+  .feel-note textarea::placeholder{color:var(--ink-faint)}
+
+  .pause-card{background:linear-gradient(150deg,rgba(244,132,95,.14),rgba(91,147,181,.12));
+    border:1px solid var(--line);border-radius:var(--radius);padding:18px;text-align:center;box-shadow:var(--shadow)}
+  .pause-card p{margin:0 0 12px;font-size:13.5px;color:var(--ink-soft);line-height:1.55}
+
+  .bridge{margin-top:22px}
+
+  /* ---------- sheets ---------- */
+  .sheet-back{position:fixed;inset:0;background:rgba(20,16,10,.46);backdrop-filter:blur(3px);
+    display:none;align-items:flex-end;justify-content:center;z-index:50;padding:0}
+  .sheet-back.open{display:flex;animation:fade .2s both}
+  @keyframes fade{from{opacity:0}to{opacity:1}}
+  .sheet{background:var(--card);border-top-left-radius:24px;border-top-right-radius:24px;
+    max-width:var(--maxw);width:100%;padding:18px 20px calc(22px + env(safe-area-inset-bottom));
+    box-shadow:var(--shadow-lg);animation:pop .32s cubic-bezier(.2,.8,.2,1) both;max-height:82vh;
+    overflow-y:auto;-webkit-overflow-scrolling:touch}
+  @keyframes pop{from{transform:translateY(28px);opacity:0}to{transform:none;opacity:1}}
+  .sheet-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+  .sheet-head h3{margin:0;font-size:18px;font-weight:800}
+  .sheet-head .iconbtn{width:34px;height:34px;font-size:15px}
+
+  .tree-list{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
+  .tree-row{-webkit-appearance:none;appearance:none;width:100%;text-align:left;border:1px solid transparent;
+    background:none;cursor:pointer;border-radius:12px;padding:10px 12px;display:flex;align-items:center;gap:8px;
+    color:var(--ink);font-size:14.5px}
+  .tree-row:hover{background:var(--ground-2)}
+  .tree-row.active{background:linear-gradient(96deg,rgba(244,132,95,.16),rgba(243,185,77,.14));border-color:var(--line)}
+  .tree-row .tn{font-weight:700;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .tree-row .td{font-size:11px;color:var(--ink-faint)}
+  .tree-row .prim{color:var(--gold);font-size:13px}
+
+  .form{display:flex;flex-direction:column;gap:14px}
+  .sheet-actions{display:flex;gap:10px;margin-top:4px}
+  .sheet-actions .cta{flex:2}
+  .sheet-actions .ghostbtn{flex:1}
+
+  /* ---------- breathing overlay ---------- */
+  .breathe-back{position:fixed;inset:0;background:linear-gradient(180deg,var(--ground),var(--ground-2));
+    display:none;flex-direction:column;align-items:center;justify-content:center;z-index:60;padding:24px;text-align:center}
+  .breathe-back.open{display:flex}
+  .breathe-close{position:absolute;top:max(16px,env(safe-area-inset-top));right:16px}
+  .breathe-orb{width:180px;height:180px;border-radius:50%;
+    background:radial-gradient(circle at 35% 30%,var(--gold),var(--dawn) 55%,var(--plum) 100%);
+    box-shadow:0 0 60px rgba(244,132,95,.35);transition:transform 4s ease-in-out;transform:scale(.72)}
+  .breathe-orb.out{transform:scale(1)}
+  @media (prefers-reduced-motion: reduce){ .breathe-orb{transition:none} }
+  .breathe-phase{font-size:20px;font-weight:800;margin-top:26px;color:var(--ink)}
+  .breathe-affirm{font-family:var(--font-serif);font-style:italic;font-size:16px;color:var(--ink-soft);
+    margin-top:10px;max-width:32ch;min-height:24px}
+  .breathe-count{font-size:13px;color:var(--ink-faint);margin-top:18px;font-variant-numeric:tabular-nums}
+
+  .toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translateX(-50%) translateY(20px);
+    background:var(--ink);color:var(--ground);padding:12px 20px;border-radius:999px;font-weight:700;font-size:14px;
+    box-shadow:var(--shadow-lg);opacity:0;pointer-events:none;transition:.3s cubic-bezier(.2,.8,.2,1);z-index:70;max-width:88vw}
+  .app.with-nav ~ .toast{bottom:calc(92px + env(safe-area-inset-bottom))}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);border:0}
+</style>
+
+<div class="app" id="appRoot">
+  <header class="topbar" id="topbar"></header>
+  <main id="main"></main>
+</div>
+<nav class="bottomnav" id="bottomnav" style="display:none"></nav>
+
+<div class="sheet-back" id="sheetback" role="dialog" aria-modal="true">
+  <div class="sheet" id="sheetbody"></div>
+</div>
+
+<div class="breathe-back" id="breatheback" role="dialog" aria-modal="true" aria-label="Embodiment pause">
+  <button class="iconbtn breathe-close" id="breatheCloseBtn" aria-label="End pause">✕</button>
+  <div class="breathe-orb" id="breatheOrb"></div>
+  <div class="breathe-phase" id="breathePhase">Breathe in</div>
+  <div class="breathe-affirm" id="breatheAffirm"></div>
+  <div class="breathe-count" id="breatheCount">60</div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ==================== storage ==================== */
+  var KEY = "perch.state.v1";
+  var THEME_KEY = "perch.theme";
+
+  function loadPersisted(){
+    try{
+      var r = localStorage.getItem(KEY);
+      if(!r) return null;
+      var p = JSON.parse(r);
+      return {
+        goals: p.goals || [],
+        items: p.items || [],
+        feelings: p.feelings || {},
+        primaryGoalId: p.primaryGoalId || null
+      };
+    }catch(e){ return null; }
+  }
+  function persist(){
+    try{
+      localStorage.setItem(KEY, JSON.stringify({
+        goals: state.goals, items: state.items, feelings: state.feelings, primaryGoalId: state.primaryGoalId
+      }));
+    }catch(e){ toast("Storage is full — try removing something old."); }
+  }
+
+  var p = loadPersisted() || { goals:[], items:[], feelings:{}, primaryGoalId:null };
+
+  var state = {
+    goals: p.goals,
+    items: p.items,
+    feelings: p.feelings,
+    primaryGoalId: p.primaryGoalId,
+    activeGoalId: p.primaryGoalId,
+    tab: "home",
+    sheet: null,          // 'tree' | 'goalform' | null
+    sheetMode: null,       // 'add' | 'edit'
+    sheetParent: null,     // parentId for add
+    sheetTarget: null,     // goalId for edit
+    planPlaceholder: null,
+    breathing: false
+  };
+
+  var FOR_META = {
+    me:{ icon:"🌱", label:"For me" },
+    someone:{ icon:"💛", label:"For someone I love" },
+    both:{ icon:"🤝", label:"For both of us" }
+  };
+  var SUGGESTED_WORDS = ["Calm","Steady","Free","Safe","Strong","Light","Whole","Grounded",
+    "Hopeful","Peaceful","Held","Capable","Alive","Connected","Rested","Proud"];
+
+  /* ==================== helpers ==================== */
+  function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g,function(c){
+    return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
+  function uid(prefix){ return prefix + Math.random().toString(36).slice(2,9) + Date.now().toString(36).slice(-4); }
+  function prettyDate(ms){
+    if(!ms) return "";
+    var d = new Date(ms);
+    if(isNaN(d)) return "";
+    return d.toLocaleDateString(undefined,{month:"short",day:"numeric",year:"numeric"});
+  }
+
+  var toastTimer;
+  function toast(msg){
+    var t = document.getElementById("toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ t.classList.remove("show"); }, 2400);
+  }
+
+  function findGoal(id){ for(var i=0;i<state.goals.length;i++){ if(state.goals[i].id===id) return state.goals[i]; } return null; }
+  function children(id){ return state.goals.filter(function(g){ return g.parentId===id; }); }
+  function rootGoals(){ return state.goals.filter(function(g){ return !g.parentId; }); }
+  function breadcrumb(id){
+    var chain = [], g = findGoal(id), guard=0;
+    while(g && guard++<50){ chain.unshift(g); g = g.parentId ? findGoal(g.parentId) : null; }
+    return chain;
+  }
+  function goalItems(id){
+    return state.items.filter(function(it){ return it.goalId===id; })
+      .sort(function(a,b){ return b.createdAt - a.createdAt; });
+  }
+  function goalFeeling(id){ return state.feelings[id] || { words:[], note:"" }; }
+  function descendantIds(id){
+    var out = [], stack = [id];
+    while(stack.length){
+      var cur = stack.pop();
+      children(cur).forEach(function(c){ out.push(c.id); stack.push(c.id); });
+    }
+    return out;
+  }
+
+  /* ==================== brand mark ==================== */
+  function markSVG(){
+    return '<svg viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">'
+      + '<defs>'
+      + '<linearGradient id="dawnGrad" x1="8" y1="6" x2="112" y2="118" gradientUnits="userSpaceOnUse">'
+      + '<stop stop-color="#F4845F"/><stop offset=".55" stop-color="#F3B94D"/><stop offset="1" stop-color="#5B93B5"/>'
+      + '</linearGradient>'
+      + '<clipPath id="roundClip"><circle cx="60" cy="60" r="54"/></clipPath>'
+      + '</defs>'
+      + '<circle cx="60" cy="60" r="54" fill="url(#dawnGrad)"/>'
+      + '<circle cx="60" cy="60" r="54" stroke="rgba(255,255,255,.55)" stroke-width="3"/>'
+      + '<g clip-path="url(#roundClip)">'
+      + '<circle cx="60" cy="80" r="20" fill="#FFF6D8" opacity=".92"/>'
+      + '<rect x="0" y="82" width="120" height="40" fill="rgba(43,23,6,.16)"/>'
+      + '<path d="M14 82 C40 74, 80 74, 106 82" stroke="rgba(255,255,255,.5)" stroke-width="2" fill="none"/>'
+      + '<path d="M28 58 C46 52, 70 56, 96 50" stroke="#3A2A1C" stroke-width="3.4" stroke-linecap="round" fill="none" opacity=".55"/>'
+      + '<path d="M50 58 c-11 -1 -19 6 -19 15 c0 6 5 9 11 9 l20 0 c6 0 9 -4 8 -9 c-1 -5 -4 -8 -8 -10 c2 -3 2 -6 0 -9 c-3 2 -6 3 -8 4 c-1 -1 -2 -1 -4 0 z" fill="#2B3245"/>'
+      + '<path d="M68 62 l9 -4 l-6 6 z" fill="#2B3245"/>'
+      + '<circle cx="43" cy="60" r="1.8" fill="#FFF6D8"/>'
+      + '</g>'
+      + '</svg>';
+  }
+
+  /* ==================== theme ==================== */
+  function toggleTheme(){
+    var root = document.documentElement;
+    var cur = root.getAttribute("data-theme");
+    if(!cur){ cur = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark":"light"; }
+    var next = cur==="dark" ? "light":"dark";
+    root.setAttribute("data-theme", next);
+    try{ localStorage.setItem(THEME_KEY, next); }catch(e){}
+    setThemeColor(next);
+  }
+  function setThemeColor(t){
+    var m = document.querySelector('meta[name="theme-color"]');
+    if(m) m.setAttribute("content", t==="dark" ? "#141A28" : "#FAF5EC");
+  }
+  (function initTheme(){
+    try{ var t = localStorage.getItem(THEME_KEY); if(t){ document.documentElement.setAttribute("data-theme",t); setThemeColor(t); } }catch(e){}
+  })();
+
+  /* ==================== router / render ==================== */
+  function go(tab){ state.tab = tab; render(); window.scrollTo(0,0); }
+  function setActiveGoal(id){ state.activeGoalId = id; }
+  function goHome(){ state.activeGoalId = state.primaryGoalId; state.tab = "home"; closeSheet(); render(); window.scrollTo(0,0); }
+
+  function render(){
+    renderTop();
+    var m = document.getElementById("main");
+    var hasGoals = state.goals.length > 0;
+    document.getElementById("appRoot").classList.toggle("with-nav", hasGoals);
+    document.getElementById("bottomnav").style.display = hasGoals ? "flex" : "none";
+
+    if(!hasGoals){
+      m.innerHTML = viewOnboarding();
+    } else {
+      if(!findGoal(state.activeGoalId)) state.activeGoalId = state.primaryGoalId;
+      if(state.tab==="plan") m.innerHTML = viewPlan();
+      else if(state.tab==="feel") m.innerHTML = viewFeel();
+      else m.innerHTML = viewHome();
+    }
+    renderBottomNav();
+    renderSheet();
+    wire();
+  }
+
+  function renderTop(){
+    var top = document.getElementById("topbar");
+    var hasGoals = state.goals.length > 0;
+    var right = '<span class="spacer"></span>';
+    if(hasGoals){
+      right += '<button class="iconbtn" id="treeBtn" aria-label="Switch or add a goal">🌳</button>';
+    }
+    right += '<button class="iconbtn" id="themeBtn" aria-label="Switch light or dark">◐</button>';
+    top.innerHTML =
+      '<button class="brandmini" id="homeBtn" aria-label="Perch home">'
+        + '<span class="mark">'+markSVG()+'</span>'
+        + '<span class="wm"><b>Perch</b></span>'
+      + '</button>' + right;
+
+    var hb = document.getElementById("homeBtn");
+    hb.onclick = hasGoals ? goHome : null;
+    document.getElementById("themeBtn").onclick = toggleTheme;
+    var tb = document.getElementById("treeBtn");
+    if(tb) tb.onclick = function(){ openTreeSheet(); };
+  }
+
+  function renderBottomNav(){
+    var nav = document.getElementById("bottomnav");
+    if(!state.goals.length){ nav.innerHTML=""; return; }
+    var tabs = [
+      { id:"home", ic:"🌅", lb:"Vantage" },
+      { id:"plan", ic:"🌿", lb:"Plan" },
+      { id:"feel", ic:"💗", lb:"Feel" }
+    ];
+    nav.innerHTML = tabs.map(function(t){
+      return '<button class="navbtn" data-tab="'+t.id+'" aria-current="'+(state.tab===t.id)+'">'
+        + '<span class="ic">'+t.ic+'</span><span class="lb">'+t.lb+'</span></button>';
+    }).join("");
+    Array.prototype.forEach.call(nav.querySelectorAll(".navbtn"), function(b){
+      b.onclick = function(){ go(b.getAttribute("data-tab")); };
+    });
+  }
+
+  function crumbsHTML(){
+    var chain = breadcrumb(state.activeGoalId);
+    if(chain.length<=1) return "";
+    var parts = chain.map(function(g,i){
+      if(i===chain.length-1) return '<span class="here">'+esc(g.title)+'</span>';
+      return '<button data-id="'+g.id+'">'+esc(g.title)+'</button><span class="sep">›</span>';
+    });
+    return '<div class="crumbs">'+parts.join("")+'</div>';
+  }
+
+  /* ==================== onboarding ==================== */
+  var onboardFor = "me";
+  function viewOnboarding(){
+    var chips = Object.keys(FOR_META).map(function(k){
+      var m = FOR_META[k];
+      return '<button type="button" class="chip'+(onboardFor===k?' selected':'')+'" data-for="'+k+'">'+m.icon+' '+m.label+'</button>';
+    }).join("");
+    return '<section class="screen welcome">'
+      + '<div class="hero-mark">'+markSVG()+'</div>'
+      + '<h1 class="wordmark"><span>Perch</span></h1>'
+      + '<p class="tagline">Arrive at a healthy vantage point 🌅</p>'
+      + '<p class="ethos">Perch helps you find <b>solid ground above whatever you\'re navigating</b> — a health scare, a healing journey, caring for someone you love. Name the goal, and let\'s get you some altitude.</p>'
+      + '<form class="onboard-form" id="onboardForm">'
+        + '<div class="field"><label for="goalInput">What\'s the biggest goal you\'re moving toward right now?</label>'
+          + '<textarea id="goalInput" placeholder="e.g. Feel strong and steady again after treatment&#10;e.g. Help Mom recover her independence at home" required></textarea></div>'
+        + '<div class="field"><label>Who is this for?</label><div class="chip-row">'+chips+'</div></div>'
+        + '<button type="submit" class="cta" id="startBtn" disabled>🪶 Set my vantage point</button>'
+      + '</form>'
+      + '<p class="welcome-foot">Your goal stays on your device · you can add more anytime</p>'
+      + '</section>';
+  }
+
+  function wireOnboarding(){
+    var form = document.getElementById("onboardForm");
+    if(!form) return;
+    var input = document.getElementById("goalInput");
+    var btn = document.getElementById("startBtn");
+    input.addEventListener("input", function(){ btn.disabled = !input.value.trim(); });
+    Array.prototype.forEach.call(form.querySelectorAll(".chip"), function(c){
+      c.onclick = function(){
+        onboardFor = c.getAttribute("data-for");
+        Array.prototype.forEach.call(form.querySelectorAll(".chip"), function(x){ x.classList.toggle("selected", x===c); });
+      };
+    });
+    form.addEventListener("submit", function(e){
+      e.preventDefault();
+      var title = input.value.trim();
+      if(!title) return;
+      var g = { id:uid("g"), title:title, parentId:null, forWho:onboardFor, createdAt:Date.now() };
+      state.goals.push(g);
+      state.primaryGoalId = g.id;
+      state.activeGoalId = g.id;
+      state.tab = "home";
+      persist();
+      render();
+      toast("Your vantage point is set 🌅");
+    });
+  }
+
+  /* ==================== home / vantage ==================== */
+  function viewHome(){
+    var g = findGoal(state.activeGoalId);
+    if(!g) return "";
+    var kids = children(g.id);
+    var items = goalItems(g.id);
+    var feeling = goalFeeling(g.id);
+    var forMeta = FOR_META[g.forWho] || FOR_META.me;
+
+    var branches;
+    if(kids.length){
+      branches = '<div class="goal-list">' + kids.map(function(k,i){
+        var ki = goalItems(k.id).length;
+        var kf = goalFeeling(k.id).words.length;
+        var sub = ki + (ki===1?" action":" actions") + (kf ? " · feeling set" : "");
+        return '<button class="goal-card" data-id="'+k.id+'" style="animation-delay:'+Math.min(i*45,300)+'ms">'
+          + '<span class="leaf">🌿</span>'
+          + '<span class="meta"><span class="nm">'+esc(k.title)+'</span><span class="dl">'+esc(sub)+'</span></span>'
+          + '<span class="chev">›</span></button>';
+      }).join("") + '</div>';
+    } else {
+      branches = '<div class="empty"><span class="ico">🌱</span>'
+        + '<p>No branches yet.</p>'
+        + '<p class="faint">Head to Plan to brain-dump ideas — you can turn any of them into their own goal.</p></div>';
+    }
+
+    return '<section class="screen">'
+      + crumbsHTML()
+      + '<div class="vantage-card"><div class="glow"></div>'
+        + '<div class="vantage-mark">'+markSVG()+'</div>'
+        + '<div class="vantage-eyebrow">'+(g.id===state.primaryGoalId?"Your vantage point":"Focused on")+'</div>'
+        + '<h1 class="vantage-title">'+esc(g.title)+'<button class="edit" id="editGoalBtn" aria-label="Edit this goal">✎</button></h1>'
+        + '<div class="vantage-meta"><span class="for-pill">'+forMeta.icon+' '+forMeta.label+'</span></div>'
+        + '<div class="since">Since '+prettyDate(g.createdAt)+'</div>'
+      + '</div>'
+      + '<div class="branch-head"><h2>Branches from here</h2><span class="cnt">'+items.length+' plan '+(items.length===1?"item":"items")+' · '+feeling.words.length+' '+(feeling.words.length===1?"feeling":"feelings")+'</span></div>'
+      + branches
+      + '<button class="ghostbtn" id="addBranchBtn" style="margin-top:6px">+ Add a goal under this one</button>'
+      + '</section>';
+  }
+
+  /* ==================== plan ==================== */
+  function viewPlan(){
+    var g = findGoal(state.activeGoalId);
+    if(!g) return "";
+    var items = goalItems(g.id);
+    var list;
+    if(items.length){
+      list = '<div class="item-list">' + items.map(function(it,i){
+        var linked = it.linkedGoalId ? findGoal(it.linkedGoalId) : null;
+        var badge = linked ? '<button class="item-badge" data-goto="'+linked.id+'">🌿 Now its own goal — open it</button>' : "";
+        return '<div class="item-card'+(it.done?' done':'')+'" style="animation-delay:'+Math.min(i*35,300)+'ms" data-id="'+it.id+'">'
+          + '<button class="item-check'+(it.done?' on':'')+'" data-id="'+it.id+'" aria-label="Mark done">'+(it.done?'✓':'')+'</button>'
+          + '<div class="item-body"><div class="item-text">'+esc(it.text)+'</div>'
+            + badge
+            + '<div class="item-tools">'
+              + (linked ? '' : '<button class="promote" data-id="'+it.id+'">↗ Make this a goal</button>')
+              + '<button class="del" data-id="'+it.id+'">🗑 Remove</button>'
+            + '</div>'
+          + '</div></div>';
+      }).join("") + '</div>';
+    } else {
+      list = '<div class="empty"><span class="ico">🌿</span><p>Your plan is empty.</p>'
+        + '<p class="faint">This is a brain dump — jot down anything that could support this goal. It doesn\'t need to be in order.</p></div>';
+    }
+    var placeholder = state.planPlaceholder || "Add something that supports this goal…";
+    state.planPlaceholder = null;
+    return '<section class="screen">'
+      + crumbsHTML()
+      + '<div class="sec-head"><h1>The plan</h1><div class="sub">Everything you\'re doing or could do for <b>'+esc(g.title)+'</b>.</div></div>'
+      + list
+      + '<form class="composer" id="planForm">'
+        + '<textarea id="planInput" rows="1" placeholder="'+esc(placeholder)+'"></textarea>'
+        + '<button type="submit" aria-label="Add">＋</button>'
+      + '</form>'
+      + '</section>';
+  }
+
+  /* ==================== feel ==================== */
+  function viewFeel(){
+    var g = findGoal(state.activeGoalId);
+    if(!g) return "";
+    var feeling = goalFeeling(g.id);
+    var words = feeling.words || [];
+
+    var wordTags = words.map(function(w){
+      return '<span class="word-tag">'+esc(w)+'<button data-w="'+esc(w)+'" aria-label="Remove">✕</button></span>';
+    }).join("");
+
+    var suggestChips = SUGGESTED_WORDS.map(function(w){
+      var on = words.indexOf(w) > -1;
+      return '<button type="button" class="chip suggest'+(on?' selected':'')+'" data-w="'+w+'">'+w+'</button>';
+    }).join("");
+
+    return '<section class="screen">'
+      + crumbsHTML()
+      + '<div class="sec-head"><h1>Feel it first</h1><div class="sub">The feeling comes before the plan — let it lead.</div></div>'
+      + '<div class="feel-prompt"><p>Once you\'ve reached <span class="goalname">'+esc(g.title)+'</span> — how do you feel?</p></div>'
+      + '<div class="feel-section"><h3>Name the feeling</h3>'
+        + '<div class="word-list">'+wordTags+'</div>'
+        + '<div class="chip-row" id="suggestChips" style="margin-bottom:12px">'+suggestChips+'</div>'
+        + '<form class="word-add" id="wordForm"><input id="wordInput" type="text" placeholder="Add your own word…" maxlength="24"><button type="submit">Add</button></form>'
+      + '</div>'
+      + '<div class="feel-section feel-note"><h3>Bring it into the body</h3>'
+        + '<textarea id="feelNote" placeholder="Where do you feel it in your body? What does an ordinary day look like once you feel this way?">'+esc(feeling.note||"")+'</textarea>'
+      + '</div>'
+      + '<div class="feel-section"><div class="pause-card">'
+        + '<p>Take a 60-second pause to settle into this feeling before you act from it.</p>'
+        + '<button class="ghostbtn" id="pauseBtn">🌬️ Begin an embodiment pause</button>'
+      + '</div></div>'
+      + '<div class="bridge"><button class="cta" id="bridgeBtn">Let this feeling guide an action →</button></div>'
+      + '</section>';
+  }
+
+  /* ==================== sheets: goal tree + add/edit ==================== */
+  function openTreeSheet(){ state.sheet="tree"; render(); }
+  function openGoalForm(mode, parentOrTargetId){
+    state.sheet = "goalform";
+    state.sheetMode = mode;
+    if(mode==="add"){ state.sheetParent = parentOrTargetId; state.sheetTarget = null; }
+    else { state.sheetTarget = parentOrTargetId; state.sheetParent = null; }
+    render();
+  }
+  function closeSheet(){ state.sheet=null; state.sheetMode=null; state.sheetParent=null; state.sheetTarget=null; }
+
+  function renderSheet(){
+    var back = document.getElementById("sheetback");
+    var body = document.getElementById("sheetbody");
+    if(!state.sheet){ back.classList.remove("open"); body.innerHTML=""; return; }
+    back.classList.add("open");
+    body.innerHTML = state.sheet==="tree" ? treeSheetHTML() : goalFormSheetHTML();
+  }
+
+  function treeSheetHTML(){
+    function row(g, depth){
+      var i = goalItems(g.id).length, f = goalFeeling(g.id).words.length;
+      var prim = g.id===state.primaryGoalId ? '<span class="prim">🌅</span>' : '';
+      return '<button class="tree-row'+(g.id===state.activeGoalId?' active':'')+'" data-id="'+g.id+'" style="padding-left:'+(12+depth*18)+'px">'
+        + prim + '<span class="tn">'+esc(g.title)+'</span><span class="td">'+i+'·'+f+'</span></button>';
+    }
+    function walk(list, depth, out){
+      list.forEach(function(g){ out.push(row(g,depth)); walk(children(g.id), depth+1, out); });
+    }
+    var rows = [];
+    var roots = rootGoals().slice().sort(function(a,b){ return (a.id===state.primaryGoalId?-1:0) - (b.id===state.primaryGoalId?-1:0); });
+    walk(roots, 0, rows);
+    return '<div class="sheet-head"><h3>Your goals</h3><button class="iconbtn" id="sheetCloseBtn" aria-label="Close">✕</button></div>'
+      + '<div class="tree-list">'+rows.join("")+'</div>'
+      + '<button class="ghostbtn" id="addTopGoalBtn">+ Add a separate top-level goal</button>';
+  }
+
+  function goalFormSheetHTML(){
+    var editing = state.sheetMode==="edit";
+    var g = editing ? findGoal(state.sheetTarget) : null;
+    var parent = editing ? (g && g.parentId ? findGoal(g.parentId) : null) : findGoal(state.sheetParent);
+    var defaultFor = g ? g.forWho : (parent ? parent.forWho : "me");
+    var chips = Object.keys(FOR_META).map(function(k){
+      var m = FOR_META[k];
+      return '<button type="button" class="chip'+(defaultFor===k?' selected':'')+'" data-for="'+k+'">'+m.icon+' '+m.label+'</button>';
+    }).join("");
+    var title = editing ? "Edit goal" : (parent ? "Add a goal under “"+esc(parent.title)+"”" : "Add a top-level goal");
+    var canDelete = editing && g && g.id!==state.primaryGoalId;
+    return '<div class="sheet-head"><h3>'+title+'</h3><button class="iconbtn" id="sheetCloseBtn" aria-label="Close">✕</button></div>'
+      + '<form class="form" id="goalForm">'
+        + '<div class="field"><label for="gfTitle">Goal</label>'
+          + '<input id="gfTitle" type="text" value="'+(g?esc(g.title):"")+'" placeholder="What\'s the goal?" required></div>'
+        + '<div class="field"><label>Who is this for?</label><div class="chip-row" id="gfForChips">'+chips+'</div></div>'
+        + '<div class="sheet-actions"><button type="submit" class="cta">💾 '+(editing?"Save changes":"Add goal")+'</button>'
+          + '<button type="button" class="ghostbtn" id="sheetCancelBtn">Cancel</button></div>'
+        + (canDelete ? '<button type="button" class="ghostbtn danger" id="goalDeleteBtn" style="margin-top:4px">🗑 Delete this goal</button>' : "")
+      + '</form>';
+  }
+
+  /* ==================== breathing overlay ==================== */
+  var breathePhaseTimer, breatheTickTimer, breatheAffirmTimer;
+  function startBreathing(){
+    var g = findGoal(state.activeGoalId);
+    var words = g ? goalFeeling(g.id).words : [];
+    var seconds = 60, phase = "in", wi = 0;
+    document.getElementById("breatheback").classList.add("open");
+    var orb = document.getElementById("breatheOrb"), lbl = document.getElementById("breathePhase"),
+        cnt = document.getElementById("breatheCount"), aff = document.getElementById("breatheAffirm");
+    function paintAffirm(){
+      aff.textContent = words.length ? ("You already feel " + words[wi % words.length].toLowerCase() + ".") : "Just breathe.";
+      wi++;
+    }
+    function paintPhase(){
+      orb.classList.toggle("out", phase==="out");
+      lbl.textContent = phase==="in" ? "Breathe in" : "Breathe out";
+    }
+    paintPhase(); paintAffirm();
+    cnt.textContent = seconds;
+    playTone(392, 0.9);
+    clearInterval(breathePhaseTimer); clearInterval(breatheTickTimer); clearInterval(breatheAffirmTimer);
+    breathePhaseTimer = setInterval(function(){ phase = phase==="in" ? "out" : "in"; paintPhase(); }, 4000);
+    breatheAffirmTimer = setInterval(paintAffirm, 8000);
+    breatheTickTimer = setInterval(function(){
+      seconds--; cnt.textContent = Math.max(seconds,0);
+      if(seconds<=0) stopBreathing(true);
+    }, 1000);
+    state.breathing = true;
+  }
+  function stopBreathing(completed){
+    clearInterval(breathePhaseTimer); clearInterval(breatheTickTimer); clearInterval(breatheAffirmTimer);
+    document.getElementById("breatheback").classList.remove("open");
+    state.breathing = false;
+    if(completed){ playTone(523.25, 1.1); toast("🌅 Welcome back."); }
+  }
+
+  var audioCtx=null;
+  function playTone(freq, dur){
+    try{
+      audioCtx = audioCtx || new (window.AudioContext||window.webkitAudioContext)();
+      if(audioCtx.state==="suspended") audioCtx.resume();
+      var t0 = audioCtx.currentTime + 0.02;
+      var osc = audioCtx.createOscillator(), g = audioCtx.createGain();
+      osc.type = "sine"; osc.frequency.setValueAtTime(freq, t0);
+      g.gain.setValueAtTime(0.0001, t0);
+      g.gain.exponentialRampToValueAtTime(0.16, t0+dur*0.3);
+      g.gain.exponentialRampToValueAtTime(0.0001, t0+dur);
+      osc.connect(g); g.connect(audioCtx.destination);
+      osc.start(t0); osc.stop(t0+dur+0.05);
+    }catch(e){ /* audio unavailable — silently continue */ }
+  }
+
+  /* ==================== mutations ==================== */
+  function addItem(text){
+    var it = { id:uid("i"), goalId:state.activeGoalId, text:text, done:false, linkedGoalId:null, createdAt:Date.now() };
+    state.items.unshift(it);
+    persist();
+  }
+  function toggleItem(id){
+    var it = state.items.find(function(x){ return x.id===id; });
+    if(!it) return;
+    it.done = !it.done;
+    persist(); render();
+  }
+  function removeItem(id){
+    state.items = state.items.filter(function(x){ return x.id!==id; });
+    persist(); render();
+    toast("Removed");
+  }
+  function promoteItem(id){
+    var it = state.items.find(function(x){ return x.id===id; });
+    if(!it || it.linkedGoalId) return;
+    if(!window.confirm('Turn "'+it.text+'" into its own goal?')) return;
+    var parent = findGoal(it.goalId);
+    var ng = { id:uid("g"), title:it.text, parentId:it.goalId, forWho: parent?parent.forWho:"me", createdAt:Date.now() };
+    state.goals.push(ng);
+    it.linkedGoalId = ng.id;
+    persist(); render();
+    toast("New goal created 🌿");
+  }
+  function addGoal(parentId, title, forWho){
+    var g = { id:uid("g"), title:title, parentId:parentId||null, forWho:forWho||"me", createdAt:Date.now() };
+    state.goals.push(g);
+    persist();
+    return g;
+  }
+  function editGoal(id, title, forWho){
+    var g = findGoal(id);
+    if(!g) return;
+    g.title = title; g.forWho = forWho;
+    persist();
+  }
+  function deleteGoal(id){
+    if(id===state.primaryGoalId) return;
+    var toDelete = descendantIds(id).concat([id]);
+    var goal = findGoal(id);
+    var fallback = goal && goal.parentId ? goal.parentId : state.primaryGoalId;
+    state.goals = state.goals.filter(function(g){ return toDelete.indexOf(g.id)===-1; });
+    state.items = state.items.filter(function(it){ return toDelete.indexOf(it.goalId)===-1; });
+    state.items.forEach(function(it){ if(it.linkedGoalId && toDelete.indexOf(it.linkedGoalId)>-1) it.linkedGoalId=null; });
+    toDelete.forEach(function(gid){ delete state.feelings[gid]; });
+    if(toDelete.indexOf(state.activeGoalId)>-1) state.activeGoalId = fallback;
+    persist();
+  }
+  function addFeelingWord(id, word){
+    word = word.trim();
+    if(!word) return;
+    var f = state.feelings[id] || { words:[], note:"" };
+    var exists = f.words.some(function(w){ return w.toLowerCase()===word.toLowerCase(); });
+    if(!exists) f.words.push(word);
+    state.feelings[id] = f;
+    persist();
+  }
+  function removeFeelingWord(id, word){
+    var f = state.feelings[id]; if(!f) return;
+    f.words = f.words.filter(function(w){ return w!==word; });
+    persist();
+  }
+  var noteSaveTimer;
+  function setFeelingNote(id, note){
+    var f = state.feelings[id] || { words:[], note:"" };
+    f.note = note;
+    state.feelings[id] = f;
+    clearTimeout(noteSaveTimer);
+    noteSaveTimer = setTimeout(persist, 400);
+  }
+
+  /* ==================== wiring ==================== */
+  function wire(){
+    wireOnboarding();
+
+    // crumbs
+    Array.prototype.forEach.call(document.querySelectorAll(".crumbs button"), function(b){
+      b.onclick = function(){ setActiveGoal(b.getAttribute("data-id")); render(); };
+    });
+
+    // home
+    var editBtn = document.getElementById("editGoalBtn");
+    if(editBtn) editBtn.onclick = function(){ openGoalForm("edit", state.activeGoalId); };
+    var addBranch = document.getElementById("addBranchBtn");
+    if(addBranch) addBranch.onclick = function(){ openGoalForm("add", state.activeGoalId); };
+    Array.prototype.forEach.call(document.querySelectorAll(".goal-card"), function(c){
+      c.onclick = function(){ setActiveGoal(c.getAttribute("data-id")); render(); };
+    });
+
+    // plan
+    var planForm = document.getElementById("planForm");
+    if(planForm){
+      var planInput = document.getElementById("planInput");
+      planForm.addEventListener("submit", function(e){
+        e.preventDefault();
+        var v = planInput.value.trim();
+        if(!v) return;
+        addItem(v);
+        render();
+        var again = document.getElementById("planInput");
+        if(again) again.focus();
+      });
+      planInput.addEventListener("keydown", function(e){
+        if(e.key==="Enter" && !e.shiftKey){ e.preventDefault(); planForm.requestSubmit ? planForm.requestSubmit() : planForm.dispatchEvent(new Event("submit",{cancelable:true})); }
+      });
+    }
+    Array.prototype.forEach.call(document.querySelectorAll(".item-check"), function(b){
+      b.onclick = function(){ toggleItem(b.getAttribute("data-id")); };
+    });
+    Array.prototype.forEach.call(document.querySelectorAll(".item-tools .promote"), function(b){
+      b.onclick = function(){ promoteItem(b.getAttribute("data-id")); };
+    });
+    Array.prototype.forEach.call(document.querySelectorAll(".item-tools .del"), function(b){
+      b.onclick = function(){ removeItem(b.getAttribute("data-id")); };
+    });
+    Array.prototype.forEach.call(document.querySelectorAll(".item-badge"), function(b){
+      b.onclick = function(){ setActiveGoal(b.getAttribute("data-goto")); go("home"); };
+    });
+
+    // feel
+    var wordForm = document.getElementById("wordForm");
+    if(wordForm){
+      var wordInput = document.getElementById("wordInput");
+      wordForm.addEventListener("submit", function(e){
+        e.preventDefault();
+        var v = wordInput.value.trim();
+        if(!v) return;
+        addFeelingWord(state.activeGoalId, v);
+        render();
+      });
+    }
+    Array.prototype.forEach.call(document.querySelectorAll(".word-tag button"), function(b){
+      b.onclick = function(){ removeFeelingWord(state.activeGoalId, b.getAttribute("data-w")); render(); };
+    });
+    Array.prototype.forEach.call(document.querySelectorAll("#suggestChips .chip"), function(c){
+      c.onclick = function(){
+        var w = c.getAttribute("data-w");
+        var f = goalFeeling(state.activeGoalId);
+        if(f.words.indexOf(w)>-1) removeFeelingWord(state.activeGoalId, w);
+        else addFeelingWord(state.activeGoalId, w);
+        render();
+      };
+    });
+    var feelNote = document.getElementById("feelNote");
+    if(feelNote) feelNote.addEventListener("input", function(){ setFeelingNote(state.activeGoalId, feelNote.value); });
+    var pauseBtn = document.getElementById("pauseBtn");
+    if(pauseBtn) pauseBtn.onclick = startBreathing;
+    var bridgeBtn = document.getElementById("bridgeBtn");
+    if(bridgeBtn) bridgeBtn.onclick = function(){
+      var f = goalFeeling(state.activeGoalId);
+      state.planPlaceholder = f.words.length
+        ? ("What would you do if you already felt " + f.words[0].toLowerCase() + "?")
+        : "What's one small thing that would move you toward this?";
+      go("plan");
+    };
+
+    // sheets
+    var treeBtnClose = document.getElementById("sheetCloseBtn");
+    if(treeBtnClose) treeBtnClose.onclick = function(){ closeSheet(); render(); };
+    Array.prototype.forEach.call(document.querySelectorAll(".tree-row"), function(r){
+      r.onclick = function(){ setActiveGoal(r.getAttribute("data-id")); closeSheet(); go("home"); };
+    });
+    var addTop = document.getElementById("addTopGoalBtn");
+    if(addTop) addTop.onclick = function(){ openGoalForm("add", null); };
+
+    var goalForm = document.getElementById("goalForm");
+    if(goalForm){
+      var gfFor = state.sheetMode==="edit" ? (findGoal(state.sheetTarget)||{}).forWho : (findGoal(state.sheetParent)||{}).forWho;
+      gfFor = gfFor || "me";
+      Array.prototype.forEach.call(goalForm.querySelectorAll(".chip"), function(c){
+        c.onclick = function(){
+          gfFor = c.getAttribute("data-for");
+          Array.prototype.forEach.call(goalForm.querySelectorAll(".chip"), function(x){ x.classList.toggle("selected", x===c); });
+        };
+      });
+      goalForm.addEventListener("submit", function(e){
+        e.preventDefault();
+        var title = document.getElementById("gfTitle").value.trim();
+        if(!title) return;
+        if(state.sheetMode==="edit"){
+          editGoal(state.sheetTarget, title, gfFor);
+          toast("Updated ✓");
+        } else {
+          var ng = addGoal(state.sheetParent, title, gfFor);
+          setActiveGoal(ng.id);
+          toast("Goal added 🌿");
+        }
+        closeSheet();
+        go("home");
+      });
+      var cancelBtn = document.getElementById("sheetCancelBtn");
+      if(cancelBtn) cancelBtn.onclick = function(){ closeSheet(); render(); };
+      var delBtn = document.getElementById("goalDeleteBtn");
+      if(delBtn) delBtn.onclick = function(){
+        var g = findGoal(state.sheetTarget);
+        if(!g) return;
+        if(!window.confirm('Delete "'+g.title+'" and everything under it? This can\'t be undone.')) return;
+        deleteGoal(g.id);
+        closeSheet();
+        go("home");
+        toast("Goal removed");
+      };
+    }
+
+    var sheetback = document.getElementById("sheetback");
+    sheetback.onclick = function(e){ if(e.target===sheetback){ closeSheet(); render(); } };
+    document.getElementById("breatheCloseBtn").onclick = function(){ stopBreathing(false); };
+  }
+
+  document.addEventListener("keydown", function(e){
+    if(e.key==="Escape"){
+      if(state.breathing) stopBreathing(false);
+      else if(state.sheet){ closeSheet(); render(); }
+    }
+  });
+
+  /* ==================== boot ==================== */
+  render();
+})();
+</script>
+</body>
+</html>
