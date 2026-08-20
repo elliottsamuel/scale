@@ -1,0 +1,18 @@
+# Cloudflare Worker config for the Currents Notion proxy.
+#
+# Deploy with the CLI:   cd currents/worker && npx wrangler deploy
+# Or paste worker.js into a Worker in the Cloudflare dashboard.
+#
+# Required: a Notion integration token, stored as a secret (never commit it):
+#   npx wrangler secret put NOTION_TOKEN
+#
+# The integration also needs to be connected to your Currents and Drops
+# databases in Notion (••• menu on each database -> Connections -> add it).
+
+name = "currents-api"
+main = "worker.js"
+compatibility_date = "2026-01-01"
+
+# Optional: lock CORS to your site instead of allowing any origin.
+# [vars]
+# ALLOWED_ORIGIN = "https://elliottsamuel.github.io"
