@@ -176,6 +176,35 @@
   .onboard-progress .dot.done{background:var(--kelp)}
   .onboard-error{color:var(--danger);font-size:13px;margin:-4px 0 14px}
 
+  /* ---------- intro carousel ---------- */
+  .intro-track{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;
+    scrollbar-width:none;-ms-overflow-style:none;margin:0 -24px}
+  .intro-track::-webkit-scrollbar{display:none}
+  .intro-frame{flex:0 0 100%;scroll-snap-align:start;padding:8px 24px 0;display:flex;flex-direction:column}
+  .intro-frame h1{font-family:var(--font-display);font-weight:600;font-size:27px;margin:0 0 12px}
+  .intro-frame p{color:var(--tide);line-height:1.65;font-size:14.5px;margin:0}
+  .intro-visual{width:88px;height:88px;border-radius:50%;background:var(--deep);border:1px solid var(--line);
+    color:var(--kelp);display:grid;place-items:center;margin-bottom:26px;box-shadow:0 0 44px -10px var(--kelp)}
+  .intro-visual svg{width:40px;height:40px}
+  .intro-preview{background:rgba(10,22,32,.4);border:1px solid var(--line);border-radius:16px;
+    padding:18px 20px;margin-bottom:26px}
+  .intro-preview .mini-cell{border-radius:12px;padding:12px 15px;margin-bottom:8px}
+  .intro-preview .mini-cell:last-child{margin-bottom:0}
+  .intro-preview .mini-cell .lbl{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;margin-bottom:4px}
+  .intro-preview .mini-cell.kumara{background:linear-gradient(120deg, rgba(127,216,196,.14), transparent)}
+  .intro-preview .mini-cell.kumara .lbl{color:var(--kelp)}
+  .intro-preview .mini-cell.aramuk{background:linear-gradient(120deg, rgba(226,153,106,.12), transparent)}
+  .intro-preview .mini-cell.aramuk .lbl{color:var(--ember)}
+  .intro-preview .mini-cell .txt{font-family:var(--font-display);font-style:italic;font-size:14.5px;color:var(--foam)}
+  .intro-preview .mini-row{display:flex;align-items:center;gap:13px;padding:10px 2px;border-top:1px solid var(--line)}
+  .intro-preview .mini-row:first-child{border-top:none}
+  .intro-preview .mini-row .n{font-family:var(--font-mono);font-weight:600;font-size:13px;color:var(--kelp);width:16px;flex:0 0 auto}
+  .intro-preview .mini-row .t{font-size:14px;font-weight:600;color:var(--foam)}
+  .intro-dots{display:flex;justify-content:center;gap:8px;margin:6px 0 4px}
+  .intro-dots .dot{width:7px;height:7px;border-radius:4px;background:var(--line-strong);border:0;padding:0;
+    cursor:pointer;-webkit-appearance:none;appearance:none;transition:width .2s ease,background .2s ease}
+  .intro-dots .dot.active{background:var(--kelp);width:22px}
+
   /* ---------- bottom nav ---------- */
   .bottomnav{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom));transform:translateX(-50%);
     width:calc(100% - 44px);max-width:calc(var(--maxw) - 44px);
@@ -641,90 +670,169 @@
     rerenderCurrentTab();
   }
 
-  // ---------- onboarding (first run) ----------
+  // ---------- intro carousel (first run only) ----------
   // NOTE: this ships with an empty STATE and no seed/example/personal data —
   // keep it that way. The only way data ever gets created is by someone
-  // actually filling out this wizard or the regular +New forms themselves.
-  // Circle and Aramuk are deliberately not collected here — someone can add
-  // those later by editing the goal from inside the app.
-  var onboard = { step:1, draft:{ name:"", myA:"", myB:"", kumara:"" } };
+  // actually going through the New Current flow or the Drop form themselves.
+  var intro = { frame:0 };
+  var INTRO_FRAMES = [
+    {
+      visual: '<div class="intro-visual">' + ICON_WAVE + "</div>",
+      title: "Welcome to Currents",
+      body: "A new way of optimizing your productivity — one that honors your emotional intelligence and uses best practices from product development to help you actually achieve your goals."
+    },
+    {
+      visual: '<div class="intro-preview">' +
+        '<div class="mini-cell kumara"><div class="lbl">Kumara</div><div class="txt">Proud, at ease, unstoppable.</div></div>' +
+        '<div class="mini-cell aramuk"><div class="lbl">Aramuk</div><div class="txt">Afraid I\'ll quit again.</div></div>' +
+        "</div>",
+      title: "Every goal has two feelings",
+      body: "Name the feeling you want on the other side, and the one that's been in the way. That's what actually pulls you forward."
+    },
+    {
+      visual: '<div class="intro-preview">' + STEP_LABELS.map(function(label, i){
+        return '<div class="mini-row"><span class="n">' + (i + 1) + '</span><span class="t">' + esc(label) + "</span></div>";
+      }).join("") + "</div>",
+      title: "Five steps, one current",
+      body: "Every goal moves through the same five steps from the Mystic Method — and every action you take files under one of them."
+    }
+  ];
 
-  function onboardHeadHTML(showBack){
-    return '<div class="onboard-head">' +
-      (showBack ? '<button class="onboard-skip" data-action="onboard-back">‹ Back</button>' : "<span></span>") +
-      '<button class="onboard-skip" data-action="onboard-skip">Skip</button></div>';
+  function introFrameHTML(f){
+    return '<div class="intro-frame">' + f.visual + "<h1>" + esc(f.title) + "</h1><p>" + esc(f.body) + "</p></div>";
   }
-
-  function onboardStepGoalHTML(){
-    var d = onboard.draft;
-    return "<h1>Welcome to Currents</h1>" +
-      "<p>A new way of optimizing your productivity — one that honors your emotional intelligence and uses best practices from product development to help you actually achieve your goals.</p>" +
-      "<p>To see how it works, start by entering the biggest goal in your life right now.</p>" +
-      '<div class="field"><input id="ob-name" value="' + escAttr(d.name) + '" placeholder="Your most important goal right now"></div>' +
-      '<div id="ob-error" class="onboard-error"></div>' +
-      '<div class="formactions"><button class="btn primary" data-action="onboard-next">Continue</button></div>';
-  }
-
-  function onboardStepAHTML(){
-    var name = onboard.draft.name.trim() || "this goal";
-    return "<h1>Where are you now?</h1>" +
-      '<p>In regards to <b>' + esc(name) + "</b> — where are you right now? This is your <b>My A</b>.</p>" +
-      '<div class="field"><textarea id="ob-mya" placeholder="Describe where things stand today">' + esc(onboard.draft.myA) + "</textarea></div>" +
-      '<div class="formactions"><button class="btn primary" data-action="onboard-next">Continue</button></div>';
-  }
-
-  function onboardStepBAndKumaraHTML(){
-    var name = onboard.draft.name.trim() || "this goal";
-    return "<h1>Picture it finished</h1>" +
-      '<p>What would it look like to have achieved <b>' + esc(name) + "</b>? How will you know? This is your <b>My B</b>.</p>" +
-      '<div class="field"><textarea id="ob-myb" placeholder="Describe what it looks like when this is real">' + esc(onboard.draft.myB) + "</textarea></div>" +
-      "<p>How will you feel when this is complete? This is your <b>Kumara</b> — the feeling we'll anchor to and use to pull you toward it.</p>" +
-      '<div class="field"><textarea id="ob-kumara" placeholder="e.g. Proud, at ease, unstoppable">' + esc(onboard.draft.kumara) + "</textarea></div>" +
-      '<div class="formactions"><button class="btn primary" data-action="onboard-finish">Create My First Current</button></div>';
-  }
-
-  function renderOnboarding(){
+  function renderIntro(){
     bottomnav.style.display = "none";
-    var progress = '<div class="onboard-progress">' + [1,2,3].map(function(n){
-      return '<div class="dot' + (n <= onboard.step ? " done" : "") + '"></div>';
-    }).join("") + "</div>";
-    var body = onboard.step === 1 ? onboardStepGoalHTML()
-      : onboard.step === 2 ? onboardStepAHTML()
-      : onboardStepBAndKumaraHTML();
-    main.innerHTML = '<div class="screen welcome">' + onboardHeadHTML(onboard.step > 1) + progress + body + "</div>";
+    intro.frame = 0;
+    var dots = INTRO_FRAMES.map(function(f, i){
+      return '<button type="button" class="dot' + (i === 0 ? " active" : "") + '" data-action="intro-goto" data-idx="' + i + '"></button>';
+    }).join("");
+    main.innerHTML = '<div class="screen welcome">' +
+      '<div class="onboard-head"><span></span><button class="onboard-skip" data-action="intro-skip">Skip</button></div>' +
+      '<div class="intro-track" id="introTrack">' + INTRO_FRAMES.map(introFrameHTML).join("") + "</div>" +
+      '<div class="intro-dots" id="introDots">' + dots + "</div>" +
+      '<div class="formactions"><button class="btn primary" id="introCta" data-action="intro-next">Next</button></div>' +
+      "</div>";
+    var track = document.getElementById("introTrack");
+    var ticking = false;
+    track.addEventListener("scroll", function(){
+      if(ticking) return;
+      ticking = true;
+      requestAnimationFrame(function(){
+        setIntroFrame(Math.round(track.scrollLeft / track.clientWidth));
+        ticking = false;
+      });
+    });
   }
-
-  function onboardReadCurrentStep(){
-    var d = onboard.draft;
-    if(onboard.step === 1){ d.name = (document.getElementById("ob-name") || {}).value || ""; }
-    else if(onboard.step === 2){ d.myA = (document.getElementById("ob-mya") || {}).value || ""; }
-    else if(onboard.step === 3){
-      d.myB = (document.getElementById("ob-myb") || {}).value || "";
-      d.kumara = (document.getElementById("ob-kumara") || {}).value || "";
+  function setIntroFrame(idx){
+    intro.frame = idx;
+    Array.prototype.forEach.call(document.querySelectorAll("#introDots .dot"), function(d, i){
+      d.classList.toggle("active", i === idx);
+    });
+    var cta = document.getElementById("introCta");
+    if(!cta) return;
+    if(idx >= INTRO_FRAMES.length - 1){
+      cta.textContent = "Add My First Current";
+      cta.setAttribute("data-action", "intro-finish");
+    } else {
+      cta.textContent = "Next";
+      cta.setAttribute("data-action", "intro-next");
     }
   }
-  function onboardNext(){
-    onboardReadCurrentStep();
-    if(onboard.step === 1 && !onboard.draft.name.trim()){
-      var err = document.getElementById("ob-error");
+  function introGoTo(idx){
+    idx = Math.max(0, Math.min(INTRO_FRAMES.length - 1, idx));
+    var track = document.getElementById("introTrack");
+    track.scrollTo({ left: idx * track.clientWidth, behavior: "smooth" });
+  }
+  function introSkip(){ bottomnav.style.display = "flex"; switchTab("currents"); }
+
+  // ---------- New Current flow ----------
+  // The same guided flow whether it's someone's very first Current (reached
+  // from the intro carousel) or a later one opened from a "+ New" button
+  // anywhere in the app. Circle and Aramuk are deliberately not collected
+  // here — they can be added afterward by editing the Current.
+  var flow = null;
+
+  function openCurrentFlow(defaultCircle){
+    flow = { step:1, defaultCircle: defaultCircle || null, draft:{ name:"", myA:"", myB:"", kumara:"" } };
+    bottomnav.style.display = "none";
+    renderCurrentFlow();
+  }
+  function closeCurrentFlow(){
+    flow = null;
+    bottomnav.style.display = "flex";
+    switchTab(state.tab || "currents");
+  }
+  function flowHeadHTML(){
+    return '<div class="onboard-head">' +
+      (flow.step > 1 ? '<button class="onboard-skip" data-action="flow-back">‹ Back</button>' : "<span></span>") +
+      '<button class="onboard-skip" data-action="flow-cancel">Cancel</button></div>';
+  }
+  function flowStepGoalHTML(){
+    var d = flow.draft;
+    return "<h1>What are you moving toward?</h1>" +
+      "<p>Name a project or vision — big or small — that matters to you right now.</p>" +
+      '<div class="field"><input id="cf-name" value="' + escAttr(d.name) + '" placeholder="Your most important goal right now"></div>' +
+      '<div id="cf-error" class="onboard-error"></div>' +
+      '<div class="formactions"><button class="btn primary" data-action="flow-next">Continue</button></div>';
+  }
+  function flowStepAHTML(){
+    var name = flow.draft.name.trim() || "this goal";
+    return "<h1>Where are you now?</h1>" +
+      '<p>In regards to <b>' + esc(name) + "</b> — where are you right now? This is your <b>My A</b>.</p>" +
+      '<div class="field"><textarea id="cf-mya" placeholder="Describe where things stand today">' + esc(flow.draft.myA) + "</textarea></div>" +
+      '<div class="formactions"><button class="btn primary" data-action="flow-next">Continue</button></div>';
+  }
+  function flowStepBAndKumaraHTML(){
+    var name = flow.draft.name.trim() || "this goal";
+    return "<h1>Picture it finished</h1>" +
+      '<p>What would it look like to have achieved <b>' + esc(name) + "</b>? How will you know? This is your <b>My B</b>.</p>" +
+      '<div class="field"><textarea id="cf-myb" placeholder="Describe what it looks like when this is real">' + esc(flow.draft.myB) + "</textarea></div>" +
+      "<p>How will you feel when this is complete? This is your <b>Kumara</b> — the feeling we'll anchor to and use to pull you toward it.</p>" +
+      '<div class="field"><textarea id="cf-kumara" placeholder="e.g. Proud, at ease, unstoppable">' + esc(flow.draft.kumara) + "</textarea></div>" +
+      '<div class="formactions"><button class="btn primary" data-action="flow-finish">Create Current</button></div>';
+  }
+  function renderCurrentFlow(){
+    var progress = '<div class="onboard-progress">' + [1, 2, 3].map(function(n){
+      return '<div class="dot' + (n <= flow.step ? " done" : "") + '"></div>';
+    }).join("") + "</div>";
+    var body = flow.step === 1 ? flowStepGoalHTML() : flow.step === 2 ? flowStepAHTML() : flowStepBAndKumaraHTML();
+    main.innerHTML = '<div class="screen welcome">' + flowHeadHTML() + progress + body + "</div>";
+  }
+  function flowReadCurrentStep(){
+    var d = flow.draft;
+    if(flow.step === 1){ d.name = (document.getElementById("cf-name") || {}).value || ""; }
+    else if(flow.step === 2){ d.myA = (document.getElementById("cf-mya") || {}).value || ""; }
+    else if(flow.step === 3){
+      d.myB = (document.getElementById("cf-myb") || {}).value || "";
+      d.kumara = (document.getElementById("cf-kumara") || {}).value || "";
+    }
+  }
+  function flowNext(){
+    flowReadCurrentStep();
+    if(flow.step === 1 && !flow.draft.name.trim()){
+      var err = document.getElementById("cf-error");
       if(err) err.textContent = "Enter a goal to continue.";
       return;
     }
-    onboard.step++;
-    renderOnboarding();
+    flow.step++;
+    renderCurrentFlow();
   }
-  function onboardBack(){ onboard.step = Math.max(1, onboard.step - 1); renderOnboarding(); }
-  function onboardSkip(){ bottomnav.style.display = "flex"; switchTab("currents"); }
-  function onboardFinish(){
-    onboardReadCurrentStep();
-    var d = onboard.draft;
-    // Priority 1 so it shows up immediately on the Currents tab — it's "the
-    // biggest goal in your life right now" by the onboarding copy's own framing.
+  function flowBack(){ flow.step = Math.max(1, flow.step - 1); renderCurrentFlow(); }
+  function flowFinish(){
+    flowReadCurrentStep();
+    var d = flow.draft;
+    // Priority 1 only for someone's very first Current, so it shows up
+    // immediately on the Currents tab instead of an empty state right after
+    // finishing the flow. Later Currents default to no priority, same as
+    // creating one any other way.
+    var priority = STATE.currents.length === 0 ? 1 : null;
     STATE.currents.push({
-      id:newId(), name:d.name.trim(), description:"", circle:null,
-      priority:1, kumara:d.kumara, aramuk:"", myA:d.myA, myB:d.myB
+      id:newId(), name:d.name.trim(), description:"", circle:flow.defaultCircle,
+      priority:priority, kumara:d.kumara, aramuk:"", myA:d.myA, myB:d.myB
     });
     saveState();
+    flow = null;
     bottomnav.style.display = "flex";
     switchTab("currents");
   }
@@ -735,7 +843,7 @@
     if(!action) return false;
     if(action === "close"){ closeSheets(); return true; }
     if(action === "back"){ popSheet(); return true; }
-    if(action === "new-current"){ openCurrentForm(null, target.getAttribute("data-circle")); return true; }
+    if(action === "new-current"){ openCurrentFlow(target.getAttribute("data-circle")); return true; }
     if(action === "edit-current"){ openCurrentForm(target.getAttribute("data-id")); return true; }
     if(action === "save-current"){ saveCurrentForm(); return true; }
     if(action === "delete-current"){ deleteCurrentConfirm(target.getAttribute("data-id")); return true; }
@@ -744,10 +852,14 @@
     if(action === "save-drop"){ saveDropForm(); return true; }
     if(action === "delete-drop"){ deleteDrop(target.getAttribute("data-id")); return true; }
     if(action === "toggle-drop"){ toggleDrop(target.getAttribute("data-id")); return true; }
-    if(action === "onboard-next"){ onboardNext(); return true; }
-    if(action === "onboard-back"){ onboardBack(); return true; }
-    if(action === "onboard-skip"){ onboardSkip(); return true; }
-    if(action === "onboard-finish"){ onboardFinish(); return true; }
+    if(action === "intro-next"){ introGoTo(intro.frame + 1); return true; }
+    if(action === "intro-goto"){ introGoTo(parseInt(target.getAttribute("data-idx"), 10)); return true; }
+    if(action === "intro-skip"){ introSkip(); return true; }
+    if(action === "intro-finish"){ openCurrentFlow(); return true; }
+    if(action === "flow-next"){ flowNext(); return true; }
+    if(action === "flow-back"){ flowBack(); return true; }
+    if(action === "flow-cancel"){ closeCurrentFlow(); return true; }
+    if(action === "flow-finish"){ flowFinish(); return true; }
     return false;
   }
 
@@ -789,7 +901,7 @@
     if(STATE.currents.length || STATE.drops.length){
       switchTab("currents");
     } else {
-      renderOnboarding();
+      renderIntro();
     }
   }
 
