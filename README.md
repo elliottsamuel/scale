@@ -81,3 +81,6 @@ Other self-contained single-file apps, each served from its own folder:
 - [`perch/`](perch/) — **Perch**, a wellness app that helps you arrive at a
   healthy vantage point on a health or healing goal — name it, feel it, and
   build the plan. Served at `/perch/`.
+- [`character-sheet/`](character-sheet/) — **Character Sheet**, a fillable
+  D&D 5e character sheet with auto-calculated modifiers, saving throws,
+  skills, and spellcasting. Served at `/character-sheet/`.

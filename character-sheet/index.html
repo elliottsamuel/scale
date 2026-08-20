@@ -1,0 +1,702 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="A fillable D&D 5e character sheet — ability scores, skills, combat stats, equipment, and spells, auto-calculated and saved right in your browser.">
+<meta name="theme-color" content="#F3E7CC">
+<title>Character Sheet</title>
+</head>
+<body>
+<style>
+  :root{
+    --parchment:#F3E7CC;
+    --parchment-2:#EADBB2;
+    --card:#FBF3DE;
+    --ink:#2B1D12;
+    --ink-soft:#5B4630;
+    --ink-faint:#8C7857;
+    --line:rgba(43,29,18,.20);
+    --line-strong:rgba(43,29,18,.36);
+    --accent:#7A1F1F;
+    --accent-ink:#FFF7E8;
+    --accent-2:#1F4D3A;
+    --gold:#A6791F;
+    --shadow:0 10px 26px rgba(43,29,18,.16);
+    --radius:14px;
+    --radius-sm:9px;
+    --font-display:Georgia,"Iowan Old Style","Palatino Linotype",Palatino,"Book Antiqua",serif;
+    --font-body:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  }
+  @media (prefers-color-scheme: dark){
+    :root{
+      --parchment:#1B140D;
+      --parchment-2:#241B12;
+      --card:#221A11;
+      --ink:#EFE2C8;
+      --ink-soft:#C8B594;
+      --ink-faint:#8F7C5D;
+      --line:rgba(239,226,200,.16);
+      --line-strong:rgba(239,226,200,.28);
+      --accent:#D97757;
+      --accent-ink:#241407;
+      --accent-2:#7FBF9E;
+      --gold:#D9B25C;
+      --shadow:0 14px 34px rgba(0,0,0,.5);
+    }
+  }
+  *{box-sizing:border-box}
+  html,body{background:var(--parchment)}
+  body{margin:0;color:var(--ink);font-family:var(--font-body);line-height:1.45;-webkit-font-smoothing:antialiased}
+
+  .bg{
+    min-height:100vh;
+    background:
+      radial-gradient(900px 500px at 8% -10%, rgba(122,31,31,.10), transparent 55%),
+      radial-gradient(800px 480px at 96% 0%, rgba(31,77,58,.10), transparent 55%),
+      var(--parchment);
+    padding:22px 16px 80px;
+  }
+  .shell{max-width:1180px;margin:0 auto}
+
+  header.top{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:18px}
+  .brand{font-family:var(--font-display);font-weight:700;font-size:22px;letter-spacing:.02em;display:flex;align-items:center;gap:9px}
+  .brand .glyph{width:24px;height:24px;flex:none}
+  .top-spacer{flex:1}
+  .toolbar{display:flex;gap:8px;flex-wrap:wrap}
+  .btn{font-family:inherit;font-size:13.5px;font-weight:600;border-radius:10px;padding:9px 14px;cursor:pointer;
+    border:1px solid var(--line-strong);background:var(--card);color:var(--ink-soft);transition:filter .15s,transform .05s,border-color .15s}
+  .btn:hover{border-color:var(--accent);color:var(--ink)}
+  .btn:active{transform:translateY(1px)}
+  .btn--primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+  .btn--primary:hover{filter:brightness(1.08)}
+  .btn--danger{color:var(--accent)}
+  .btn--danger:hover{border-color:var(--accent)}
+
+  .tabbar{display:flex;gap:6px;margin-bottom:16px;border-bottom:1px solid var(--line);flex-wrap:wrap}
+  .tabbtn{font-family:var(--font-display);font-size:15px;font-weight:600;background:none;border:none;
+    color:var(--ink-faint);padding:10px 16px;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px}
+  .tabbtn:hover{color:var(--ink)}
+  .tabbtn.active{color:var(--accent);border-bottom-color:var(--accent)}
+
+  .tab{display:none}
+  .tab.active{display:block}
+
+  .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;box-shadow:var(--shadow)}
+  .card + .card{margin-top:14px}
+  .card h3{font-family:var(--font-display);font-size:14px;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin:0 0 12px}
+
+  label.lbl{display:block;font-family:var(--font-display);font-size:10.5px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:4px}
+  input[type=text],input[type=number],select,textarea{
+    width:100%;font-family:inherit;font-size:15px;color:var(--ink);background:var(--parchment-2);
+    border:1px solid var(--line);border-radius:var(--radius-sm);padding:9px 10px;resize:vertical}
+  textarea{min-height:80px;line-height:1.5}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(122,31,31,.14)}
+  input[type=checkbox]{width:17px;height:17px;accent-color:var(--accent);cursor:pointer}
+
+  .field{margin-bottom:12px}
+  .grid{display:grid;gap:12px}
+  .g2{grid-template-columns:repeat(2,1fr)}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  .g4{grid-template-columns:repeat(4,1fr)}
+  .g6{grid-template-columns:repeat(6,1fr)}
+  @media (max-width:720px){.g3,.g4,.g6{grid-template-columns:repeat(2,1fr)}}
+
+  /* header block */
+  .id-name{margin-bottom:12px}
+  .id-name input{font-family:var(--font-display);font-size:24px;font-weight:700;padding:12px 14px}
+
+  /* core 3-col layout */
+  .core{display:grid;grid-template-columns:220px 1fr 300px;gap:14px;align-items:start}
+  @media (max-width:980px){.core{grid-template-columns:1fr}}
+
+  /* abilities */
+  .prof-row{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;
+    background:var(--parchment-2);border:1px solid var(--line);border-radius:var(--radius-sm);padding:10px 12px}
+  .prof-row .k{font-family:var(--font-display);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-faint)}
+  .prof-row .v{font-family:var(--font-display);font-weight:700;font-size:18px;color:var(--accent)}
+  .insp{display:flex;align-items:center;gap:8px}
+
+  .ability{background:var(--parchment-2);border:1px solid var(--line);border-radius:var(--radius-sm);
+    padding:10px 10px 12px;text-align:center;margin-bottom:10px}
+  .ability .k{font-family:var(--font-display);font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-faint);margin-bottom:6px}
+  .ability .mod{font-family:var(--font-display);font-size:26px;font-weight:700;color:var(--accent);line-height:1}
+  .ability input{margin-top:8px;text-align:center;font-family:var(--font-display);font-weight:700;font-size:15px;padding:6px}
+
+  .row-list{display:flex;flex-direction:column;gap:2px}
+  .row-item{display:flex;align-items:center;gap:9px;padding:5px 4px;border-bottom:1px solid var(--line);font-size:13.5px}
+  .row-item:last-child{border-bottom:none}
+  .row-item .bonus{font-family:var(--font-display);font-weight:700;width:30px;text-align:right;color:var(--accent)}
+  .row-item .name{flex:1;color:var(--ink-soft)}
+  .row-item .abbr{font-family:var(--font-display);font-size:10px;color:var(--ink-faint);width:26px}
+
+  /* combat strip */
+  .combat-strip{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
+  .stat-box{background:var(--parchment-2);border:1px solid var(--line);border-radius:var(--radius-sm);padding:10px;text-align:center}
+  .stat-box .lbl{margin-bottom:6px}
+  .stat-box .big{font-family:var(--font-display);font-weight:700;font-size:22px;color:var(--accent)}
+  .stat-box input{text-align:center;font-family:var(--font-display);font-weight:700;font-size:18px}
+
+  .hp-strip{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:12px}
+
+  .death{display:flex;align-items:center;gap:18px;justify-content:center;padding:6px 0 2px}
+  .death .grp{display:flex;align-items:center;gap:6px}
+  .death .lbl2{font-family:var(--font-display);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint)}
+
+  table.attacks{width:100%;border-collapse:collapse;font-size:13.5px}
+  table.attacks th{font-family:var(--font-display);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint);text-align:left;padding:4px 6px}
+  table.attacks td{padding:3px 4px}
+  table.attacks input{padding:6px 8px;font-size:13.5px}
+  table.attacks .rm{background:none;border:none;color:var(--accent);cursor:pointer;font-size:16px;padding:2px 6px}
+
+  .currency{display:grid;grid-template-columns:repeat(5,1fr);gap:8px}
+  .currency .cur{text-align:center}
+  .currency input{text-align:center}
+
+  .foot-note{text-align:center;font-size:12px;color:var(--ink-faint);margin-top:24px}
+  .foot-note a{color:var(--ink-faint)}
+
+  /* spell slots */
+  table.slots{width:100%;border-collapse:collapse;font-size:13.5px}
+  table.slots th{font-family:var(--font-display);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-faint);text-align:center;padding:5px}
+  table.slots td{text-align:center;padding:3px 5px}
+  table.slots input{text-align:center;padding:6px}
+  .spell-level h4{font-family:var(--font-display);font-size:13px;letter-spacing:.05em;text-transform:uppercase;color:var(--accent);margin:14px 0 6px}
+  .spell-level:first-child h4{margin-top:0}
+
+  .toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%) translateY(12px);background:var(--ink);color:var(--parchment);
+    font-size:13px;padding:9px 16px;border-radius:999px;opacity:0;pointer-events:none;transition:opacity .2s,transform .2s;z-index:50}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+  @media print{
+    .toolbar,.tabbar,.rm,.add-btn,.foot-note,.toast{display:none !important}
+    .tab{display:block !important;page-break-after:always}
+    .bg{padding:0;background:#fff}
+    .card{box-shadow:none;border:1px solid #999;break-inside:avoid}
+    body{background:#fff}
+    input,select,textarea{background:#fff;border-color:#999}
+  }
+</style>
+
+<div class="bg">
+  <div class="shell">
+    <header class="top">
+      <div class="brand">
+        <svg class="glyph" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 1l3.5 7 7.5 1-5.5 5.2L18.8 22 12 18.2 5.2 22l1.3-7.8L1 8l7.5-1L12 1z" fill="#7A1F1F"/></svg>
+        Character Sheet
+      </div>
+      <span class="top-spacer"></span>
+      <div class="toolbar">
+        <button class="btn" id="exportBtn" type="button">Export</button>
+        <button class="btn" id="importBtn" type="button">Import</button>
+        <input type="file" id="importFile" accept="application/json" hidden>
+        <button class="btn" id="printBtn" type="button">Print</button>
+        <button class="btn btn--danger" id="resetBtn" type="button">Clear Sheet</button>
+      </div>
+    </header>
+
+    <nav class="tabbar">
+      <button class="tabbtn active" data-tab="char" type="button">Character Sheet</button>
+      <button class="tabbtn" data-tab="details" type="button">Details &amp; Backstory</button>
+      <button class="tabbtn" data-tab="spells" type="button">Spellcasting</button>
+    </nav>
+
+    <!-- ================= TAB: CHARACTER ================= -->
+    <section class="tab active" id="tab-char">
+
+      <div class="card id-name">
+        <label class="lbl">Character Name</label>
+        <input type="text" data-bind="header.name" placeholder="Your character's name">
+      </div>
+
+      <div class="card">
+        <div class="grid g4">
+          <div class="field"><label class="lbl">Class</label><input type="text" data-bind="header.charClass" placeholder="e.g. Ranger"></div>
+          <div class="field"><label class="lbl">Level</label><input type="number" min="1" max="20" data-bind="header.level"></div>
+          <div class="field"><label class="lbl">Background</label><input type="text" data-bind="header.background" placeholder="e.g. Outlander"></div>
+          <div class="field"><label class="lbl">Race / Species</label><input type="text" data-bind="header.race" placeholder="e.g. Wood Elf"></div>
+          <div class="field"><label class="lbl">Alignment</label><input type="text" data-bind="header.alignment" placeholder="e.g. Chaotic Good"></div>
+          <div class="field"><label class="lbl">Experience Points</label><input type="text" data-bind="header.xp" placeholder="0"></div>
+          <div class="field"><label class="lbl">Player Name</label><input type="text" data-bind="header.playerName" placeholder="Your name"></div>
+        </div>
+      </div>
+
+      <div class="core" style="margin-top:14px">
+        <!-- LEFT: abilities, saves, skills -->
+        <div>
+          <div class="prof-row">
+            <span class="k">Proficiency Bonus</span>
+            <span class="v" id="profBonusOut">+2</span>
+          </div>
+          <div class="prof-row insp">
+            <span class="k">Inspiration</span>
+            <input type="checkbox" data-bind="inspiration">
+          </div>
+
+          <div id="abilityBlocks"></div>
+
+          <div class="card" style="margin-top:0">
+            <h3>Saving Throws</h3>
+            <div class="row-list" id="savesList"></div>
+          </div>
+
+          <div class="card">
+            <h3>Skills</h3>
+            <div class="row-list" id="skillsList"></div>
+          </div>
+
+          <div class="card">
+            <div class="row-item" style="border:none">
+              <span class="name">Passive Perception (Wisdom)</span>
+              <span class="bonus" id="passivePerceptionOut" style="width:auto">10</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- MIDDLE: combat -->
+        <div>
+          <div class="card">
+            <div class="combat-strip">
+              <div class="stat-box"><div class="lbl">Armor Class</div><input type="text" data-bind="combat.ac" placeholder="10"></div>
+              <div class="stat-box"><div class="lbl">Initiative</div><div class="big" id="initiativeOut">+0</div></div>
+              <div class="stat-box"><div class="lbl">Speed</div><input type="text" data-bind="combat.speed" placeholder="30 ft"></div>
+            </div>
+            <div class="hp-strip">
+              <div class="stat-box"><div class="lbl">HP Max</div><input type="text" data-bind="combat.hpMax"></div>
+              <div class="stat-box"><div class="lbl">HP Current</div><input type="text" data-bind="combat.hpCurrent"></div>
+              <div class="stat-box"><div class="lbl">HP Temp</div><input type="text" data-bind="combat.hpTemp"></div>
+            </div>
+            <div class="grid g2">
+              <div class="field"><label class="lbl">Hit Dice</label><input type="text" data-bind="combat.hitDice" placeholder="e.g. 5d10"></div>
+              <div class="field">
+                <label class="lbl">Death Saves</label>
+                <div class="death">
+                  <div class="grp"><span class="lbl2">Succ</span>
+                    <input type="checkbox" data-bind="combat.deathSuccess.0"><input type="checkbox" data-bind="combat.deathSuccess.1"><input type="checkbox" data-bind="combat.deathSuccess.2">
+                  </div>
+                  <div class="grp"><span class="lbl2">Fail</span>
+                    <input type="checkbox" data-bind="combat.deathFail.0"><input type="checkbox" data-bind="combat.deathFail.1"><input type="checkbox" data-bind="combat.deathFail.2">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Attacks &amp; Cantrips</h3>
+            <table class="attacks">
+              <thead><tr><th style="width:44%">Name</th><th style="width:18%">Atk / DC</th><th>Damage / Type</th><th></th></tr></thead>
+              <tbody id="attacksBody"></tbody>
+            </table>
+            <button class="btn add-btn" id="addAttackBtn" type="button" style="margin-top:8px">+ Add Row</button>
+          </div>
+
+          <div class="card">
+            <h3>Currency</h3>
+            <div class="currency">
+              <div class="cur"><label class="lbl">CP</label><input type="text" data-bind="currency.cp"></div>
+              <div class="cur"><label class="lbl">SP</label><input type="text" data-bind="currency.sp"></div>
+              <div class="cur"><label class="lbl">EP</label><input type="text" data-bind="currency.ep"></div>
+              <div class="cur"><label class="lbl">GP</label><input type="text" data-bind="currency.gp"></div>
+              <div class="cur"><label class="lbl">PP</label><input type="text" data-bind="currency.pp"></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h3>Equipment</h3>
+            <textarea data-bind="equipment" placeholder="Weapons, armor, gear, packs…" style="min-height:120px"></textarea>
+          </div>
+        </div>
+
+        <!-- RIGHT: personality & features -->
+        <div>
+          <div class="card">
+            <h3>Personality Traits</h3>
+            <textarea data-bind="personality" style="min-height:60px"></textarea>
+          </div>
+          <div class="card">
+            <h3>Ideals</h3>
+            <textarea data-bind="ideals" style="min-height:60px"></textarea>
+          </div>
+          <div class="card">
+            <h3>Bonds</h3>
+            <textarea data-bind="bonds" style="min-height:60px"></textarea>
+          </div>
+          <div class="card">
+            <h3>Flaws</h3>
+            <textarea data-bind="flaws" style="min-height:60px"></textarea>
+          </div>
+          <div class="card">
+            <h3>Features &amp; Traits</h3>
+            <textarea data-bind="featuresTraits" style="min-height:110px"></textarea>
+          </div>
+          <div class="card">
+            <h3>Other Proficiencies &amp; Languages</h3>
+            <textarea data-bind="otherProfLang" style="min-height:90px"></textarea>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= TAB: DETAILS ================= -->
+    <section class="tab" id="tab-details">
+      <div class="card">
+        <h3>Appearance</h3>
+        <div class="grid g6">
+          <div class="field"><label class="lbl">Age</label><input type="text" data-bind="details.age"></div>
+          <div class="field"><label class="lbl">Height</label><input type="text" data-bind="details.height"></div>
+          <div class="field"><label class="lbl">Weight</label><input type="text" data-bind="details.weight"></div>
+          <div class="field"><label class="lbl">Eyes</label><input type="text" data-bind="details.eyes"></div>
+          <div class="field"><label class="lbl">Skin</label><input type="text" data-bind="details.skin"></div>
+          <div class="field"><label class="lbl">Hair</label><input type="text" data-bind="details.hair"></div>
+        </div>
+        <div class="field" style="margin-top:6px">
+          <label class="lbl">Description</label>
+          <textarea data-bind="details.appearance" placeholder="What do they look like? Any distinguishing marks or mannerisms?" style="min-height:90px"></textarea>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Allies &amp; Organizations</h3>
+        <textarea data-bind="details.alliesOrgs" placeholder="Allies, factions, contacts…" style="min-height:90px"></textarea>
+      </div>
+
+      <div class="card">
+        <h3>Backstory</h3>
+        <textarea data-bind="details.backstory" placeholder="Where they came from, and how they got here…" style="min-height:220px"></textarea>
+      </div>
+
+      <div class="card">
+        <h3>Additional Features &amp; Traits</h3>
+        <textarea data-bind="details.additionalFeatures" style="min-height:110px"></textarea>
+      </div>
+
+      <div class="card">
+        <h3>Treasure</h3>
+        <textarea data-bind="details.treasure" placeholder="Gems, art objects, magic items, trinkets…" style="min-height:110px"></textarea>
+      </div>
+    </section>
+
+    <!-- ================= TAB: SPELLS ================= -->
+    <section class="tab" id="tab-spells">
+      <div class="card">
+        <div class="grid g4">
+          <div class="field"><label class="lbl">Spellcasting Class</label><input type="text" data-bind="spellcasting.class" placeholder="e.g. Wizard"></div>
+          <div class="field">
+            <label class="lbl">Spellcasting Ability</label>
+            <select data-bind="spellcasting.ability">
+              <option value="str">Strength</option>
+              <option value="dex">Dexterity</option>
+              <option value="con">Constitution</option>
+              <option value="int">Intelligence</option>
+              <option value="wis">Wisdom</option>
+              <option value="cha">Charisma</option>
+            </select>
+          </div>
+          <div class="stat-box"><div class="lbl">Spell Save DC</div><div class="big" id="spellDcOut">8</div></div>
+          <div class="stat-box"><div class="lbl">Spell Attack Bonus</div><div class="big" id="spellAtkOut">+0</div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Spell Slots</h3>
+        <table class="slots">
+          <thead><tr><th>Level</th><th>Total</th><th>Expended</th></tr></thead>
+          <tbody id="slotsBody"></tbody>
+        </table>
+      </div>
+
+      <div class="card">
+        <h3>Spells Known / Prepared</h3>
+        <div id="spellListsContainer"></div>
+      </div>
+    </section>
+
+    <p class="foot-note">A self-contained, fillable D&amp;D 5e character sheet. Everything you type is saved on this device only (<code>localStorage</code>) — use <b>Export</b> to back up or move a character.</p>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  var LS_KEY = "dnd_character_sheet_v1";
+
+  var ABILITIES = [
+    {key:"str",label:"Strength",abbr:"STR"},
+    {key:"dex",label:"Dexterity",abbr:"DEX"},
+    {key:"con",label:"Constitution",abbr:"CON"},
+    {key:"int",label:"Intelligence",abbr:"INT"},
+    {key:"wis",label:"Wisdom",abbr:"WIS"},
+    {key:"cha",label:"Charisma",abbr:"CHA"}
+  ];
+
+  var SKILLS = [
+    {key:"acrobatics",label:"Acrobatics",ability:"dex"},
+    {key:"animalHandling",label:"Animal Handling",ability:"wis"},
+    {key:"arcana",label:"Arcana",ability:"int"},
+    {key:"athletics",label:"Athletics",ability:"str"},
+    {key:"deception",label:"Deception",ability:"cha"},
+    {key:"history",label:"History",ability:"int"},
+    {key:"insight",label:"Insight",ability:"wis"},
+    {key:"intimidation",label:"Intimidation",ability:"cha"},
+    {key:"investigation",label:"Investigation",ability:"int"},
+    {key:"medicine",label:"Medicine",ability:"wis"},
+    {key:"nature",label:"Nature",ability:"int"},
+    {key:"perception",label:"Perception",ability:"wis"},
+    {key:"performance",label:"Performance",ability:"cha"},
+    {key:"persuasion",label:"Persuasion",ability:"cha"},
+    {key:"religion",label:"Religion",ability:"int"},
+    {key:"sleightOfHand",label:"Sleight of Hand",ability:"dex"},
+    {key:"stealth",label:"Stealth",ability:"dex"},
+    {key:"survival",label:"Survival",ability:"wis"}
+  ];
+
+  var SPELL_LEVELS = [1,2,3,4,5,6,7,8,9];
+
+  function defaultState(){
+    var skillProf = {}; SKILLS.forEach(function(s){ skillProf[s.key] = false; });
+    var abilities = {}; ABILITIES.forEach(function(a){ abilities[a.key] = 10; });
+    var saveProf = {}; ABILITIES.forEach(function(a){ saveProf[a.key] = false; });
+    var spellSlots = {}; SPELL_LEVELS.forEach(function(l){ spellSlots[l] = {total:"",expended:""}; });
+    var spellLists = {"0":""}; SPELL_LEVELS.forEach(function(l){ spellLists[l] = ""; });
+    return {
+      version:1,
+      header:{name:"",charClass:"",level:1,background:"",playerName:"",race:"",alignment:"",xp:""},
+      abilities:abilities,
+      saveProf:saveProf,
+      skillProf:skillProf,
+      inspiration:false,
+      combat:{ac:"",speed:"",hpMax:"",hpCurrent:"",hpTemp:"",hitDice:"",
+        deathSuccess:[false,false,false],deathFail:[false,false,false]},
+      attacks:[{name:"",bonus:"",damage:""},{name:"",bonus:"",damage:""},{name:"",bonus:"",damage:""}],
+      currency:{cp:"",sp:"",ep:"",gp:"",pp:""},
+      equipment:"",featuresTraits:"",otherProfLang:"",
+      personality:"",ideals:"",bonds:"",flaws:"",
+      details:{age:"",height:"",weight:"",eyes:"",skin:"",hair:"",appearance:"",alliesOrgs:"",backstory:"",additionalFeatures:"",treasure:""},
+      spellcasting:{class:"",ability:"int"},
+      spellSlots:spellSlots,
+      spellLists:spellLists
+    };
+  }
+
+  var state = loadState();
+
+  function loadState(){
+    try{
+      var raw = localStorage.getItem(LS_KEY);
+      if(!raw) return defaultState();
+      var parsed = JSON.parse(raw);
+      return Object.assign(defaultState(), parsed);
+    }catch(e){ return defaultState(); }
+  }
+  function saveState(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(state)); }catch(e){} }
+
+  function getPath(obj, path){
+    var parts = path.split(".");
+    var cur = obj;
+    for(var i=0;i<parts.length;i++){ if(cur==null) return undefined; cur = cur[parts[i]]; }
+    return cur;
+  }
+  function setPath(obj, path, value){
+    var parts = path.split(".");
+    var cur = obj;
+    for(var i=0;i<parts.length-1;i++){ if(cur[parts[i]]==null) cur[parts[i]]={}; cur = cur[parts[i]]; }
+    cur[parts[parts.length-1]] = value;
+  }
+  function esc(s){ return (s==null?"":String(s)).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];}); }
+  function mod(score){ score = Number(score); if(isNaN(score)) score = 10; return Math.floor((score-10)/2); }
+  function fmt(n){ n = Number(n)||0; return (n>=0?"+":"") + n; }
+  function profBonus(){ var lvl = Number(state.header.level)||1; if(lvl<1) lvl=1; return Math.floor((lvl-1)/4)+2; }
+
+  var toastEl = document.getElementById("toast");
+  function toast(m){ toastEl.textContent=m; toastEl.classList.add("show"); setTimeout(function(){toastEl.classList.remove("show");},1600); }
+
+  // ---------- dynamic markup ----------
+  function renderAbilities(){
+    document.getElementById("abilityBlocks").innerHTML = ABILITIES.map(function(a){
+      return '<div class="ability">'
+        + '<div class="k">'+a.abbr+'</div>'
+        + '<div class="mod" id="mod-'+a.key+'">+0</div>'
+        + '<input type="number" min="1" max="30" data-bind="abilities.'+a.key+'">'
+        + '</div>';
+    }).join("");
+  }
+
+  function renderSaves(){
+    document.getElementById("savesList").innerHTML = ABILITIES.map(function(a){
+      return '<label class="row-item">'
+        + '<input type="checkbox" data-bind="saveProf.'+a.key+'">'
+        + '<span class="bonus" id="save-'+a.key+'">+0</span>'
+        + '<span class="name">'+a.label+'</span>'
+        + '</label>';
+    }).join("");
+  }
+
+  function renderSkills(){
+    document.getElementById("skillsList").innerHTML = SKILLS.map(function(s){
+      return '<label class="row-item">'
+        + '<input type="checkbox" data-bind="skillProf.'+s.key+'">'
+        + '<span class="bonus" id="skill-'+s.key+'">+0</span>'
+        + '<span class="name">'+s.label+'</span>'
+        + '<span class="abbr">'+s.ability.toUpperCase()+'</span>'
+        + '</label>';
+    }).join("");
+  }
+
+  function renderAttacks(){
+    document.getElementById("attacksBody").innerHTML = state.attacks.map(function(row,i){
+      return '<tr>'
+        + '<td><input type="text" data-bind="attacks.'+i+'.name"></td>'
+        + '<td><input type="text" data-bind="attacks.'+i+'.bonus"></td>'
+        + '<td><input type="text" data-bind="attacks.'+i+'.damage"></td>'
+        + '<td><button class="rm" type="button" data-action="removeAttack" data-idx="'+i+'" title="Remove row">&times;</button></td>'
+        + '</tr>';
+    }).join("");
+  }
+
+  function renderSlots(){
+    document.getElementById("slotsBody").innerHTML = SPELL_LEVELS.map(function(l){
+      return '<tr>'
+        + '<td>'+l+'</td>'
+        + '<td><input type="text" data-bind="spellSlots.'+l+'.total"></td>'
+        + '<td><input type="text" data-bind="spellSlots.'+l+'.expended"></td>'
+        + '</tr>';
+    }).join("");
+  }
+
+  function renderSpellLists(){
+    var levels = [{k:"0",label:"Cantrips (Level 0)"}].concat(SPELL_LEVELS.map(function(l){return {k:String(l),label:"Level "+l};}));
+    document.getElementById("spellListsContainer").innerHTML = levels.map(function(l){
+      return '<div class="spell-level">'
+        + '<h4>'+l.label+'</h4>'
+        + '<textarea data-bind="spellLists.'+l.k+'" placeholder="One spell per line…"></textarea>'
+        + '</div>';
+    }).join("");
+  }
+
+  function renderDynamic(){
+    renderAbilities(); renderSaves(); renderSkills(); renderAttacks(); renderSlots(); renderSpellLists();
+  }
+
+  // ---------- form <-> state ----------
+  function populateForm(){
+    Array.prototype.forEach.call(document.querySelectorAll("[data-bind]"), function(el){
+      var v = getPath(state, el.dataset.bind);
+      if(el.type==="checkbox"){ el.checked = !!v; }
+      else { el.value = v==null ? "" : v; }
+    });
+  }
+
+  function recompute(){
+    var pb = profBonus();
+    document.getElementById("profBonusOut").textContent = fmt(pb);
+
+    ABILITIES.forEach(function(a){
+      var m = mod(state.abilities[a.key]);
+      document.getElementById("mod-"+a.key).textContent = fmt(m);
+      var saveBonus = m + (state.saveProf[a.key] ? pb : 0);
+      var saveEl = document.getElementById("save-"+a.key); if(saveEl) saveEl.textContent = fmt(saveBonus);
+    });
+
+    SKILLS.forEach(function(s){
+      var m = mod(state.abilities[s.ability]) + (state.skillProf[s.key] ? pb : 0);
+      var el = document.getElementById("skill-"+s.key); if(el) el.textContent = fmt(m);
+    });
+
+    var perceptionBonus = mod(state.abilities.wis) + (state.skillProf.perception ? pb : 0);
+    document.getElementById("passivePerceptionOut").textContent = 10 + perceptionBonus;
+
+    document.getElementById("initiativeOut").textContent = fmt(mod(state.abilities.dex));
+
+    var scAbility = state.spellcasting.ability || "int";
+    var scMod = mod(state.abilities[scAbility]);
+    document.getElementById("spellDcOut").textContent = 8 + pb + scMod;
+    document.getElementById("spellAtkOut").textContent = fmt(pb + scMod);
+  }
+
+  // ---------- events ----------
+  function handleInput(e){
+    var el = e.target;
+    if(!el.matches("[data-bind]")) return;
+    var value = el.type==="checkbox" ? el.checked : el.value;
+    setPath(state, el.dataset.bind, value);
+    saveState();
+    recompute();
+  }
+  document.addEventListener("input", handleInput);
+  document.addEventListener("change", handleInput);
+
+  document.addEventListener("click", function(e){
+    var t = e.target;
+    if(t.matches('[data-action="removeAttack"]')){
+      var idx = Number(t.dataset.idx);
+      state.attacks.splice(idx,1);
+      saveState(); renderAttacks(); populateForm(); recompute();
+    }
+  });
+
+  document.getElementById("addAttackBtn").addEventListener("click", function(){
+    state.attacks.push({name:"",bonus:"",damage:""});
+    saveState(); renderAttacks(); populateForm(); recompute();
+  });
+
+  // tabs
+  Array.prototype.forEach.call(document.querySelectorAll(".tabbtn"), function(btn){
+    btn.addEventListener("click", function(){
+      var name = btn.dataset.tab;
+      Array.prototype.forEach.call(document.querySelectorAll(".tabbtn"), function(b){ b.classList.toggle("active", b===btn); });
+      Array.prototype.forEach.call(document.querySelectorAll(".tab"), function(s){ s.classList.toggle("active", s.id==="tab-"+name); });
+      window.scrollTo({top:0,behavior:"smooth"});
+    });
+  });
+
+  // toolbar
+  document.getElementById("printBtn").addEventListener("click", function(){ window.print(); });
+
+  document.getElementById("resetBtn").addEventListener("click", function(){
+    if(!window.confirm("Clear the entire sheet? This can't be undone.")) return;
+    state = defaultState();
+    saveState(); renderDynamic(); populateForm(); recompute();
+    toast("Sheet cleared");
+  });
+
+  document.getElementById("exportBtn").addEventListener("click", function(){
+    var blob = new Blob([JSON.stringify(state,null,2)], {type:"application/json"});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = (state.header.name ? state.header.name.trim().replace(/[^a-z0-9\- ]/gi,"").replace(/\s+/g,"-") : "character") + ".json";
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    toast("Exported");
+  });
+
+  document.getElementById("importBtn").addEventListener("click", function(){
+    document.getElementById("importFile").click();
+  });
+  document.getElementById("importFile").addEventListener("change", function(e){
+    var file = e.target.files[0];
+    if(!file) return;
+    var reader = new FileReader();
+    reader.onload = function(){
+      try{
+        var parsed = JSON.parse(reader.result);
+        state = Object.assign(defaultState(), parsed);
+        saveState(); renderDynamic(); populateForm(); recompute();
+        toast("Character imported");
+      }catch(err){ toast("Couldn't read that file"); }
+    };
+    reader.readAsText(file);
+    e.target.value = "";
+  });
+
+  // ---------- init ----------
+  renderDynamic();
+  populateForm();
+  recompute();
+})();
+</script>
+</body>
+</html>
