@@ -1,78 +1,64 @@
 # 🌊 Currents
 
-**Currents, Circles, and Drops — the Mystic Method, live from Notion.**
+**Currents, Circles, and Drops — from the Mystic Method.**
 
 A Current is a project or vision. A Drop is an action that moves one forward
 — it can belong to a Current, or stand alone. Circles are the five areas of
-life a Current lives in. Currents reads all three live from your Notion
-workspace, so the app is always a live window onto your actual data — not a
-copy of it.
+life a Current lives in: Self, Ohana, Collective, After Glow, Kumara.
+
+Like the other apps in this repo, it's self-contained — no build step, no
+backend, no account. Anyone can open it and start using it: your data lives
+in your own browser (`localStorage`) and never leaves your device, so you can
+share the link with someone else and they get their own private Currents,
+Circles, and Drops.
 
 ## What it does
 
-- **Currents** — your top 5 Currents by Priority, as cards. Each card shows
+- **Currents** — your top 5 Currents by Priority, as cards. Each one carries
   its Kumara (the feeling you want on the other side of finishing this) and
   Aramuk (the feeling standing in the way, or what you're afraid you'll feel
   if it doesn't happen), plus the five Mystic Method / SCALE steps — Clarify,
-  Visualize, Feel, Act, Be. Tap a step to see the Drops filed under it.
-- **Circles** — the five areas of life (Self, Ohana, Collective, After Glow,
-  Kumara), each showing its master Current and the five Commitments beneath
-  it. Tap a Commitment to drill into the Currents nested under it, and keep
-  drilling — the hierarchy goes as deep as you've built it in Notion, via
-  stacked sheets.
-- **Drops** — every active Drop, grouped by step, showing which Current it
-  belongs to (or "Standalone" if it doesn't) and its due date.
+  Visualize, Feel, Act, Be. Tap a step to see the Drops filed under it, or add
+  a new one right there.
+- **Circles** — your Currents grouped into the five areas of life. Each
+  Circle has its own "+ Add" so you can build out that area directly.
+- **Drops** — every Drop, grouped by step, showing which Current it belongs
+  to (or "Standalone") and its due date. Tap the checkbox to mark one done.
 
-Every sheet has an **Open in Notion** link, so editing always happens where
-the data actually lives.
-
-This first version is **read-only** — a fast, clear way to see everything at
-a glance. Editing in-app can come later if it earns its place.
+Tap the pencil on any card to edit it, or the "+ New" buttons to add a
+Current or Drop. Deleting a Current unlinks its Drops (they become
+standalone) rather than deleting them.
 
 ## Running it
 
-Unlike the other apps in this repo, Currents isn't self-contained: the data
-lives in Notion, and a static page can't hold a Notion integration token
-safely. So there's a small Cloudflare Worker (`worker/`) that holds the token
-and proxies read-only queries.
-
-1. **Create a Notion integration.** In Notion, go to Settings → Connections →
-   Develop or manage integrations → New integration. Give it "Read content"
-   access and copy its token.
-2. **Share your databases with it.** Open your Currents database and your
-   Drops database in Notion, and add the integration under each one's •••
-   menu → Connections.
-3. **Deploy the Worker.**
-   ```
-   cd currents/worker
-   npx wrangler deploy
-   npx wrangler secret put NOTION_TOKEN     # paste the token from step 1
-   ```
-   (Or paste `worker.js` into a Worker in the Cloudflare dashboard and add
-   the secret there.)
-4. **Point the app at it.** Copy the deployed Worker URL into `WORKER_URL`
-   near the top of the `<script>` in `index.html`.
-5. **Open `index.html`** locally, or host the folder statically (e.g. GitHub
-   Pages) — it's still just one file with no build step.
-
-Until `WORKER_URL` is set, the app shows setup instructions instead of
-guessing at data it doesn't have.
+Open `index.html` in any browser, or host the folder statically (e.g. GitHub
+Pages). First run shows a short welcome explaining the three concepts, then
+gets out of the way.
 
 ## Data model
 
-- **Current**: Name, Description, Circle, Priority, Kumara, Aramuk, My B
-  (used as "My Goal" in the Clarify step), Parent Current (for nesting).
-- **Drop**: Name, Description, Step (1–5), Current (nullable — standalone if
-  empty), Due Date, Completed, Repeats, Design/Moodboard/UX Wireframe links.
-  A Drop with Priority `0` is Notion's soft-archive convention here, so the
-  Worker filters those out.
-- Both `Circle` and `Step` select values are inconsistent in Notion after
-  months of iterating (`"① Self"`, `"1 Self"`, `"5 Kumara"`, `"1-Clarify"`,
-  `"1 - Clarify"`, `"Draft"`, …) — the Worker normalizes all of it by keyword
-  or leading digit rather than exact string match.
+- **Current**: name, description, circle, priority (1–10, optional — only
+  prioritized Currents show up in the Currents tab), Kumara, Aramuk, My Goal
+  (shown in the Clarify step sheet).
+- **Drop**: name, description, step (1–5, optional), the Current it belongs
+  to (optional — standalone if empty), due date, repeats.
 
-## Deferred (v1 scope)
+Everything is stored under the `currents-app-v1` key in `localStorage` — per
+browser, per device, nothing synced or uploaded.
 
-Seeds/Saplings/Trees (the growth-metaphor layer) and KLOK Window scheduling
-exist in the same Notion workspace but aren't part of this build yet — they
-can be added the same way, as new Worker endpoints and a new tab or view.
+## Deferred
+
+- **Live Notion sync.** `worker/` holds a ready-to-deploy Cloudflare Worker
+  that proxies the Notion API directly, for anyone who wants Notion (rather
+  than the browser) as the source of truth. It needs its own Notion
+  integration token — separate from any Claude↔Notion connection — created at
+  Notion's **My Integrations** page and shared with a Currents and a Drops
+  database matching the shape in `worker/worker.js`. Worth turning on only if
+  the manual/local-only model stops being enough.
+- **Nested current hierarchy.** The original version of this app (built
+  against one specific, deeply-nested Notion workspace) supported Currents
+  containing child Currents, drilled into via stacked sheets. This version
+  keeps things flatter — Circles just group your Currents by area — since a
+  new person starting fresh doesn't have that hierarchy built up yet.
+- Seeds/Saplings/Trees (a growth-metaphor layer) and KLOK Window scheduling
+  aren't part of this build.

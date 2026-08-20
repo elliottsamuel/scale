@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Currents — your Currents, Circles, and Drops from the Mystic Method, live from Notion.">
+<meta name="description" content="Currents — Currents, Circles, and Drops from the Mystic Method. Your data, your device.">
 <meta name="theme-color" content="#0b0b0f">
 <title>Currents</title>
 </head>
@@ -39,7 +39,7 @@
     -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
     min-height:100vh;
   }
-  button,input,textarea{font-family:inherit}
+  button,input,textarea,select{font-family:inherit}
   a{color:inherit}
   ::selection{background:var(--self);color:#fff}
 
@@ -50,10 +50,6 @@
   /* ---------- top bar ---------- */
   .topbar{display:flex;align-items:center;justify-content:space-between;min-height:44px;margin-bottom:6px}
   .brand{font-weight:800;font-size:19px;letter-spacing:.1px}
-  .iconbtn{-webkit-appearance:none;appearance:none;border:1px solid var(--border);background:var(--surface);
-    color:var(--ink);width:38px;height:38px;border-radius:12px;display:grid;place-items:center;cursor:pointer;
-    font-size:16px;transition:transform .12s ease}
-  .iconbtn:active{transform:scale(.92)}
 
   main{flex:1;display:flex;flex-direction:column}
   .screen{animation:rise .32s cubic-bezier(.2,.7,.2,1) both}
@@ -64,12 +60,23 @@
   .screen-head h1{font-size:26px;margin:0 0 2px;font-weight:800}
   .screen-head .sub{color:var(--ink-faint);font-size:14px;margin:0}
 
-  .circle-heading{font-size:13px;text-transform:uppercase;letter-spacing:.07em;font-weight:800;
-    color:var(--accent, var(--ink-faint));margin:22px 0 10px;padding-left:2px}
+  .tabhead{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin:8px 0 16px}
+
+  .circle-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;
+    margin:22px 0 10px;padding-left:2px}
   .circle-heading:first-of-type{margin-top:0}
+  .circle-heading .name{font-size:13px;text-transform:uppercase;letter-spacing:.07em;font-weight:800;
+    color:var(--accent, var(--ink-faint))}
   .group-heading{font-size:13px;text-transform:uppercase;letter-spacing:.06em;font-weight:800;
     color:var(--ink-faint);margin:20px 0 8px;padding-left:2px}
   .group-heading:first-of-type{margin-top:0}
+
+  /* ---------- buttons ---------- */
+  .addbtn{-webkit-appearance:none;appearance:none;border:1px solid var(--border-strong);background:var(--surface);
+    color:var(--ink);padding:9px 14px;border-radius:12px;font-weight:700;font-size:13.5px;cursor:pointer;
+    display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+  .addbtn:active{transform:scale(.96)}
+  .addbtn.small{padding:6px 12px;font-size:12.5px}
 
   /* ---------- card ---------- */
   .card{--accent:var(--kumara);background:var(--surface);border:1px solid var(--border);
@@ -77,7 +84,11 @@
     padding:18px 18px 0;margin-bottom:16px;position:relative}
   .card .num{width:34px;height:34px;border-radius:50%;border:2px solid var(--accent);color:var(--accent);
     display:grid;place-items:center;font-weight:800;font-size:15px;margin-bottom:10px}
-  .card h2{font-size:19px;font-weight:800;margin:0 0 6px;line-height:1.28}
+  .card .editbtn{position:absolute;top:16px;right:16px;width:30px;height:30px;border-radius:50%;
+    border:1px solid var(--border);background:var(--surface2);color:var(--ink-faint);display:grid;
+    place-items:center;cursor:pointer;font-size:13px;-webkit-appearance:none;appearance:none}
+  .card .editbtn:active{transform:scale(.92)}
+  .card h2{font-size:19px;font-weight:800;margin:0 44px 6px 0;line-height:1.28}
   .card .desc{color:var(--ink-soft);font-size:14.5px;line-height:1.5;margin:0 0 2px}
 
   .cell{background:var(--surface2);margin:0 -18px;padding:11px 18px;border-top:1px solid var(--border)}
@@ -95,6 +106,7 @@
   .row .dot{width:8px;height:8px;border-radius:50%;background:var(--ink-faint);flex:0 0 auto}
   .row .t{flex:1;font-size:15px;font-weight:600;color:var(--ink);min-width:0}
   .row .t.placeholder{color:var(--ink-faint);font-weight:500}
+  .row.done .t{color:var(--ink-faint);text-decoration:line-through}
   .row .meta{font-size:12.5px;color:var(--ink-faint);white-space:nowrap;flex:0 0 auto;max-width:38%;
     overflow:hidden;text-overflow:ellipsis}
   .row .chev{color:var(--ink-faint);font-size:15px;flex:0 0 auto}
@@ -103,24 +115,20 @@
     margin:0 0 4px;overflow:hidden}
   .rows.card-like .row:first-child{border-top:none}
 
+  .check{width:22px;height:22px;border-radius:7px;border:2px solid var(--border-strong);flex:0 0 auto;
+    display:grid;place-items:center;cursor:pointer;font-size:13px;font-weight:800;color:transparent;
+    -webkit-appearance:none;appearance:none;background:none;padding:0}
+  .check.done{background:var(--kumara);border-color:var(--kumara);color:#0b0b0f}
+
   /* ---------- states ---------- */
-  .state-block{padding:34px 10px;text-align:center;color:var(--ink-faint)}
-  .state-block .spinner{width:26px;height:26px;border-radius:50%;border:3px solid var(--border-strong);
-    border-top-color:var(--ink-soft);margin:0 auto 14px;animation:spin .8s linear infinite}
-  @keyframes spin{to{transform:rotate(360deg)}}
   .empty-block{padding:22px 4px;color:var(--ink-faint);font-size:14px;line-height:1.5}
   .empty-block b{display:block;color:var(--ink-soft);font-size:15px;font-weight:700;margin-bottom:4px}
-  .error-block{padding:28px 10px;text-align:center}
-  .error-block p{color:var(--ink-soft);margin:0 0 14px}
-  .retrybtn{-webkit-appearance:none;appearance:none;border:1px solid var(--border-strong);
-    background:var(--surface);color:var(--ink);padding:10px 20px;border-radius:12px;font-weight:700;
-    font-size:14px;cursor:pointer}
 
-  .setup{padding-top:10px}
-  .setup h1{font-size:24px;margin:0 0 12px}
-  .setup p{color:var(--ink-soft);line-height:1.6;font-size:14.5px}
-  .setup ol{color:var(--ink-soft);line-height:1.9;font-size:14.5px;padding-left:20px}
-  .setup code{background:var(--surface2);padding:2px 6px;border-radius:6px;font-size:13px}
+  .welcome{padding-top:14px}
+  .welcome h1{font-size:27px;margin:0 0 10px;font-weight:800}
+  .welcome p{color:var(--ink-soft);line-height:1.6;font-size:14.5px;margin:0 0 12px}
+  .welcome ul{color:var(--ink-soft);line-height:1.7;font-size:14.5px;padding-left:20px;margin:0 0 18px}
+  .welcome ul b{color:var(--ink)}
 
   /* ---------- bottom nav ---------- */
   .bottomnav{position:fixed;left:50%;bottom:0;transform:translateX(-50%);width:100%;max-width:var(--maxw);
@@ -139,7 +147,7 @@
   .backdrop{position:absolute;inset:0;background:rgba(0,0,0,.6)}
   .sheet{position:absolute;left:0;right:0;bottom:0;max-width:var(--maxw);margin:0 auto;background:var(--bg2);
     border:1px solid var(--border-strong);border-bottom:none;border-radius:20px 20px 0 0;
-    max-height:84vh;overflow-y:auto;padding:10px 18px calc(22px + env(safe-area-inset-bottom));
+    max-height:88vh;overflow-y:auto;padding:10px 18px calc(22px + env(safe-area-inset-bottom));
     transition:transform .18s ease, opacity .18s ease}
   .sheet-peek{height:16px;padding:0;pointer-events:none;box-shadow:none}
   .sheet-grab{width:36px;height:4px;border-radius:2px;background:var(--border-strong);margin:0 auto 10px}
@@ -160,14 +168,32 @@
     background:var(--surface2);border-radius:10px}
   .fact span{color:var(--ink-faint)}
   .fact b{font-weight:700}
-  .notion-link{display:inline-block;margin-top:14px;font-size:13px;color:var(--ink-faint);
-    text-decoration:underline;text-underline-offset:3px}
+
+  /* ---------- forms ---------- */
+  .field{margin-bottom:14px}
+  .field label{display:block;font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;
+    color:var(--ink-faint);margin-bottom:6px}
+  .field input,.field textarea,.field select{width:100%;background:var(--surface2);border:1px solid var(--border);
+    border-radius:10px;padding:10px 12px;color:var(--ink);font-size:15px;font-family:inherit}
+  .field input:focus,.field textarea:focus,.field select:focus{outline:2px solid var(--self);outline-offset:1px}
+  .field textarea{min-height:64px;resize:vertical;line-height:1.4}
+  .formrow{display:flex;gap:10px}
+  .formrow .field{flex:1;min-width:0}
+  .chiprow{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{-webkit-appearance:none;appearance:none;border:1px solid var(--border-strong);background:var(--surface2);
+    color:var(--ink-soft);padding:8px 13px;border-radius:999px;font-size:13.5px;font-weight:700;cursor:pointer}
+  .chip[data-selected="true"]{background:var(--chip-accent,var(--self));border-color:var(--chip-accent,var(--self));color:#0b0b0f}
+  .formactions{display:flex;gap:10px;margin-top:18px}
+  .btn{-webkit-appearance:none;appearance:none;border:0;border-radius:12px;padding:13px;font-weight:800;
+    font-size:14.5px;cursor:pointer;flex:1;text-align:center}
+  .btn.primary{background:var(--self);color:#fff}
+  .btn.danger{background:transparent;border:1px solid var(--danger);color:var(--danger);flex:0 0 auto;padding:13px 16px}
+  .btn:active{transform:scale(.98)}
 </style>
 
 <div class="app">
   <header class="topbar">
     <span class="brand">🌊 Currents</span>
-    <button class="iconbtn" id="refreshBtn" aria-label="Refresh" title="Refresh">⟳</button>
   </header>
   <main id="main"></main>
 </div>
@@ -178,20 +204,34 @@
 (function(){
   "use strict";
 
-  // Point this at your deployed currents/worker (see currents/README.md).
-  // Until it's set, the app shows setup instructions instead of guessing.
-  var WORKER_URL = "";
-
+  var STORAGE_KEY = "currents-app-v1";
   var STEP_LABELS = ["Clarify your destination","Visualize the path","Feel the transformation","Follow your strategy","Be yourself"];
+  var CIRCLE_DEFS = [
+    { key:"self", label:"Self" },
+    { key:"ohana", label:"Ohana" },
+    { key:"collective", label:"Collective" },
+    { key:"afterglow", label:"After Glow" },
+    { key:"kumara", label:"Kumara" }
+  ];
   var TABS = [
     { id:"currents", ic:"🌊", lb:"Currents" },
     { id:"circles", ic:"⭕", lb:"Circles" },
     { id:"drops", ic:"💧", lb:"Drops" }
   ];
 
+  function loadState(){
+    try{
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if(raw){ var s = JSON.parse(raw); if(s && s.currents && s.drops) return s; }
+    } catch(e){}
+    return { currents:[], drops:[] };
+  }
+  var STATE = loadState();
+  function saveState(){ try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(STATE)); } catch(e){} }
+  function newId(){ return "id-" + Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
+
   var state = { tab:"currents" };
   var sheetStack = [];
-
   var main, bottomnav, sheetsRoot;
 
   function esc(v){
@@ -200,71 +240,34 @@
     });
   }
   function escAttr(v){ return esc(v).replace(/"/g,"&quot;"); }
-
   function fmtDate(iso){
     if(!iso) return "";
-    var d = new Date(iso + (iso.length<=10 ? "T00:00:00" : ""));
+    var d = new Date(iso + "T00:00:00");
     if(isNaN(d.getTime())) return iso;
     return d.toLocaleDateString(undefined, { month:"short", day:"numeric" });
   }
+  function circleVar(circle){ return "var(--" + (circle || "self") + ")"; }
+  function circleLabel(key){ var c = CIRCLE_DEFS.filter(function(c){ return c.key===key; })[0]; return c ? c.label : key; }
+  function currentById(id){ return STATE.currents.filter(function(c){ return c.id===id; })[0] || null; }
 
-  function notionUrl(id){ return "https://www.notion.so/" + String(id).replace(/-/g,""); }
-
-  function circleVar(circle){ return "var(--" + (circle || "kumara") + ")"; }
-
-  async function fetchJSON(path){
-    var res;
-    try{
-      res = await fetch(WORKER_URL + path);
-    } catch(e){
-      throw new Error("Couldn't reach the Currents Worker. Check your connection and WORKER_URL.");
-    }
-    if(!res.ok){
-      var body = await res.json().catch(function(){ return {}; });
-      throw new Error(body.error ? ("Worker error: " + body.error) : ("Request failed (" + res.status + ")"));
-    }
-    return res.json();
-  }
-
-  function loadingHTML(msg){
-    return '<div class="state-block"><div class="spinner"></div>' + esc(msg || "Loading…") + "</div>";
-  }
+  function loadingHTML(msg){ return msg; }
   function emptyHTML(title, sub){
     return '<div class="empty-block"><b>' + esc(title) + "</b>" + (sub ? esc(sub) : "") + "</div>";
   }
-  function errorInline(e){
-    return '<div class="error-block"><p>' + esc(e && e.message ? e.message : "Something went wrong.") + "</p></div>";
-  }
-  function errorHTML(tabId, e){
-    return '<div class="screen error-block"><p>' + esc(e && e.message ? e.message : "Something went wrong.") +
-      '</p><button class="retrybtn" data-action="retry" data-tab="' + tabId + '">Try again</button></div>';
-  }
 
   // ---------- card component ----------
-  function cardHTML(current, mode, badgeNumber){
+  function cardHTML(current, badgeNumber){
     var accent = circleVar(current.circle);
-    var rowsHTML;
-    if(mode === "steps"){
-      rowsHTML = STEP_LABELS.map(function(label, i){
-        var n = i + 1;
-        return '<div class="row" data-step="' + n + '" data-id="' + escAttr(current.id) +
-          '" data-name="' + escAttr(current.name) + '"><span class="n">' + n + '</span><span class="t">' +
-          esc(label) + '</span><span class="chev">›</span></div>';
-      }).join("");
-    } else {
-      rowsHTML = [0,1,2,3,4].map(function(i){
-        var c = (current.commitments || [])[i];
-        if(!c){
-          return '<div class="row disabled"><span class="n">' + (i+1) + '</span><span class="t placeholder">—</span></div>';
-        }
-        var meta = c.count > 0 ? (c.count + " current" + (c.count === 1 ? "" : "s")) : "empty";
-        return '<div class="row" data-child="' + escAttr(c.id) + '" data-name="' + escAttr(c.name) +
-          '"><span class="n">' + (i+1) + '</span><span class="t">' + esc(c.name) + '</span><span class="meta">' +
-          esc(meta) + '</span><span class="chev">›</span></div>';
-      }).join("");
-    }
+    var rowsHTML = STEP_LABELS.map(function(label, i){
+      var n = i + 1;
+      var count = STATE.drops.filter(function(d){ return d.currentId === current.id && d.step === n; }).length;
+      return '<div class="row" data-step="' + n + '" data-current="' + escAttr(current.id) +
+        '"><span class="n">' + n + '</span><span class="t">' + esc(label) + '</span>' +
+        (count ? '<span class="meta">' + count + "</span>" : "") + '<span class="chev">›</span></div>';
+    }).join("");
     return '<article class="card" style="--accent:' + accent + '">' +
       (badgeNumber != null ? '<span class="num">' + esc(badgeNumber) + "</span>" : "") +
+      '<button class="editbtn" data-action="edit-current" data-id="' + escAttr(current.id) + '" aria-label="Edit">✎</button>' +
       "<h2>" + esc(current.name || "Untitled") + "</h2>" +
       (current.description ? '<p class="desc">' + esc(current.description) + "</p>" : "") +
       '<div class="cell"><div class="label">Kumara</div><div class="body">' + (current.kumara ? esc(current.kumara) : "—") + "</div></div>" +
@@ -274,73 +277,71 @@
   }
 
   // ---------- tabs ----------
-  async function renderCurrentsTab(){
-    main.innerHTML = loadingHTML("Loading your top currents…");
-    try{
-      var data = await fetchJSON("/api/currents");
-      if(!data.currents.length){
-        main.innerHTML = '<div class="screen"><div class="screen-head"><h1>Currents</h1></div>' +
-          emptyHTML("No prioritized currents yet", "Set a Priority (1–10) on a Current in Notion to see it here.") + "</div>";
-        return;
-      }
-      main.innerHTML = '<div class="screen"><div class="screen-head"><h1>Currents</h1><p class="sub">Your top ' +
-        data.currents.length + ' by priority</p></div>' +
-        data.currents.map(function(c, i){ return cardHTML(c, "steps", i + 1); }).join("") + "</div>";
-    } catch(e){ main.innerHTML = errorHTML("currents", e); }
+  function renderCurrentsTab(){
+    var list = STATE.currents.filter(function(c){ return c.priority != null; })
+      .sort(function(a,b){ return a.priority - b.priority; }).slice(0,5);
+    var html = '<div class="screen"><div class="tabhead"><div><h1 style="font-size:26px;margin:0 0 2px;font-weight:800">Currents</h1>' +
+      '<p class="sub" style="color:var(--ink-faint);font-size:14px;margin:0">Your top ' + list.length + ' by priority</p></div>' +
+      '<button class="addbtn" data-action="new-current">+ New</button></div>';
+    if(!list.length){
+      html += emptyHTML("No prioritized currents yet", "Add a Current and give it a Priority (1–10) to feature it here.");
+    } else {
+      html += list.map(function(c, i){ return cardHTML(c, i + 1); }).join("");
+    }
+    html += "</div>";
+    main.innerHTML = html;
   }
 
-  async function renderCirclesTab(){
-    main.innerHTML = loadingHTML("Loading your circles…");
-    try{
-      var data = await fetchJSON("/api/circles");
-      var html = '<div class="screen"><div class="screen-head"><h1>Circles</h1><p class="sub">The five areas of life</p></div>';
-      data.circles.forEach(function(circle, idx){
-        html += '<h3 class="circle-heading" style="--accent:var(--' + circle.key + ')">' + esc(circle.label) + "</h3>";
-        if(!circle.masters.length){
-          html += emptyHTML("No master current yet", "Give a Current this Circle and clear its Parent Current in Notion to feature it here.");
-        } else {
-          circle.masters.forEach(function(m){
-            m.circle = circle.key; // the API groups by circle rather than stamping it on each master
-            html += cardHTML(m, "commitments", idx + 1);
-          });
-        }
-      });
-      html += "</div>";
-      main.innerHTML = html;
-    } catch(e){ main.innerHTML = errorHTML("circles", e); }
+  function renderCirclesTab(){
+    var html = '<div class="screen"><div class="screen-head"><h1>Circles</h1><p class="sub">The five areas of life</p></div>';
+    CIRCLE_DEFS.forEach(function(circle){
+      var list = STATE.currents.filter(function(c){ return c.circle === circle.key; })
+        .sort(function(a,b){ return (a.priority ?? 99) - (b.priority ?? 99); });
+      html += '<div class="circle-heading" style="--accent:var(--' + circle.key + ')">' +
+        '<span class="name">' + esc(circle.label) + '</span>' +
+        '<button class="addbtn small" data-action="new-current" data-circle="' + circle.key + '">+ Add</button></div>';
+      if(!list.length){
+        html += emptyHTML("Nothing here yet", "Add a Current to " + circle.label + ".");
+      } else {
+        list.forEach(function(c){ html += cardHTML(c, c.priority != null ? c.priority : null); });
+      }
+    });
+    html += "</div>";
+    main.innerHTML = html;
   }
 
   function dropRowHTML(d){
     var meta = [];
-    meta.push(d.currentName ? d.currentName : "Standalone");
+    var current = d.currentId ? currentById(d.currentId) : null;
+    meta.push(current ? current.name : "Standalone");
     if(d.dueDate) meta.push(fmtDate(d.dueDate));
     if(d.repeats) meta.push(d.repeats);
-    return '<div class="row" data-drop="' + escAttr(d.id) + '"><span class="t">' + esc(d.name || "Untitled") +
-      '</span><span class="meta">' + esc(meta.join(" · ")) + '</span><span class="chev">›</span></div>';
+    return '<div class="row' + (d.completed ? " done" : "") + '" data-drop="' + escAttr(d.id) + '">' +
+      '<button class="check' + (d.completed ? " done" : "") + '" data-action="toggle-drop" data-id="' + escAttr(d.id) + '" aria-label="Toggle complete">' +
+      (d.completed ? "✓" : "") + "</button>" +
+      '<span class="t">' + esc(d.name || "Untitled") + '</span><span class="meta">' + esc(meta.join(" · ")) + '</span><span class="chev">›</span></div>';
   }
 
-  async function renderDropsTab(){
-    main.innerHTML = loadingHTML("Loading your drops…");
-    try{
-      var data = await fetchJSON("/api/drops");
-      if(!data.drops.length){
-        main.innerHTML = '<div class="screen"><div class="screen-head"><h1>Drops</h1></div>' +
-          emptyHTML("No drops yet", "Add a Drop in Notion — link it to a Current, or leave it standalone.") + "</div>";
-        return;
-      }
-      var groups = [1,2,3,4,5].map(function(n){ return { n:n, label:STEP_LABELS[n-1], items:[] }; });
-      var noStep = { n:null, label:"No step set", items:[] };
-      data.drops.forEach(function(d){ (d.step ? groups[d.step-1] : noStep).items.push(d); });
-      var all = groups.concat(noStep.items.length ? [noStep] : []);
-      var html = '<div class="screen"><div class="screen-head"><h1>Drops</h1><p class="sub">' +
-        data.drops.length + " active</p></div>";
-      all.forEach(function(g){
-        if(!g.items.length) return;
-        html += '<h3 class="group-heading">' + esc(g.label) + '</h3><div class="rows card-like">' +
-          g.items.map(dropRowHTML).join("") + "</div>";
-      });
+  function renderDropsTab(){
+    var html = '<div class="screen"><div class="tabhead"><div><h1 style="font-size:26px;margin:0 0 2px;font-weight:800">Drops</h1>' +
+      '<p class="sub" style="color:var(--ink-faint);font-size:14px;margin:0">' + STATE.drops.length + ' total</p></div>' +
+      '<button class="addbtn" data-action="new-drop">+ New</button></div>';
+    if(!STATE.drops.length){
+      html += emptyHTML("No drops yet", "Add one — link it to a Current, or leave it standalone.") + "</div>";
       main.innerHTML = html;
-    } catch(e){ main.innerHTML = errorHTML("drops", e); }
+      return;
+    }
+    var groups = [1,2,3,4,5].map(function(n){ return { n:n, label:STEP_LABELS[n-1], items:[] }; });
+    var noStep = { n:null, label:"No step set", items:[] };
+    STATE.drops.forEach(function(d){ (d.step ? groups[d.step-1] : noStep).items.push(d); });
+    var all = groups.concat(noStep.items.length ? [noStep] : []);
+    all.forEach(function(g){
+      if(!g.items.length) return;
+      html += '<h3 class="group-heading">' + esc(g.label) + '</h3><div class="rows card-like">' +
+        g.items.map(dropRowHTML).join("") + "</div>";
+    });
+    html += "</div>";
+    main.innerHTML = html;
   }
 
   var TAB_RENDER = { currents:renderCurrentsTab, circles:renderCirclesTab, drops:renderDropsTab };
@@ -352,17 +353,17 @@
     });
     TAB_RENDER[tab]();
   }
+  function rerenderCurrentTab(){ TAB_RENDER[state.tab](); }
 
-  // ---------- sheets (stacked bottom sheets, for recursive current drill-down) ----------
+  // ---------- sheets ----------
   function sheetShell(title, subtitle, bodyHTML, opts){
     opts = opts || {};
     var back = opts.showBack ? '<button class="sheet-back" data-action="back">‹</button>' : '<span class="sheet-back spacer">‹</span>';
-    var link = opts.notionId ? '<a class="notion-link" href="' + notionUrl(opts.notionId) + '" target="_blank" rel="noopener">Open in Notion ↗</a>' : "";
     return '<div class="sheet-grab"></div><div class="sheet-head">' + back +
       '<div class="sheet-titles"><div class="sheet-title">' + title + "</div>" +
       (subtitle ? '<div class="sheet-sub">' + subtitle + "</div>" : "") + "</div>" +
       '<button class="sheet-close" data-action="close">✕</button></div>' +
-      '<div class="sheet-body">' + bodyHTML + link + "</div>";
+      '<div class="sheet-body">' + bodyHTML + "</div>";
   }
 
   function renderSheets(){
@@ -370,9 +371,6 @@
     sheetsRoot.style.display = "block";
     var n = sheetStack.length;
     var html = '<div class="backdrop" id="backdrop"></div>';
-    // Only the top sheet gets real content (and its close/back button). Lower
-    // sheets in the stack are a purely decorative peek so a shorter top sheet
-    // can never leave a taller lower sheet's header sticking out above it.
     for(var i = 0; i < n; i++){
       if(i === n - 1){
         html += '<div class="sheet">' + sheetStack[i].html + "</div>";
@@ -383,118 +381,254 @@
     sheetsRoot.innerHTML = html;
     document.getElementById("backdrop").onclick = closeSheets;
   }
-  function pushSheet(html){ sheetStack.push({ html:html }); renderSheets(); }
+  function pushSheet(html, refresh){ sheetStack.push({ html:html, refresh:refresh || null }); renderSheets(); }
   function replaceTopSheet(html){ if(sheetStack.length){ sheetStack[sheetStack.length-1].html = html; renderSheets(); } }
   function popSheet(){ sheetStack.pop(); renderSheets(); }
   function closeSheets(){ sheetStack = []; renderSheets(); }
+  // Pop the current (e.g. a form) sheet and, if that reveals another sheet
+  // underneath (e.g. the step sheet a "+ Add Drop" form was opened from),
+  // refresh its content so it reflects what was just saved/deleted.
+  function popAndRefresh(){
+    popSheet();
+    if(sheetStack.length && sheetStack[sheetStack.length-1].refresh){ sheetStack[sheetStack.length-1].refresh(); }
+  }
 
-  async function openStepSheet(id, name, step){
+  // ---------- step sheet (drops for a current x step) ----------
+  function stepSheetHTML(currentId, step){
+    var current = currentById(currentId);
     var label = STEP_LABELS[step-1];
-    pushSheet(sheetShell(esc(name), esc(label), loadingHTML("Loading…"), { showBack:true }));
-    try{
-      var data = await fetchJSON("/api/step?id=" + encodeURIComponent(id) + "&step=" + step);
-      var body = "";
-      if(step === 1 && data.myGoal){
-        body += '<div class="cell"><div class="label">My Goal</div><div class="body">' + esc(data.myGoal) + "</div></div>";
-      }
-      body += '<div class="drop-count">' + data.drops.length + " drop" + (data.drops.length === 1 ? "" : "s") + "</div>";
-      if(data.drops.length){
-        body += '<div class="rows">' + data.drops.map(function(d){
-          return '<div class="row" data-drop="' + escAttr(d.id) + '"><span class="t">' + esc(d.name || "Untitled") + '</span><span class="chev">›</span></div>';
-        }).join("") + "</div>";
-      } else {
-        body += emptyHTML("No drops yet", "Add a Drop in Notion, set its Step, and link it to this Current.");
-      }
-      replaceTopSheet(sheetShell(esc(data.currentName || name), esc(label), body, { showBack:true, notionId:id }));
-    } catch(e){
-      replaceTopSheet(sheetShell(esc(name), esc(label), errorInline(e), { showBack:true }));
+    var drops = STATE.drops.filter(function(d){ return d.currentId === currentId && d.step === step; });
+    var body = '<div class="drop-count">' + drops.length + " drop" + (drops.length === 1 ? "" : "s") + "</div>";
+    if(drops.length){
+      body += '<div class="rows">' + drops.map(function(d){
+        return '<div class="row' + (d.completed ? " done" : "") + '" data-drop="' + escAttr(d.id) + '">' +
+          '<button class="check' + (d.completed ? " done" : "") + '" data-action="toggle-drop" data-id="' + escAttr(d.id) + '">' +
+          (d.completed ? "✓" : "") + "</button>" +
+          '<span class="t">' + esc(d.name || "Untitled") + '</span><span class="chev">›</span></div>';
+      }).join("") + "</div>";
+    } else {
+      body += emptyHTML("No drops yet", "Add one filed under this step.");
     }
+    body += '<div class="formactions"><button class="btn primary" data-action="new-drop" data-current="' +
+      escAttr(currentId) + '" data-step="' + step + '">+ Add Drop to This Step</button></div>';
+    return sheetShell(esc(current ? current.name : ""), esc(label), body, { showBack:true });
+  }
+  function openStepSheet(currentId, step){
+    pushSheet(stepSheetHTML(currentId, step), function(){ replaceTopSheet(stepSheetHTML(currentId, step)); });
   }
 
-  async function openChildrenSheet(id, name){
-    pushSheet(sheetShell(esc(name || "…"), "", loadingHTML("Loading…"), { showBack:true }));
-    try{
-      var data = await fetchJSON("/api/children?id=" + encodeURIComponent(id));
-      var body = data.description ? '<p class="desc">' + esc(data.description) + "</p>" : "";
-      if(data.children.length){
-        body += '<div class="rows">' + data.children.map(function(c){
-          return '<div class="row" data-child="' + escAttr(c.id) + '" data-name="' + escAttr(c.name) +
-            '"><span class="dot"></span><span class="t">' + esc(c.name) + '</span><span class="chev">›</span></div>';
-        }).join("") + "</div>";
-      } else {
-        body += emptyHTML("No related currents yet", "");
-      }
-      replaceTopSheet(sheetShell(esc(data.name), "", body, { showBack:true, notionId:data.id }));
-    } catch(e){
-      replaceTopSheet(sheetShell(esc(name || ""), "", errorInline(e), { showBack:true }));
-    }
-  }
-
-  async function openDropSheet(id){
-    pushSheet(sheetShell("Drop", "", loadingHTML("Loading…"), { showBack:true }));
-    try{
-      var data = await fetchJSON("/api/drop?id=" + encodeURIComponent(id));
-      var d = data.drop;
-      var body = d.description ? '<p class="desc">' + esc(d.description) + "</p>" : "";
-      var facts = [];
-      if(d.dueDate) facts.push(["Due", fmtDate(d.dueDate)]);
-      if(d.completed) facts.push(["Completed", fmtDate(d.completed)]);
-      if(d.repeats) facts.push(["Repeats", esc(d.repeats)]);
-      if(facts.length){
-        body += '<div class="facts">' + facts.map(function(f){
-          return '<div class="fact"><span>' + esc(f[0]) + "</span><b>" + f[1] + "</b></div>";
-        }).join("") + "</div>";
-      }
-      var links = [];
-      if(d.design) links.push(["Design", d.design]);
-      if(d.moodboard) links.push(["Moodboard", d.moodboard]);
-      if(d.wireframe) links.push(["UX Wireframe", d.wireframe]);
-      if(links.length){
-        body += '<div class="rows">' + links.map(function(l){
-          return '<a class="row" href="' + escAttr(l[1]) + '" target="_blank" rel="noopener"><span class="t">' + esc(l[0]) + '</span><span class="chev">↗</span></a>';
-        }).join("") + "</div>";
-      }
-      replaceTopSheet(sheetShell(esc(d.name || "Untitled"), "", body, { showBack:true, notionId:d.id }));
-    } catch(e){
-      replaceTopSheet(sheetShell("Drop", "", errorInline(e), { showBack:true }));
-    }
-  }
-
-  // ---------- setup notice (no WORKER_URL configured yet) ----------
-  function renderSetupNotice(){
-    bottomnav.style.display = "none";
-    main.innerHTML = '<div class="screen setup">' +
-      "<h1>Connect Currents to Notion</h1>" +
-      "<p>This app reads your Currents and Drops live from Notion, through a small Cloudflare Worker that holds your integration token securely (a static page can't hold a secret).</p>" +
-      "<ol>" +
-      "<li>Deploy <code>currents/worker/worker.js</code> to Cloudflare Workers.</li>" +
-      "<li>Add your Notion integration token as the <code>NOTION_TOKEN</code> secret.</li>" +
-      "<li>Share your Currents and Drops databases with that integration in Notion.</li>" +
-      "<li>Paste the deployed Worker URL into <code>WORKER_URL</code> near the top of the script in <code>index.html</code>.</li>" +
-      "</ol>" +
-      "<p>See <code>currents/README.md</code> for the full walkthrough.</p>" +
+  function dropSheetHTML(id){
+    var d = STATE.drops.filter(function(x){ return x.id === id; })[0];
+    if(!d) return "";
+    var current = d.currentId ? currentById(d.currentId) : null;
+    var body = d.description ? '<p class="desc">' + esc(d.description) + "</p>" : "";
+    var facts = [];
+    facts.push(["Belongs to", current ? current.name : "Standalone"]);
+    if(d.step) facts.push(["Step", STEP_LABELS[d.step-1]]);
+    if(d.dueDate) facts.push(["Due", fmtDate(d.dueDate)]);
+    if(d.repeats) facts.push(["Repeats", esc(d.repeats)]);
+    body += '<div class="facts">' + facts.map(function(f){
+      return '<div class="fact"><span>' + esc(f[0]) + "</span><b>" + f[1] + "</b></div>";
+    }).join("") + "</div>";
+    body += '<div class="formactions">' +
+      '<button class="btn primary" data-action="toggle-drop" data-id="' + escAttr(d.id) + '">' +
+      (d.completed ? "Mark incomplete" : "Mark complete") + "</button>" +
+      '<button class="btn" style="background:var(--surface2);color:var(--ink)" data-action="edit-drop" data-id="' + escAttr(d.id) + '">Edit</button>' +
+      '<button class="btn danger" data-action="delete-drop" data-id="' + escAttr(d.id) + '">Delete</button>' +
       "</div>";
+    return sheetShell(esc(d.name || "Untitled"), "", body, { showBack:true });
+  }
+  function openDropSheet(id){
+    pushSheet(dropSheetHTML(id), function(){ replaceTopSheet(dropSheetHTML(id)); });
+  }
+
+  function toggleDrop(id){
+    var d = STATE.drops.filter(function(x){ return x.id === id; })[0];
+    if(!d) return;
+    d.completed = !d.completed;
+    saveState();
+    if(sheetStack.length && sheetStack[sheetStack.length-1].refresh){ sheetStack[sheetStack.length-1].refresh(); }
+    rerenderCurrentTab();
+  }
+  function deleteDrop(id){
+    if(!confirm("Delete this drop?")) return;
+    STATE.drops = STATE.drops.filter(function(d){ return d.id !== id; });
+    saveState();
+    popAndRefresh();
+    rerenderCurrentTab();
+  }
+
+  // ---------- Current form ----------
+  var currentDraft = null;
+  function openCurrentForm(existingId, defaultCircle){
+    var editing = existingId ? currentById(existingId) : null;
+    currentDraft = editing ? Object.assign({}, editing) : {
+      id:null, name:"", description:"", circle:defaultCircle || "self",
+      priority:null, kumara:"", aramuk:"", myB:""
+    };
+    pushSheet(sheetShell(editing ? "Edit Current" : "New Current", "", currentFormBodyHTML(), { showBack:true }));
+  }
+  function currentFormBodyHTML(){
+    var d = currentDraft;
+    var circleChips = CIRCLE_DEFS.map(function(c){
+      return '<button type="button" class="chip" data-field="circle" data-value="' + c.key + '" data-selected="' +
+        (d.circle === c.key) + '" style="--chip-accent:var(--' + c.key + ')">' + esc(c.label) + "</button>";
+    }).join("");
+    return '<div class="field"><label>Name</label><input id="f-name" value="' + escAttr(d.name) + '" placeholder="What are you moving toward?"></div>' +
+      '<div class="field"><label>Description</label><textarea id="f-description" placeholder="A sentence or two.">' + esc(d.description) + '</textarea></div>' +
+      '<div class="field"><label>Circle</label><div class="chiprow">' + circleChips + "</div></div>" +
+      '<div class="field"><label>Priority (1–10, optional — leave blank to keep it out of the top 5)</label>' +
+      '<input id="f-priority" type="number" min="1" max="10" value="' + (d.priority != null ? d.priority : "") + '"></div>' +
+      '<div class="field"><label>Kumara — the feeling you want on the other side</label><textarea id="f-kumara">' + esc(d.kumara) + "</textarea></div>" +
+      '<div class="field"><label>Aramuk — the feeling standing in the way</label><textarea id="f-aramuk">' + esc(d.aramuk) + "</textarea></div>" +
+      '<div class="field"><label>My Goal (shown in the Clarify step)</label><textarea id="f-myb">' + esc(d.myB) + "</textarea></div>" +
+      '<div class="formactions">' +
+      '<button class="btn primary" data-action="save-current">Save</button>' +
+      (d.id ? '<button class="btn danger" data-action="delete-current" data-id="' + escAttr(d.id) + '">Delete</button>' : "") +
+      "</div>";
+  }
+  function readCurrentFormInputs(){
+    currentDraft.name = (document.getElementById("f-name") || {}).value || "";
+    currentDraft.description = (document.getElementById("f-description") || {}).value || "";
+    var p = (document.getElementById("f-priority") || {}).value;
+    currentDraft.priority = p === "" || p == null ? null : Math.max(1, Math.min(10, parseInt(p, 10)));
+    currentDraft.kumara = (document.getElementById("f-kumara") || {}).value || "";
+    currentDraft.aramuk = (document.getElementById("f-aramuk") || {}).value || "";
+    currentDraft.myB = (document.getElementById("f-myb") || {}).value || "";
+  }
+  function saveCurrentForm(){
+    readCurrentFormInputs();
+    if(!currentDraft.name.trim()){ return; }
+    if(currentDraft.id){
+      var existing = currentById(currentDraft.id);
+      Object.assign(existing, currentDraft);
+    } else {
+      currentDraft.id = newId();
+      STATE.currents.push(currentDraft);
+    }
+    saveState();
+    popAndRefresh();
+    rerenderCurrentTab();
+  }
+  function deleteCurrentConfirm(id){
+    if(!confirm("Delete this current? Its drops will become standalone, not deleted.")) return;
+    STATE.currents = STATE.currents.filter(function(c){ return c.id !== id; });
+    STATE.drops.forEach(function(d){ if(d.currentId === id) d.currentId = null; });
+    saveState();
+    popAndRefresh();
+    rerenderCurrentTab();
+  }
+
+  // ---------- Drop form ----------
+  var dropDraft = null;
+  function openDropForm(existingId, defaultCurrentId, defaultStep){
+    var editing = existingId ? STATE.drops.filter(function(d){ return d.id === existingId; })[0] : null;
+    dropDraft = editing ? Object.assign({}, editing) : {
+      id:null, name:"", description:"", step: defaultStep || null,
+      currentId: defaultCurrentId || null, dueDate:null, repeats:"", completed:false
+    };
+    pushSheet(sheetShell(editing ? "Edit Drop" : "New Drop", "", dropFormBodyHTML(), { showBack:true }));
+  }
+  function dropFormBodyHTML(){
+    var d = dropDraft;
+    var stepChips = ['<button type="button" class="chip" data-field="step" data-value="" data-selected="' +
+      (!d.step) + '">None</button>'].concat(STEP_LABELS.map(function(label, i){
+      var n = i + 1;
+      return '<button type="button" class="chip" data-field="step" data-value="' + n + '" data-selected="' +
+        (d.step === n) + '">' + n + "</button>";
+    })).join("");
+    var currentOptions = '<option value="">Standalone</option>' + STATE.currents.map(function(c){
+      return '<option value="' + escAttr(c.id) + '"' + (d.currentId === c.id ? " selected" : "") + ">" + esc(c.name) + "</option>";
+    }).join("");
+    return '<div class="field"><label>Name</label><input id="f-dname" value="' + escAttr(d.name) + '" placeholder="What\'s the action?"></div>' +
+      '<div class="field"><label>Description</label><textarea id="f-ddescription">' + esc(d.description) + "</textarea></div>" +
+      '<div class="field"><label>Current</label><select id="f-current">' + currentOptions + "</select></div>" +
+      '<div class="field"><label>Step</label><div class="chiprow">' + stepChips + "</div></div>" +
+      '<div class="formrow">' +
+      '<div class="field"><label>Due date</label><input id="f-due" type="date" value="' + escAttr(d.dueDate || "") + '"></div>' +
+      '<div class="field"><label>Repeats</label><input id="f-repeats" value="' + escAttr(d.repeats || "") + '" placeholder="e.g. Daily"></div>' +
+      "</div>" +
+      '<div class="formactions">' +
+      '<button class="btn primary" data-action="save-drop">Save</button>' +
+      (d.id ? '<button class="btn danger" data-action="delete-drop" data-id="' + escAttr(d.id) + '">Delete</button>' : "") +
+      "</div>";
+  }
+  function readDropFormInputs(){
+    dropDraft.name = (document.getElementById("f-dname") || {}).value || "";
+    dropDraft.description = (document.getElementById("f-ddescription") || {}).value || "";
+    var cur = (document.getElementById("f-current") || {}).value;
+    dropDraft.currentId = cur || null;
+    dropDraft.dueDate = (document.getElementById("f-due") || {}).value || null;
+    dropDraft.repeats = (document.getElementById("f-repeats") || {}).value || "";
+  }
+  function saveDropForm(){
+    readDropFormInputs();
+    if(!dropDraft.name.trim()){ return; }
+    if(dropDraft.id){
+      var existing = STATE.drops.filter(function(d){ return d.id === dropDraft.id; })[0];
+      Object.assign(existing, dropDraft);
+    } else {
+      dropDraft.id = newId();
+      STATE.drops.push(dropDraft);
+    }
+    saveState();
+    popAndRefresh();
+    rerenderCurrentTab();
+  }
+
+  // ---------- welcome (first run) ----------
+  function maybeShowWelcome(){
+    if(STATE.currents.length || STATE.drops.length) return false;
+    main.innerHTML = '<div class="screen welcome">' +
+      "<h1>Welcome to Currents</h1>" +
+      "<p>Currents, Circles, and Drops — built on the Mystic Method.</p>" +
+      "<ul>" +
+      "<li><b>Currents</b> are the projects or visions you're moving toward. Each one carries its Kumara (the feeling you want on the other side) and Aramuk (the feeling standing in the way), plus five steps: Clarify, Visualize, Feel, Act, Be.</li>" +
+      "<li><b>Circles</b> are the five areas of life your Currents live in — Self, Ohana, Collective, After Glow, Kumara.</li>" +
+      "<li><b>Drops</b> are the actions that move a Current forward — or stand alone.</li>" +
+      "</ul>" +
+      '<p style="color:var(--ink-faint);font-size:13px">Everything you add stays on this device — nothing is uploaded anywhere.</p>' +
+      '<div class="formactions"><button class="btn primary" data-action="new-current">Add your first Current</button></div>' +
+      "</div>";
+    return true;
   }
 
   // ---------- wiring ----------
-  function handleMainClick(e){
-    var retryBtn = e.target.closest("[data-action='retry']");
-    if(retryBtn){ TAB_RENDER[retryBtn.getAttribute("data-tab")](); return; }
-    var stepRow = e.target.closest(".row[data-step]");
-    if(stepRow){ openStepSheet(stepRow.getAttribute("data-id"), stepRow.getAttribute("data-name"), parseInt(stepRow.getAttribute("data-step"), 10)); return; }
-    var childRow = e.target.closest(".row[data-child]");
-    if(childRow){ openChildrenSheet(childRow.getAttribute("data-child"), childRow.getAttribute("data-name")); return; }
-    var dropRow = e.target.closest(".row[data-drop]");
-    if(dropRow){ openDropSheet(dropRow.getAttribute("data-drop")); return; }
+  function handleAction(target){
+    var action = target.getAttribute("data-action");
+    if(!action) return false;
+    if(action === "close"){ closeSheets(); return true; }
+    if(action === "back"){ popSheet(); return true; }
+    if(action === "new-current"){ openCurrentForm(null, target.getAttribute("data-circle")); return true; }
+    if(action === "edit-current"){ openCurrentForm(target.getAttribute("data-id")); return true; }
+    if(action === "save-current"){ saveCurrentForm(); return true; }
+    if(action === "delete-current"){ deleteCurrentConfirm(target.getAttribute("data-id")); return true; }
+    if(action === "new-drop"){ openDropForm(null, target.getAttribute("data-current"), parseInt(target.getAttribute("data-step"), 10) || null); return true; }
+    if(action === "edit-drop"){ openDropForm(target.getAttribute("data-id")); return true; }
+    if(action === "save-drop"){ saveDropForm(); return true; }
+    if(action === "delete-drop"){ deleteDrop(target.getAttribute("data-id")); return true; }
+    if(action === "toggle-drop"){ toggleDrop(target.getAttribute("data-id")); return true; }
+    return false;
   }
 
-  function handleSheetsClick(e){
-    if(e.target.closest("[data-action='close']")){ closeSheets(); return; }
-    if(e.target.closest("[data-action='back']")){ popSheet(); return; }
+  function handleClick(e){
+    var actionEl = e.target.closest("[data-action]");
+    if(actionEl && handleAction(actionEl)) return;
+    var chip = e.target.closest(".chip[data-field]");
+    if(chip){
+      var field = chip.getAttribute("data-field");
+      var value = chip.getAttribute("data-value");
+      var group = chip.parentElement;
+      Array.prototype.forEach.call(group.querySelectorAll(".chip"), function(c){ c.setAttribute("data-selected", "false"); });
+      chip.setAttribute("data-selected", "true");
+      if(field === "circle"){ currentDraft.circle = value; }
+      if(field === "step"){ dropDraft.step = value ? parseInt(value, 10) : null; }
+      return;
+    }
+    var stepRow = e.target.closest(".row[data-step]");
+    if(stepRow){ openStepSheet(stepRow.getAttribute("data-current"), parseInt(stepRow.getAttribute("data-step"), 10)); return; }
     var dropRow = e.target.closest(".row[data-drop]");
     if(dropRow){ openDropSheet(dropRow.getAttribute("data-drop")); return; }
-    var childRow = e.target.closest(".row[data-child]");
-    if(childRow){ openChildrenSheet(childRow.getAttribute("data-child"), childRow.getAttribute("data-name")); return; }
   }
 
   function init(){
@@ -510,12 +644,9 @@
       b.onclick = function(){ switchTab(b.getAttribute("data-tab")); };
     });
 
-    main.addEventListener("click", handleMainClick);
-    sheetsRoot.addEventListener("click", handleSheetsClick);
-    document.getElementById("refreshBtn").onclick = function(){ TAB_RENDER[state.tab](); };
+    document.body.addEventListener("click", handleClick);
 
-    if(!WORKER_URL){ renderSetupNotice(); return; }
-    switchTab("currents");
+    if(!maybeShowWelcome()){ switchTab("currents"); }
   }
 
   if(document.readyState === "loading"){
