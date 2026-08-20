@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Currents — Currents, Circles, and Drops from the Mystic Method. Your data, your device.">
+<meta name="theme-color" content="#0b0b0f">
+<title>Currents</title>
+</head>
+<body>
+<style>
+  :root{
+    --bg:#0b0b0f;
+    --bg2:#111116;
+    --surface:#16161d;
+    --surface2:#1c1c25;
+    --border:rgba(255,255,255,.09);
+    --border-strong:rgba(255,255,255,.18);
+    --ink:#f2f1ee;
+    --ink-soft:#a7adba;
+    --ink-faint:#6d7280;
+    --danger:#e0716a;
+    --radius:18px;
+    --radius-sm:12px;
+    --maxw:480px;
+    --font-body:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,system-ui,sans-serif;
+
+    --self:#8b7bd8;
+    --ohana:#e8608f;
+    --collective:#3fb6c9;
+    --afterglow:#e0a84e;
+    --kumara:#4fbf74;
+  }
+
+  *{box-sizing:border-box}
+  html,body{margin:0;background:var(--bg)}
+  body{
+    font-family:var(--font-body);color:var(--ink);line-height:1.5;
+    -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+    min-height:100vh;
+  }
+  button,input,textarea,select{font-family:inherit}
+  a{color:inherit}
+  ::selection{background:var(--self);color:#fff}
+
+  .app{max-width:var(--maxw);margin:0 auto;min-height:100vh;
+    display:flex;flex-direction:column;
+    padding:max(10px,env(safe-area-inset-top)) 16px calc(96px + env(safe-area-inset-bottom));}
+
+  /* ---------- top bar ---------- */
+  .topbar{display:flex;align-items:center;justify-content:space-between;min-height:44px;margin-bottom:6px}
+  .brand{font-weight:800;font-size:19px;letter-spacing:.1px}
+
+  main{flex:1;display:flex;flex-direction:column}
+  .screen{animation:rise .32s cubic-bezier(.2,.7,.2,1) both}
+  @keyframes rise{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+  @media (prefers-reduced-motion: reduce){ .screen{animation:none} *{scroll-behavior:auto !important} }
+
+  .screen-head{margin:8px 0 16px}
+  .screen-head h1{font-size:26px;margin:0 0 2px;font-weight:800}
+  .screen-head .sub{color:var(--ink-faint);font-size:14px;margin:0}
+
+  .tabhead{display:flex;align-items:flex-end;justify-content:space-between;gap:10px;margin:8px 0 16px}
+
+  .circle-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;
+    margin:22px 0 10px;padding-left:2px}
+  .circle-heading:first-of-type{margin-top:0}
+  .circle-heading .name{font-size:13px;text-transform:uppercase;letter-spacing:.07em;font-weight:800;
+    color:var(--accent, var(--ink-faint))}
+  .group-heading{font-size:13px;text-transform:uppercase;letter-spacing:.06em;font-weight:800;
+    color:var(--ink-faint);margin:20px 0 8px;padding-left:2px}
+  .group-heading:first-of-type{margin-top:0}
+
+  /* ---------- buttons ---------- */
+  .addbtn{-webkit-appearance:none;appearance:none;border:1px solid var(--border-strong);background:var(--surface);
+    color:var(--ink);padding:9px 14px;border-radius:12px;font-weight:700;font-size:13.5px;cursor:pointer;
+    display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+  .addbtn:active{transform:scale(.96)}
+  .addbtn.small{padding:6px 12px;font-size:12.5px}
+
+  /* ---------- card ---------- */
+  .card{--accent:var(--kumara);background:var(--surface);border:1px solid var(--border);
+    border-left:3px solid var(--accent);border-radius:var(--radius);
+    padding:18px 18px 0;margin-bottom:16px;position:relative}
+  .card .num{width:34px;height:34px;border-radius:50%;border:2px solid var(--accent);color:var(--accent);
+    display:grid;place-items:center;font-weight:800;font-size:15px;margin-bottom:10px}
+  .card .editbtn{position:absolute;top:16px;right:16px;width:30px;height:30px;border-radius:50%;
+    border:1px solid var(--border);background:var(--surface2);color:var(--ink-faint);display:grid;
+    place-items:center;cursor:pointer;font-size:13px;-webkit-appearance:none;appearance:none}
+  .card .editbtn:active{transform:scale(.92)}
+  .card h2{font-size:19px;font-weight:800;margin:0 44px 6px 0;line-height:1.28}
+  .card .desc{color:var(--ink-soft);font-size:14.5px;line-height:1.5;margin:0 0 2px}
+
+  .cell{background:var(--surface2);margin:0 -18px;padding:11px 18px;border-top:1px solid var(--border)}
+  .cell:last-child{border-radius:0 0 calc(var(--radius) - 1px) calc(var(--radius) - 1px)}
+  .cell .label{font-size:10.5px;font-weight:800;letter-spacing:.07em;color:var(--ink-faint);
+    text-transform:uppercase;margin-bottom:4px}
+  .cell .body{font-size:14px;color:var(--ink-soft);line-height:1.45;white-space:pre-wrap}
+
+  .rows{margin:0 -18px}
+  .row{display:flex;align-items:center;gap:12px;padding:13px 18px;border-top:1px solid var(--border);
+    cursor:pointer;-webkit-tap-highlight-color:transparent;text-decoration:none;color:inherit}
+  .row:active{background:rgba(255,255,255,.04)}
+  .row.disabled{cursor:default;opacity:.5}
+  .row .n{width:18px;flex:0 0 auto;font-weight:800;font-size:14px;color:var(--accent,var(--ink-faint))}
+  .row .dot{width:8px;height:8px;border-radius:50%;background:var(--ink-faint);flex:0 0 auto}
+  .row .t{flex:1;font-size:15px;font-weight:600;color:var(--ink);min-width:0}
+  .row .t.placeholder{color:var(--ink-faint);font-weight:500}
+  .row.done .t{color:var(--ink-faint);text-decoration:line-through}
+  .row .meta{font-size:12.5px;color:var(--ink-faint);white-space:nowrap;flex:0 0 auto;max-width:38%;
+    overflow:hidden;text-overflow:ellipsis}
+  .row .chev{color:var(--ink-faint);font-size:15px;flex:0 0 auto}
+
+  .rows.card-like{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);
+    margin:0 0 4px;overflow:hidden}
+  .rows.card-like .row:first-child{border-top:none}
+
+  .check{width:22px;height:22px;border-radius:7px;border:2px solid var(--border-strong);flex:0 0 auto;
+    display:grid;place-items:center;cursor:pointer;font-size:13px;font-weight:800;color:transparent;
+    -webkit-appearance:none;appearance:none;background:none;padding:0}
+  .check.done{background:var(--kumara);border-color:var(--kumara);color:#0b0b0f}
+
+  /* ---------- states ---------- */
+  .empty-block{padding:22px 4px;color:var(--ink-faint);font-size:14px;line-height:1.5}
+  .empty-block b{display:block;color:var(--ink-soft);font-size:15px;font-weight:700;margin-bottom:4px}
+
+  .welcome{padding-top:14px}
+  .welcome h1{font-size:27px;margin:0 0 10px;font-weight:800;text-wrap:balance}
+  .welcome p{color:var(--ink-soft);line-height:1.6;font-size:14.5px;margin:0 0 12px}
+  .welcome p b{color:var(--ink)}
+
+  .onboard-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+  .onboard-skip{font-size:13px;color:var(--ink-faint);background:none;border:0;cursor:pointer;
+    text-decoration:underline;text-underline-offset:2px;padding:4px 2px;-webkit-appearance:none;appearance:none}
+  .onboard-progress{display:flex;gap:6px;margin:0 0 20px}
+  .onboard-progress .dot{flex:1;height:4px;border-radius:2px;background:var(--border)}
+  .onboard-progress .dot.done{background:var(--self)}
+  .onboard-circle-desc{color:var(--ink-faint);font-size:13px;margin-top:8px;min-height:18px}
+  .onboard-error{color:var(--danger);font-size:13px;margin:-4px 0 14px}
+
+  /* ---------- bottom nav ---------- */
+  .bottomnav{position:fixed;left:50%;bottom:0;transform:translateX(-50%);width:100%;max-width:var(--maxw);
+    display:flex;background:rgba(17,17,22,.92);backdrop-filter:blur(14px);
+    border-top:1px solid var(--border);padding:8px 6px calc(8px + env(safe-area-inset-bottom))}
+  .navbtn{flex:1;-webkit-appearance:none;appearance:none;border:0;background:none;color:var(--ink-faint);
+    display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 0;cursor:pointer;font-size:11px;
+    font-weight:700;position:relative}
+  .navbtn .ic{font-size:19px}
+  .navbtn[aria-current="true"]{color:var(--ink)}
+  .navbtn[aria-current="true"]::after{content:"";position:absolute;top:-2px;width:5px;height:5px;
+    border-radius:50%;background:var(--self)}
+
+  /* ---------- bottom sheets ---------- */
+  #sheets{position:fixed;inset:0;z-index:200;display:none}
+  .backdrop{position:absolute;inset:0;background:rgba(0,0,0,.6)}
+  .sheet{position:absolute;left:0;right:0;bottom:0;max-width:var(--maxw);margin:0 auto;background:var(--bg2);
+    border:1px solid var(--border-strong);border-bottom:none;border-radius:20px 20px 0 0;
+    max-height:88vh;overflow-y:auto;padding:10px 18px calc(22px + env(safe-area-inset-bottom));
+    transition:transform .18s ease, opacity .18s ease}
+  .sheet-peek{height:16px;padding:0;pointer-events:none;box-shadow:none}
+  .sheet-grab{width:36px;height:4px;border-radius:2px;background:var(--border-strong);margin:0 auto 10px}
+  .sheet-head{display:flex;align-items:flex-start;gap:10px;padding-bottom:10px;margin-bottom:10px;
+    border-bottom:1px solid var(--border)}
+  .sheet-titles{flex:1;min-width:0}
+  .sheet-title{font-size:17px;font-weight:800;line-height:1.3}
+  .sheet-sub{font-size:13.5px;color:var(--ink-faint);margin-top:2px}
+  .sheet-back,.sheet-close{-webkit-appearance:none;appearance:none;border:0;background:var(--surface2);
+    color:var(--ink-soft);width:30px;height:30px;border-radius:50%;font-size:15px;cursor:pointer;
+    flex:0 0 auto;display:grid;place-items:center}
+  .sheet-back.spacer{visibility:hidden}
+  .sheet-body .desc{color:var(--ink-soft);font-size:14.5px;line-height:1.55;margin:0 0 12px}
+  .drop-count{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;
+    color:var(--ink-faint);margin:2px 0 8px}
+  .facts{display:flex;flex-direction:column;gap:8px;margin:0 0 14px}
+  .fact{display:flex;justify-content:space-between;font-size:14px;padding:9px 12px;
+    background:var(--surface2);border-radius:10px}
+  .fact span{color:var(--ink-faint)}
+  .fact b{font-weight:700}
+
+  /* ---------- forms ---------- */
+  .field{margin-bottom:14px}
+  .field label{display:block;font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;
+    color:var(--ink-faint);margin-bottom:6px}
+  .field input,.field textarea,.field select{width:100%;background:var(--surface2);border:1px solid var(--border);
+    border-radius:10px;padding:10px 12px;color:var(--ink);font-size:15px;font-family:inherit}
+  .field input:focus,.field textarea:focus,.field select:focus{outline:2px solid var(--self);outline-offset:1px}
+  .field textarea{min-height:64px;resize:vertical;line-height:1.4}
+  .formrow{display:flex;gap:10px}
+  .formrow .field{flex:1;min-width:0}
+  .chiprow{display:flex;flex-wrap:wrap;gap:8px}
+  .chip{-webkit-appearance:none;appearance:none;border:1px solid var(--border-strong);background:var(--surface2);
+    color:var(--ink-soft);padding:8px 13px;border-radius:999px;font-size:13.5px;font-weight:700;cursor:pointer}
+  .chip[data-selected="true"]{background:var(--chip-accent,var(--self));border-color:var(--chip-accent,var(--self));color:#0b0b0f}
+  .formactions{display:flex;gap:10px;margin-top:18px}
+  .btn{-webkit-appearance:none;appearance:none;border:0;border-radius:12px;padding:13px;font-weight:800;
+    font-size:14.5px;cursor:pointer;flex:1;text-align:center}
+  .btn.primary{background:var(--self);color:#fff}
+  .btn.danger{background:transparent;border:1px solid var(--danger);color:var(--danger);flex:0 0 auto;padding:13px 16px}
+  .btn:active{transform:scale(.98)}
+</style>
+
+<div class="app">
+  <header class="topbar">
+    <span class="brand">🌊 Currents</span>
+  </header>
+  <main id="main"></main>
+</div>
+<nav class="bottomnav" id="bottomnav"></nav>
+<div id="sheets"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  var STORAGE_KEY = "currents-app-v1";
+  var STEP_LABELS = ["Clarify your destination","Visualize the path","Feel the transformation","Follow your strategy","Be yourself"];
+  var CIRCLE_DEFS = [
+    { key:"self", label:"Self", desc:"Healing, growth, becoming who you're meant to be." },
+    { key:"ohana", label:"Ohana", desc:"Family, close friends, the people nearest to you." },
+    { key:"collective", label:"Collective", desc:"Your work in the world — clients, community, impact." },
+    { key:"afterglow", label:"After Glow", desc:"The legacy you leave — what outlasts you." },
+    { key:"kumara", label:"Kumara", desc:"The practice itself — the whole system." }
+  ];
+  var TABS = [
+    { id:"currents", ic:"🌊", lb:"Currents" },
+    { id:"circles", ic:"⭕", lb:"Circles" },
+    { id:"drops", ic:"💧", lb:"Drops" }
+  ];
+
+  function loadState(){
+    try{
+      var raw = localStorage.getItem(STORAGE_KEY);
+      if(raw){ var s = JSON.parse(raw); if(s && s.currents && s.drops) return s; }
+    } catch(e){}
+    return { currents:[], drops:[] };
+  }
+  var STATE = loadState();
+  function saveState(){ try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(STATE)); } catch(e){} }
+  function newId(){ return "id-" + Date.now().toString(36) + Math.random().toString(36).slice(2,8); }
+
+  var state = { tab:"currents" };
+  var sheetStack = [];
+  var main, bottomnav, sheetsRoot;
+
+  function esc(v){
+    return String(v==null ? "" : v).replace(/[&<>"']/g, function(c){
+      return { "&":"&amp;", "<":"&lt;", ">":"&gt;", "\"":"&quot;", "'":"&#39;" }[c];
+    });
+  }
+  function escAttr(v){ return esc(v).replace(/"/g,"&quot;"); }
+  function fmtDate(iso){
+    if(!iso) return "";
+    var d = new Date(iso + "T00:00:00");
+    if(isNaN(d.getTime())) return iso;
+    return d.toLocaleDateString(undefined, { month:"short", day:"numeric" });
+  }
+  function circleVar(circle){ return "var(--" + (circle || "self") + ")"; }
+  function circleLabel(key){ var c = CIRCLE_DEFS.filter(function(c){ return c.key===key; })[0]; return c ? c.label : key; }
+  function currentById(id){ return STATE.currents.filter(function(c){ return c.id===id; })[0] || null; }
+
+  function loadingHTML(msg){ return msg; }
+  function emptyHTML(title, sub){
+    return '<div class="empty-block"><b>' + esc(title) + "</b>" + (sub ? esc(sub) : "") + "</div>";
+  }
+
+  // ---------- card component ----------
+  function cardHTML(current, badgeNumber){
+    var accent = circleVar(current.circle);
+    var rowsHTML = STEP_LABELS.map(function(label, i){
+      var n = i + 1;
+      var count = STATE.drops.filter(function(d){ return d.currentId === current.id && d.step === n; }).length;
+      return '<div class="row" data-step="' + n + '" data-current="' + escAttr(current.id) +
+        '"><span class="n">' + n + '</span><span class="t">' + esc(label) + '</span>' +
+        (count ? '<span class="meta">' + count + "</span>" : "") + '<span class="chev">›</span></div>';
+    }).join("");
+    return '<article class="card" style="--accent:' + accent + '">' +
+      (badgeNumber != null ? '<span class="num">' + esc(badgeNumber) + "</span>" : "") +
+      '<button class="editbtn" data-action="edit-current" data-id="' + escAttr(current.id) + '" aria-label="Edit">✎</button>' +
+      "<h2>" + esc(current.name || "Untitled") + "</h2>" +
+      (current.description ? '<p class="desc">' + esc(current.description) + "</p>" : "") +
+      '<div class="cell"><div class="label">Kumara</div><div class="body">' + (current.kumara ? esc(current.kumara) : "—") + "</div></div>" +
+      '<div class="rows">' + rowsHTML + "</div>" +
+      '<div class="cell"><div class="label">Aramuk</div><div class="body">' + (current.aramuk ? esc(current.aramuk) : "—") + "</div></div>" +
+      "</article>";
+  }
+
+  // ---------- tabs ----------
+  function renderCurrentsTab(){
+    var list = STATE.currents.filter(function(c){ return c.priority != null; })
+      .sort(function(a,b){ return a.priority - b.priority; }).slice(0,5);
+    var html = '<div class="screen"><div class="tabhead"><div><h1 style="font-size:26px;margin:0 0 2px;font-weight:800">Currents</h1>' +
+      '<p class="sub" style="color:var(--ink-faint);font-size:14px;margin:0">Your top ' + list.length + ' by priority</p></div>' +
+      '<button class="addbtn" data-action="new-current">+ New</button></div>';
+    if(!list.length){
+      html += emptyHTML("No prioritized currents yet", "Add a Current and give it a Priority (1–10) to feature it here.");
+    } else {
+      html += list.map(function(c, i){ return cardHTML(c, i + 1); }).join("");
+    }
+    html += "</div>";
+    main.innerHTML = html;
+  }
+
+  function renderCirclesTab(){
+    var html = '<div class="screen"><div class="screen-head"><h1>Circles</h1><p class="sub">The five areas of life</p></div>';
+    CIRCLE_DEFS.forEach(function(circle){
+      var list = STATE.currents.filter(function(c){ return c.circle === circle.key; })
+        .sort(function(a,b){ return (a.priority ?? 99) - (b.priority ?? 99); });
+      html += '<div class="circle-heading" style="--accent:var(--' + circle.key + ')">' +
+        '<span class="name">' + esc(circle.label) + '</span>' +
+        '<button class="addbtn small" data-action="new-current" data-circle="' + circle.key + '">+ Add</button></div>';
+      if(!list.length){
+        html += emptyHTML("Nothing here yet", "Add a Current to " + circle.label + ".");
+      } else {
+        list.forEach(function(c){ html += cardHTML(c, c.priority != null ? c.priority : null); });
+      }
+    });
+    html += "</div>";
+    main.innerHTML = html;
+  }
+
+  function dropRowHTML(d){
+    var meta = [];
+    var current = d.currentId ? currentById(d.currentId) : null;
+    meta.push(current ? current.name : "Standalone");
+    if(d.dueDate) meta.push(fmtDate(d.dueDate));
+    if(d.repeats) meta.push(d.repeats);
+    return '<div class="row' + (d.completed ? " done" : "") + '" data-drop="' + escAttr(d.id) + '">' +
+      '<button class="check' + (d.completed ? " done" : "") + '" data-action="toggle-drop" data-id="' + escAttr(d.id) + '" aria-label="Toggle complete">' +
+      (d.completed ? "✓" : "") + "</button>" +
+      '<span class="t">' + esc(d.name || "Untitled") + '</span><span class="meta">' + esc(meta.join(" · ")) + '</span><span class="chev">›</span></div>';
+  }
+
+  function renderDropsTab(){
+    var html = '<div class="screen"><div class="tabhead"><div><h1 style="font-size:26px;margin:0 0 2px;font-weight:800">Drops</h1>' +
+      '<p class="sub" style="color:var(--ink-faint);font-size:14px;margin:0">' + STATE.drops.length + ' total</p></div>' +
+      '<button class="addbtn" data-action="new-drop">+ New</button></div>';
+    if(!STATE.drops.length){
+      html += emptyHTML("No drops yet", "Add one — link it to a Current, or leave it standalone.") + "</div>";
+      main.innerHTML = html;
+      return;
+    }
+    var groups = [1,2,3,4,5].map(function(n){ return { n:n, label:STEP_LABELS[n-1], items:[] }; });
+    var noStep = { n:null, label:"No step set", items:[] };
+    STATE.drops.forEach(function(d){ (d.step ? groups[d.step-1] : noStep).items.push(d); });
+    var all = groups.concat(noStep.items.length ? [noStep] : []);
+    all.forEach(function(g){
+      if(!g.items.length) return;
+      html += '<h3 class="group-heading">' + esc(g.label) + '</h3><div class="rows card-like">' +
+        g.items.map(dropRowHTML).join("") + "</div>";
+    });
+    html += "</div>";
+    main.innerHTML = html;
+  }
+
+  var TAB_RENDER = { currents:renderCurrentsTab, circles:renderCirclesTab, drops:renderDropsTab };
+
+  function switchTab(tab){
+    state.tab = tab;
+    Array.prototype.forEach.call(bottomnav.querySelectorAll(".navbtn"), function(b){
+      b.setAttribute("aria-current", String(b.getAttribute("data-tab") === tab));
+    });
+    TAB_RENDER[tab]();
+  }
+  function rerenderCurrentTab(){ TAB_RENDER[state.tab](); }
+
+  // ---------- sheets ----------
+  function sheetShell(title, subtitle, bodyHTML, opts){
+    opts = opts || {};
+    var back = opts.showBack ? '<button class="sheet-back" data-action="back">‹</button>' : '<span class="sheet-back spacer">‹</span>';
+    return '<div class="sheet-grab"></div><div class="sheet-head">' + back +
+      '<div class="sheet-titles"><div class="sheet-title">' + title + "</div>" +
+      (subtitle ? '<div class="sheet-sub">' + subtitle + "</div>" : "") + "</div>" +
+      '<button class="sheet-close" data-action="close">✕</button></div>' +
+      '<div class="sheet-body">' + bodyHTML + "</div>";
+  }
+
+  function renderSheets(){
+    if(!sheetStack.length){ sheetsRoot.innerHTML = ""; sheetsRoot.style.display = "none"; return; }
+    sheetsRoot.style.display = "block";
+    var n = sheetStack.length;
+    var html = '<div class="backdrop" id="backdrop"></div>';
+    for(var i = 0; i < n; i++){
+      if(i === n - 1){
+        html += '<div class="sheet">' + sheetStack[i].html + "</div>";
+      } else {
+        html += '<div class="sheet sheet-peek" style="bottom:' + ((n - 1 - i) * 10) + 'px"></div>';
+      }
+    }
+    sheetsRoot.innerHTML = html;
+    document.getElementById("backdrop").onclick = closeSheets;
+  }
+  function pushSheet(html, refresh){ sheetStack.push({ html:html, refresh:refresh || null }); renderSheets(); }
+  function replaceTopSheet(html){ if(sheetStack.length){ sheetStack[sheetStack.length-1].html = html; renderSheets(); } }
+  function popSheet(){ sheetStack.pop(); renderSheets(); }
+  function closeSheets(){ sheetStack = []; renderSheets(); }
+  // Pop the current (e.g. a form) sheet and, if that reveals another sheet
+  // underneath (e.g. the step sheet a "+ Add Drop" form was opened from),
+  // refresh its content so it reflects what was just saved/deleted.
+  function popAndRefresh(){
+    popSheet();
+    if(sheetStack.length && sheetStack[sheetStack.length-1].refresh){ sheetStack[sheetStack.length-1].refresh(); }
+  }
+
+  // ---------- step sheet (drops for a current x step) ----------
+  function stepSheetHTML(currentId, step){
+    var current = currentById(currentId);
+    var label = STEP_LABELS[step-1];
+    var drops = STATE.drops.filter(function(d){ return d.currentId === currentId && d.step === step; });
+    var body = '<div class="drop-count">' + drops.length + " drop" + (drops.length === 1 ? "" : "s") + "</div>";
+    if(drops.length){
+      body += '<div class="rows">' + drops.map(function(d){
+        return '<div class="row' + (d.completed ? " done" : "") + '" data-drop="' + escAttr(d.id) + '">' +
+          '<button class="check' + (d.completed ? " done" : "") + '" data-action="toggle-drop" data-id="' + escAttr(d.id) + '">' +
+          (d.completed ? "✓" : "") + "</button>" +
+          '<span class="t">' + esc(d.name || "Untitled") + '</span><span class="chev">›</span></div>';
+      }).join("") + "</div>";
+    } else {
+      body += emptyHTML("No drops yet", "Add one filed under this step.");
+    }
+    body += '<div class="formactions"><button class="btn primary" data-action="new-drop" data-current="' +
+      escAttr(currentId) + '" data-step="' + step + '">+ Add Drop to This Step</button></div>';
+    return sheetShell(esc(current ? current.name : ""), esc(label), body, { showBack:true });
+  }
+  function openStepSheet(currentId, step){
+    pushSheet(stepSheetHTML(currentId, step), function(){ replaceTopSheet(stepSheetHTML(currentId, step)); });
+  }
+
+  function dropSheetHTML(id){
+    var d = STATE.drops.filter(function(x){ return x.id === id; })[0];
+    if(!d) return "";
+    var current = d.currentId ? currentById(d.currentId) : null;
+    var body = d.description ? '<p class="desc">' + esc(d.description) + "</p>" : "";
+    var facts = [];
+    facts.push(["Belongs to", current ? current.name : "Standalone"]);
+    if(d.step) facts.push(["Step", STEP_LABELS[d.step-1]]);
+    if(d.dueDate) facts.push(["Due", fmtDate(d.dueDate)]);
+    if(d.repeats) facts.push(["Repeats", esc(d.repeats)]);
+    body += '<div class="facts">' + facts.map(function(f){
+      return '<div class="fact"><span>' + esc(f[0]) + "</span><b>" + f[1] + "</b></div>";
+    }).join("") + "</div>";
+    body += '<div class="formactions">' +
+      '<button class="btn primary" data-action="toggle-drop" data-id="' + escAttr(d.id) + '">' +
+      (d.completed ? "Mark incomplete" : "Mark complete") + "</button>" +
+      '<button class="btn" style="background:var(--surface2);color:var(--ink)" data-action="edit-drop" data-id="' + escAttr(d.id) + '">Edit</button>' +
+      '<button class="btn danger" data-action="delete-drop" data-id="' + escAttr(d.id) + '">Delete</button>' +
+      "</div>";
+    return sheetShell(esc(d.name || "Untitled"), "", body, { showBack:true });
+  }
+  function openDropSheet(id){
+    pushSheet(dropSheetHTML(id), function(){ replaceTopSheet(dropSheetHTML(id)); });
+  }
+
+  function toggleDrop(id){
+    var d = STATE.drops.filter(function(x){ return x.id === id; })[0];
+    if(!d) return;
+    d.completed = !d.completed;
+    saveState();
+    if(sheetStack.length && sheetStack[sheetStack.length-1].refresh){ sheetStack[sheetStack.length-1].refresh(); }
+    rerenderCurrentTab();
+  }
+  function deleteDrop(id){
+    if(!confirm("Delete this drop?")) return;
+    STATE.drops = STATE.drops.filter(function(d){ return d.id !== id; });
+    saveState();
+    popAndRefresh();
+    rerenderCurrentTab();
+  }
+
+  // ---------- Current form ----------
+  var currentDraft = null;
+  function openCurrentForm(existingId, defaultCircle){
+    var editing = existingId ? currentById(existingId) : null;
+    currentDraft = editing ? Object.assign({}, editing) : {
+      id:null, name:"", description:"", circle:defaultCircle || "self",
+      priority:null, kumara:"", aramuk:"", myB:""
+    };
+    pushSheet(sheetShell(editing ? "Edit Current" : "New Current", "", currentFormBodyHTML(), { showBack:true }));
+  }
+  function currentFormBodyHTML(){
+    var d = currentDraft;
+    var circleChips = CIRCLE_DEFS.map(function(c){
+      return '<button type="button" class="chip" data-field="circle" data-value="' + c.key + '" data-selected="' +
+        (d.circle === c.key) + '" style="--chip-accent:var(--' + c.key + ')">' + esc(c.label) + "</button>";
+    }).join("");
+    return '<div class="field"><label>Name</label><input id="f-name" value="' + escAttr(d.name) + '" placeholder="What are you moving toward?"></div>' +
+      '<div class="field"><label>Description</label><textarea id="f-description" placeholder="A sentence or two.">' + esc(d.description) + '</textarea></div>' +
+      '<div class="field"><label>Circle</label><div class="chiprow">' + circleChips + "</div></div>" +
+      '<div class="field"><label>Priority (1–10, optional — leave blank to keep it out of the top 5)</label>' +
+      '<input id="f-priority" type="number" min="1" max="10" value="' + (d.priority != null ? d.priority : "") + '"></div>' +
+      '<div class="field"><label>Kumara — the feeling you want on the other side</label><textarea id="f-kumara">' + esc(d.kumara) + "</textarea></div>" +
+      '<div class="field"><label>Aramuk — the feeling standing in the way</label><textarea id="f-aramuk">' + esc(d.aramuk) + "</textarea></div>" +
+      '<div class="field"><label>My Goal (shown in the Clarify step)</label><textarea id="f-myb">' + esc(d.myB) + "</textarea></div>" +
+      '<div class="formactions">' +
+      '<button class="btn primary" data-action="save-current">Save</button>' +
+      (d.id ? '<button class="btn danger" data-action="delete-current" data-id="' + escAttr(d.id) + '">Delete</button>' : "") +
+      "</div>";
+  }
+  function readCurrentFormInputs(){
+    currentDraft.name = (document.getElementById("f-name") || {}).value || "";
+    currentDraft.description = (document.getElementById("f-description") || {}).value || "";
+    var p = (document.getElementById("f-priority") || {}).value;
+    currentDraft.priority = p === "" || p == null ? null : Math.max(1, Math.min(10, parseInt(p, 10)));
+    currentDraft.kumara = (document.getElementById("f-kumara") || {}).value || "";
+    currentDraft.aramuk = (document.getElementById("f-aramuk") || {}).value || "";
+    currentDraft.myB = (document.getElementById("f-myb") || {}).value || "";
+  }
+  function saveCurrentForm(){
+    readCurrentFormInputs();
+    if(!currentDraft.name.trim()){ return; }
+    if(currentDraft.id){
+      var existing = currentById(currentDraft.id);
+      Object.assign(existing, currentDraft);
+    } else {
+      currentDraft.id = newId();
+      STATE.currents.push(currentDraft);
+    }
+    saveState();
+    popAndRefresh();
+    rerenderCurrentTab();
+  }
+  function deleteCurrentConfirm(id){
+    if(!confirm("Delete this current? Its drops will become standalone, not deleted.")) return;
+    STATE.currents = STATE.currents.filter(function(c){ return c.id !== id; });
+    STATE.drops.forEach(function(d){ if(d.currentId === id) d.currentId = null; });
+    saveState();
+    popAndRefresh();
+    rerenderCurrentTab();
+  }
+
+  // ---------- Drop form ----------
+  var dropDraft = null;
+  function openDropForm(existingId, defaultCurrentId, defaultStep){
+    var editing = existingId ? STATE.drops.filter(function(d){ return d.id === existingId; })[0] : null;
+    dropDraft = editing ? Object.assign({}, editing) : {
+      id:null, name:"", description:"", step: defaultStep || null,
+      currentId: defaultCurrentId || null, dueDate:null, repeats:"", completed:false
+    };
+    pushSheet(sheetShell(editing ? "Edit Drop" : "New Drop", "", dropFormBodyHTML(), { showBack:true }));
+  }
+  function dropFormBodyHTML(){
+    var d = dropDraft;
+    var stepChips = ['<button type="button" class="chip" data-field="step" data-value="" data-selected="' +
+      (!d.step) + '">None</button>'].concat(STEP_LABELS.map(function(label, i){
+      var n = i + 1;
+      return '<button type="button" class="chip" data-field="step" data-value="' + n + '" data-selected="' +
+        (d.step === n) + '">' + n + "</button>";
+    })).join("");
+    var currentOptions = '<option value="">Standalone</option>' + STATE.currents.map(function(c){
+      return '<option value="' + escAttr(c.id) + '"' + (d.currentId === c.id ? " selected" : "") + ">" + esc(c.name) + "</option>";
+    }).join("");
+    return '<div class="field"><label>Name</label><input id="f-dname" value="' + escAttr(d.name) + '" placeholder="What\'s the action?"></div>' +
+      '<div class="field"><label>Description</label><textarea id="f-ddescription">' + esc(d.description) + "</textarea></div>" +
+      '<div class="field"><label>Current</label><select id="f-current">' + currentOptions + "</select></div>" +
+      '<div class="field"><label>Step</label><div class="chiprow">' + stepChips + "</div></div>" +
+      '<div class="formrow">' +
+      '<div class="field"><label>Due date</label><input id="f-due" type="date" value="' + escAttr(d.dueDate || "") + '"></div>' +
+      '<div class="field"><label>Repeats</label><input id="f-repeats" value="' + escAttr(d.repeats || "") + '" placeholder="e.g. Daily"></div>' +
+      "</div>" +
+      '<div class="formactions">' +
+      '<button class="btn primary" data-action="save-drop">Save</button>' +
+      (d.id ? '<button class="btn danger" data-action="delete-drop" data-id="' + escAttr(d.id) + '">Delete</button>' : "") +
+      "</div>";
+  }
+  function readDropFormInputs(){
+    dropDraft.name = (document.getElementById("f-dname") || {}).value || "";
+    dropDraft.description = (document.getElementById("f-ddescription") || {}).value || "";
+    var cur = (document.getElementById("f-current") || {}).value;
+    dropDraft.currentId = cur || null;
+    dropDraft.dueDate = (document.getElementById("f-due") || {}).value || null;
+    dropDraft.repeats = (document.getElementById("f-repeats") || {}).value || "";
+  }
+  function saveDropForm(){
+    readDropFormInputs();
+    if(!dropDraft.name.trim()){ return; }
+    if(dropDraft.id){
+      var existing = STATE.drops.filter(function(d){ return d.id === dropDraft.id; })[0];
+      Object.assign(existing, dropDraft);
+    } else {
+      dropDraft.id = newId();
+      STATE.drops.push(dropDraft);
+    }
+    saveState();
+    popAndRefresh();
+    rerenderCurrentTab();
+  }
+
+  // ---------- onboarding (first run) ----------
+  // NOTE: this ships with an empty STATE and no seed/example/personal data —
+  // keep it that way. The only way data ever gets created is by someone
+  // actually filling out this wizard or the regular +New forms themselves.
+  var onboard = { step:0, draft:{ name:"", circle:null, kumara:"", aramuk:"", priority:null } };
+
+  function onboardHeadHTML(showBack){
+    return '<div class="onboard-head">' +
+      (showBack ? '<button class="onboard-skip" data-action="onboard-back">‹ Back</button>' : "<span></span>") +
+      '<button class="onboard-skip" data-action="onboard-skip">Skip</button></div>';
+  }
+
+  function onboardHeroBodyHTML(){
+    return "<h1>Welcome to Currents</h1>" +
+      "<p>A place for the projects and visions you're moving toward — <b>Currents</b> — organized into the five areas of life — <b>Circles</b> — and moved forward by concrete actions — <b>Drops</b>.</p>" +
+      '<p style="color:var(--ink-faint);font-size:13px">Everything you add stays on this device — nothing is uploaded anywhere. Let\'s create your first Current together.</p>' +
+      '<div class="formactions"><button class="btn primary" data-action="onboard-next">Let\'s go</button></div>';
+  }
+
+  function onboardStepNameHTML(){
+    var d = onboard.draft;
+    var chips = CIRCLE_DEFS.map(function(c){
+      return '<button type="button" class="chip" data-field="onboard-circle" data-value="' + c.key + '" data-selected="' +
+        (d.circle === c.key) + '" style="--chip-accent:var(--' + c.key + ')">' + esc(c.label) + "</button>";
+    }).join("");
+    var picked = d.circle ? CIRCLE_DEFS.filter(function(c){ return c.key === d.circle; })[0] : null;
+    return "<h1>What are you moving toward?</h1>" +
+      "<p>Name a project or vision — big or small — that matters to you right now.</p>" +
+      '<div class="field"><input id="ob-name" value="' + escAttr(d.name) +
+      '" placeholder="e.g. Ship the beta, Feel healthy again, Rebuild the friendship"></div>' +
+      '<div class="field"><label>Which area of life?</label><div class="chiprow">' + chips + "</div>" +
+      '<div class="onboard-circle-desc">' + esc(picked ? picked.desc : "Pick where this lives.") + "</div></div>" +
+      '<div id="ob-error" class="onboard-error"></div>' +
+      '<div class="formactions"><button class="btn primary" data-action="onboard-next">Next</button></div>';
+  }
+
+  function onboardStepKumaraHTML(){
+    return "<h1>What do you want to feel?</h1>" +
+      "<p>When this is real — when it's actually happened — what feeling do you want on the other side? This is your <b>Kumara</b>.</p>" +
+      '<div class="field"><textarea id="ob-kumara" placeholder="e.g. Proud, at ease, unstoppable">' + esc(onboard.draft.kumara) + "</textarea></div>" +
+      '<div class="formactions"><button class="btn primary" data-action="onboard-next">Next</button></div>';
+  }
+
+  function onboardStepAramukHTML(){
+    return "<h1>What's been in the way?</h1>" +
+      "<p>What feeling has been holding this back — or what are you afraid you'll feel if it doesn't happen? This is your <b>Aramuk</b>.</p>" +
+      '<div class="field"><textarea id="ob-aramuk" placeholder="e.g. Afraid nobody will care">' + esc(onboard.draft.aramuk) + "</textarea></div>" +
+      '<div class="formactions"><button class="btn primary" data-action="onboard-next">Next</button></div>';
+  }
+
+  function onboardStepPriorityHTML(){
+    var d = onboard.draft;
+    return "<h1>How big a priority is this?</h1>" +
+      "<p>1 is the most urgent. Leave it blank if you're not ready to rank it yet — you can always change it later.</p>" +
+      '<div class="field"><input id="ob-priority" type="number" min="1" max="10" value="' +
+      (d.priority != null ? d.priority : "") + '" placeholder="1–10, optional"></div>' +
+      '<div class="formactions"><button class="btn primary" data-action="onboard-finish">Create My First Current</button></div>';
+  }
+
+  function renderOnboarding(){
+    bottomnav.style.display = "none";
+    if(onboard.step <= 0){
+      main.innerHTML = '<div class="screen welcome">' + onboardHeadHTML(false) + onboardHeroBodyHTML() + "</div>";
+      return;
+    }
+    var progress = '<div class="onboard-progress">' + [1,2,3,4].map(function(n){
+      return '<div class="dot' + (n <= onboard.step ? " done" : "") + '"></div>';
+    }).join("") + "</div>";
+    var body = onboard.step === 1 ? onboardStepNameHTML()
+      : onboard.step === 2 ? onboardStepKumaraHTML()
+      : onboard.step === 3 ? onboardStepAramukHTML()
+      : onboardStepPriorityHTML();
+    main.innerHTML = '<div class="screen welcome">' + onboardHeadHTML(true) + progress + body + "</div>";
+  }
+
+  function onboardReadCurrentStep(){
+    var d = onboard.draft;
+    if(onboard.step === 1){ d.name = (document.getElementById("ob-name") || {}).value || ""; }
+    else if(onboard.step === 2){ d.kumara = (document.getElementById("ob-kumara") || {}).value || ""; }
+    else if(onboard.step === 3){ d.aramuk = (document.getElementById("ob-aramuk") || {}).value || ""; }
+    else if(onboard.step === 4){
+      var p = (document.getElementById("ob-priority") || {}).value;
+      d.priority = p === "" ? null : Math.max(1, Math.min(10, parseInt(p, 10)));
+    }
+  }
+  function onboardNext(){
+    onboardReadCurrentStep();
+    if(onboard.step === 1){
+      var err = document.getElementById("ob-error");
+      if(!onboard.draft.name.trim()){ if(err) err.textContent = "Give it a name first."; return; }
+      if(!onboard.draft.circle){ if(err) err.textContent = "Pick which area of life it's in."; return; }
+    }
+    onboard.step++;
+    renderOnboarding();
+  }
+  function onboardBack(){ onboard.step = Math.max(0, onboard.step - 1); renderOnboarding(); }
+  function onboardSkip(){ bottomnav.style.display = "flex"; switchTab("currents"); }
+  function onboardFinish(){
+    onboardReadCurrentStep();
+    var d = onboard.draft;
+    STATE.currents.push({
+      id:newId(), name:d.name.trim(), description:"", circle:d.circle,
+      priority:d.priority, kumara:d.kumara, aramuk:d.aramuk, myB:""
+    });
+    saveState();
+    bottomnav.style.display = "flex";
+    switchTab("currents");
+  }
+
+  // ---------- wiring ----------
+  function handleAction(target){
+    var action = target.getAttribute("data-action");
+    if(!action) return false;
+    if(action === "close"){ closeSheets(); return true; }
+    if(action === "back"){ popSheet(); return true; }
+    if(action === "new-current"){ openCurrentForm(null, target.getAttribute("data-circle")); return true; }
+    if(action === "edit-current"){ openCurrentForm(target.getAttribute("data-id")); return true; }
+    if(action === "save-current"){ saveCurrentForm(); return true; }
+    if(action === "delete-current"){ deleteCurrentConfirm(target.getAttribute("data-id")); return true; }
+    if(action === "new-drop"){ openDropForm(null, target.getAttribute("data-current"), parseInt(target.getAttribute("data-step"), 10) || null); return true; }
+    if(action === "edit-drop"){ openDropForm(target.getAttribute("data-id")); return true; }
+    if(action === "save-drop"){ saveDropForm(); return true; }
+    if(action === "delete-drop"){ deleteDrop(target.getAttribute("data-id")); return true; }
+    if(action === "toggle-drop"){ toggleDrop(target.getAttribute("data-id")); return true; }
+    if(action === "onboard-next"){ onboardNext(); return true; }
+    if(action === "onboard-back"){ onboardBack(); return true; }
+    if(action === "onboard-skip"){ onboardSkip(); return true; }
+    if(action === "onboard-finish"){ onboardFinish(); return true; }
+    return false;
+  }
+
+  function handleClick(e){
+    var actionEl = e.target.closest("[data-action]");
+    if(actionEl && handleAction(actionEl)) return;
+    var chip = e.target.closest(".chip[data-field]");
+    if(chip){
+      var field = chip.getAttribute("data-field");
+      var value = chip.getAttribute("data-value");
+      if(field === "onboard-circle"){
+        // Re-rendering (to update the circle description text) would otherwise
+        // wipe out whatever was already typed in the name field above it.
+        var nameEl = document.getElementById("ob-name");
+        if(nameEl) onboard.draft.name = nameEl.value;
+        onboard.draft.circle = value;
+        renderOnboarding();
+        return;
+      }
+      var group = chip.parentElement;
+      Array.prototype.forEach.call(group.querySelectorAll(".chip"), function(c){ c.setAttribute("data-selected", "false"); });
+      chip.setAttribute("data-selected", "true");
+      if(field === "circle"){ currentDraft.circle = value; }
+      if(field === "step"){ dropDraft.step = value ? parseInt(value, 10) : null; }
+      return;
+    }
+    var stepRow = e.target.closest(".row[data-step]");
+    if(stepRow){ openStepSheet(stepRow.getAttribute("data-current"), parseInt(stepRow.getAttribute("data-step"), 10)); return; }
+    var dropRow = e.target.closest(".row[data-drop]");
+    if(dropRow){ openDropSheet(dropRow.getAttribute("data-drop")); return; }
+  }
+
+  function init(){
+    main = document.getElementById("main");
+    bottomnav = document.getElementById("bottomnav");
+    sheetsRoot = document.getElementById("sheets");
+
+    bottomnav.innerHTML = TABS.map(function(t){
+      return '<button class="navbtn" data-tab="' + t.id + '" aria-current="' + (state.tab === t.id) + '">' +
+        '<span class="ic">' + t.ic + '</span><span class="lb">' + t.lb + "</span></button>";
+    }).join("");
+    Array.prototype.forEach.call(bottomnav.querySelectorAll(".navbtn"), function(b){
+      b.onclick = function(){ switchTab(b.getAttribute("data-tab")); };
+    });
+
+    document.body.addEventListener("click", handleClick);
+
+    if(STATE.currents.length || STATE.drops.length){
+      switchTab("currents");
+    } else {
+      renderOnboarding();
+    }
+  }
+
+  if(document.readyState === "loading"){
+    document.addEventListener("DOMContentLoaded", init);
+  } else {
+    init();
+  }
+})();
+</script>
+</body>
+</html>

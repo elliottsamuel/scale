@@ -81,3 +81,6 @@ Other self-contained single-file apps, each served from its own folder:
 - [`perch/`](perch/) — **Perch**, a wellness app that helps you arrive at a
   healthy vantage point on a health or healing goal — name it, feel it, and
   build the plan. Served at `/perch/`.
+- [`currents/`](currents/) — **Currents**, Currents/Circles/Drops from the
+  Mystic Method, read live from Notion through a small Cloudflare Worker.
+  Served at `/currents/`.
