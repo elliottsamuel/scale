@@ -125,10 +125,18 @@
   .empty-block b{display:block;color:var(--ink-soft);font-size:15px;font-weight:700;margin-bottom:4px}
 
   .welcome{padding-top:14px}
-  .welcome h1{font-size:27px;margin:0 0 10px;font-weight:800}
+  .welcome h1{font-size:27px;margin:0 0 10px;font-weight:800;text-wrap:balance}
   .welcome p{color:var(--ink-soft);line-height:1.6;font-size:14.5px;margin:0 0 12px}
-  .welcome ul{color:var(--ink-soft);line-height:1.7;font-size:14.5px;padding-left:20px;margin:0 0 18px}
-  .welcome ul b{color:var(--ink)}
+  .welcome p b{color:var(--ink)}
+
+  .onboard-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+  .onboard-skip{font-size:13px;color:var(--ink-faint);background:none;border:0;cursor:pointer;
+    text-decoration:underline;text-underline-offset:2px;padding:4px 2px;-webkit-appearance:none;appearance:none}
+  .onboard-progress{display:flex;gap:6px;margin:0 0 20px}
+  .onboard-progress .dot{flex:1;height:4px;border-radius:2px;background:var(--border)}
+  .onboard-progress .dot.done{background:var(--self)}
+  .onboard-circle-desc{color:var(--ink-faint);font-size:13px;margin-top:8px;min-height:18px}
+  .onboard-error{color:var(--danger);font-size:13px;margin:-4px 0 14px}
 
   /* ---------- bottom nav ---------- */
   .bottomnav{position:fixed;left:50%;bottom:0;transform:translateX(-50%);width:100%;max-width:var(--maxw);
@@ -207,11 +215,11 @@
   var STORAGE_KEY = "currents-app-v1";
   var STEP_LABELS = ["Clarify your destination","Visualize the path","Feel the transformation","Follow your strategy","Be yourself"];
   var CIRCLE_DEFS = [
-    { key:"self", label:"Self" },
-    { key:"ohana", label:"Ohana" },
-    { key:"collective", label:"Collective" },
-    { key:"afterglow", label:"After Glow" },
-    { key:"kumara", label:"Kumara" }
+    { key:"self", label:"Self", desc:"Healing, growth, becoming who you're meant to be." },
+    { key:"ohana", label:"Ohana", desc:"Family, close friends, the people nearest to you." },
+    { key:"collective", label:"Collective", desc:"Your work in the world — clients, community, impact." },
+    { key:"afterglow", label:"After Glow", desc:"The legacy you leave — what outlasts you." },
+    { key:"kumara", label:"Kumara", desc:"The practice itself — the whole system." }
   ];
   var TABS = [
     { id:"currents", ic:"🌊", lb:"Currents" },
@@ -576,21 +584,113 @@
     rerenderCurrentTab();
   }
 
-  // ---------- welcome (first run) ----------
-  function maybeShowWelcome(){
-    if(STATE.currents.length || STATE.drops.length) return false;
-    main.innerHTML = '<div class="screen welcome">' +
-      "<h1>Welcome to Currents</h1>" +
-      "<p>Currents, Circles, and Drops — built on the Mystic Method.</p>" +
-      "<ul>" +
-      "<li><b>Currents</b> are the projects or visions you're moving toward. Each one carries its Kumara (the feeling you want on the other side) and Aramuk (the feeling standing in the way), plus five steps: Clarify, Visualize, Feel, Act, Be.</li>" +
-      "<li><b>Circles</b> are the five areas of life your Currents live in — Self, Ohana, Collective, After Glow, Kumara.</li>" +
-      "<li><b>Drops</b> are the actions that move a Current forward — or stand alone.</li>" +
-      "</ul>" +
-      '<p style="color:var(--ink-faint);font-size:13px">Everything you add stays on this device — nothing is uploaded anywhere.</p>' +
-      '<div class="formactions"><button class="btn primary" data-action="new-current">Add your first Current</button></div>' +
-      "</div>";
-    return true;
+  // ---------- onboarding (first run) ----------
+  // NOTE: this ships with an empty STATE and no seed/example/personal data —
+  // keep it that way. The only way data ever gets created is by someone
+  // actually filling out this wizard or the regular +New forms themselves.
+  var onboard = { step:0, draft:{ name:"", circle:null, kumara:"", aramuk:"", priority:null } };
+
+  function onboardHeadHTML(showBack){
+    return '<div class="onboard-head">' +
+      (showBack ? '<button class="onboard-skip" data-action="onboard-back">‹ Back</button>' : "<span></span>") +
+      '<button class="onboard-skip" data-action="onboard-skip">Skip</button></div>';
+  }
+
+  function onboardHeroBodyHTML(){
+    return "<h1>Welcome to Currents</h1>" +
+      "<p>A place for the projects and visions you're moving toward — <b>Currents</b> — organized into the five areas of life — <b>Circles</b> — and moved forward by concrete actions — <b>Drops</b>.</p>" +
+      '<p style="color:var(--ink-faint);font-size:13px">Everything you add stays on this device — nothing is uploaded anywhere. Let\'s create your first Current together.</p>' +
+      '<div class="formactions"><button class="btn primary" data-action="onboard-next">Let\'s go</button></div>';
+  }
+
+  function onboardStepNameHTML(){
+    var d = onboard.draft;
+    var chips = CIRCLE_DEFS.map(function(c){
+      return '<button type="button" class="chip" data-field="onboard-circle" data-value="' + c.key + '" data-selected="' +
+        (d.circle === c.key) + '" style="--chip-accent:var(--' + c.key + ')">' + esc(c.label) + "</button>";
+    }).join("");
+    var picked = d.circle ? CIRCLE_DEFS.filter(function(c){ return c.key === d.circle; })[0] : null;
+    return "<h1>What are you moving toward?</h1>" +
+      "<p>Name a project or vision — big or small — that matters to you right now.</p>" +
+      '<div class="field"><input id="ob-name" value="' + escAttr(d.name) +
+      '" placeholder="e.g. Ship the beta, Feel healthy again, Rebuild the friendship"></div>' +
+      '<div class="field"><label>Which area of life?</label><div class="chiprow">' + chips + "</div>" +
+      '<div class="onboard-circle-desc">' + esc(picked ? picked.desc : "Pick where this lives.") + "</div></div>" +
+      '<div id="ob-error" class="onboard-error"></div>' +
+      '<div class="formactions"><button class="btn primary" data-action="onboard-next">Next</button></div>';
+  }
+
+  function onboardStepKumaraHTML(){
+    return "<h1>What do you want to feel?</h1>" +
+      "<p>When this is real — when it's actually happened — what feeling do you want on the other side? This is your <b>Kumara</b>.</p>" +
+      '<div class="field"><textarea id="ob-kumara" placeholder="e.g. Proud, at ease, unstoppable">' + esc(onboard.draft.kumara) + "</textarea></div>" +
+      '<div class="formactions"><button class="btn primary" data-action="onboard-next">Next</button></div>';
+  }
+
+  function onboardStepAramukHTML(){
+    return "<h1>What's been in the way?</h1>" +
+      "<p>What feeling has been holding this back — or what are you afraid you'll feel if it doesn't happen? This is your <b>Aramuk</b>.</p>" +
+      '<div class="field"><textarea id="ob-aramuk" placeholder="e.g. Afraid nobody will care">' + esc(onboard.draft.aramuk) + "</textarea></div>" +
+      '<div class="formactions"><button class="btn primary" data-action="onboard-next">Next</button></div>';
+  }
+
+  function onboardStepPriorityHTML(){
+    var d = onboard.draft;
+    return "<h1>How big a priority is this?</h1>" +
+      "<p>1 is the most urgent. Leave it blank if you're not ready to rank it yet — you can always change it later.</p>" +
+      '<div class="field"><input id="ob-priority" type="number" min="1" max="10" value="' +
+      (d.priority != null ? d.priority : "") + '" placeholder="1–10, optional"></div>' +
+      '<div class="formactions"><button class="btn primary" data-action="onboard-finish">Create My First Current</button></div>';
+  }
+
+  function renderOnboarding(){
+    bottomnav.style.display = "none";
+    if(onboard.step <= 0){
+      main.innerHTML = '<div class="screen welcome">' + onboardHeadHTML(false) + onboardHeroBodyHTML() + "</div>";
+      return;
+    }
+    var progress = '<div class="onboard-progress">' + [1,2,3,4].map(function(n){
+      return '<div class="dot' + (n <= onboard.step ? " done" : "") + '"></div>';
+    }).join("") + "</div>";
+    var body = onboard.step === 1 ? onboardStepNameHTML()
+      : onboard.step === 2 ? onboardStepKumaraHTML()
+      : onboard.step === 3 ? onboardStepAramukHTML()
+      : onboardStepPriorityHTML();
+    main.innerHTML = '<div class="screen welcome">' + onboardHeadHTML(true) + progress + body + "</div>";
+  }
+
+  function onboardReadCurrentStep(){
+    var d = onboard.draft;
+    if(onboard.step === 1){ d.name = (document.getElementById("ob-name") || {}).value || ""; }
+    else if(onboard.step === 2){ d.kumara = (document.getElementById("ob-kumara") || {}).value || ""; }
+    else if(onboard.step === 3){ d.aramuk = (document.getElementById("ob-aramuk") || {}).value || ""; }
+    else if(onboard.step === 4){
+      var p = (document.getElementById("ob-priority") || {}).value;
+      d.priority = p === "" ? null : Math.max(1, Math.min(10, parseInt(p, 10)));
+    }
+  }
+  function onboardNext(){
+    onboardReadCurrentStep();
+    if(onboard.step === 1){
+      var err = document.getElementById("ob-error");
+      if(!onboard.draft.name.trim()){ if(err) err.textContent = "Give it a name first."; return; }
+      if(!onboard.draft.circle){ if(err) err.textContent = "Pick which area of life it's in."; return; }
+    }
+    onboard.step++;
+    renderOnboarding();
+  }
+  function onboardBack(){ onboard.step = Math.max(0, onboard.step - 1); renderOnboarding(); }
+  function onboardSkip(){ bottomnav.style.display = "flex"; switchTab("currents"); }
+  function onboardFinish(){
+    onboardReadCurrentStep();
+    var d = onboard.draft;
+    STATE.currents.push({
+      id:newId(), name:d.name.trim(), description:"", circle:d.circle,
+      priority:d.priority, kumara:d.kumara, aramuk:d.aramuk, myB:""
+    });
+    saveState();
+    bottomnav.style.display = "flex";
+    switchTab("currents");
   }
 
   // ---------- wiring ----------
@@ -608,6 +708,10 @@
     if(action === "save-drop"){ saveDropForm(); return true; }
     if(action === "delete-drop"){ deleteDrop(target.getAttribute("data-id")); return true; }
     if(action === "toggle-drop"){ toggleDrop(target.getAttribute("data-id")); return true; }
+    if(action === "onboard-next"){ onboardNext(); return true; }
+    if(action === "onboard-back"){ onboardBack(); return true; }
+    if(action === "onboard-skip"){ onboardSkip(); return true; }
+    if(action === "onboard-finish"){ onboardFinish(); return true; }
     return false;
   }
 
@@ -618,6 +722,15 @@
     if(chip){
       var field = chip.getAttribute("data-field");
       var value = chip.getAttribute("data-value");
+      if(field === "onboard-circle"){
+        // Re-rendering (to update the circle description text) would otherwise
+        // wipe out whatever was already typed in the name field above it.
+        var nameEl = document.getElementById("ob-name");
+        if(nameEl) onboard.draft.name = nameEl.value;
+        onboard.draft.circle = value;
+        renderOnboarding();
+        return;
+      }
       var group = chip.parentElement;
       Array.prototype.forEach.call(group.querySelectorAll(".chip"), function(c){ c.setAttribute("data-selected", "false"); });
       chip.setAttribute("data-selected", "true");
@@ -646,7 +759,11 @@
 
     document.body.addEventListener("click", handleClick);
 
-    if(!maybeShowWelcome()){ switchTab("currents"); }
+    if(STATE.currents.length || STATE.drops.length){
+      switchTab("currents");
+    } else {
+      renderOnboarding();
+    }
   }
 
   if(document.readyState === "loading"){
