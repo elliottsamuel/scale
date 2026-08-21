@@ -205,6 +205,39 @@
     cursor:pointer;-webkit-appearance:none;appearance:none;transition:width .2s ease,background .2s ease}
   .intro-dots .dot.active{background:var(--kelp);width:22px}
 
+  .intro-visual.big{width:140px;height:140px;margin-bottom:24px}
+  .intro-visual.big svg{width:60px;height:60px}
+  .intro-visual.pulse{animation:pulse-glow 3.2s ease-in-out infinite}
+  @keyframes pulse-glow{0%,100%{transform:scale(1);box-shadow:0 0 44px -10px var(--kelp)}
+    50%{transform:scale(1.05);box-shadow:0 0 60px -8px var(--kelp)}}
+  @media (prefers-reduced-motion: reduce){ .intro-visual.pulse{animation:none} }
+  .intro-lead{font-family:var(--font-display);font-weight:600;font-size:19px;color:var(--foam);
+    line-height:1.45;margin:0 0 10px}
+
+  .player{display:flex;align-items:center;gap:14px;background:rgba(10,22,32,.4);border:1px solid var(--line);
+    border-radius:18px;padding:12px 16px;margin-top:22px}
+  .player-play{width:52px;height:52px;border-radius:50%;background:var(--kelp);color:var(--kelp-ink);
+    border:0;display:grid;place-items:center;flex:0 0 auto;cursor:pointer;
+    box-shadow:0 10px 24px -8px rgba(127,216,196,.55);-webkit-appearance:none;appearance:none}
+  .player-play:active{transform:scale(.94)}
+  .player-play svg{width:20px;height:20px}
+  .player-viz{flex:1;display:flex;align-items:center;gap:4px;height:28px;min-width:0}
+  .player-viz .bar{flex:1;background:var(--tide-dim);border-radius:3px;height:22%;opacity:.7;
+    transition:background .2s ease}
+  .player-viz.playing .bar{background:var(--kelp);opacity:1;animation:barbounce 1.1s ease-in-out infinite}
+  .player-viz .bar:nth-child(1){animation-duration:.9s}
+  .player-viz .bar:nth-child(2){animation-duration:1.3s;animation-delay:.1s}
+  .player-viz .bar:nth-child(3){animation-duration:1s;animation-delay:.2s}
+  .player-viz .bar:nth-child(4){animation-duration:1.4s;animation-delay:0s}
+  .player-viz .bar:nth-child(5){animation-duration:1.05s;animation-delay:.25s}
+  .player-viz .bar:nth-child(6){animation-duration:1.2s;animation-delay:.15s}
+  .player-viz .bar:nth-child(7){animation-duration:.95s;animation-delay:.3s}
+  @keyframes barbounce{0%,100%{height:22%}50%{height:95%}}
+  @media (prefers-reduced-motion: reduce){ .player-viz.playing .bar{animation:none;height:70%} }
+  .player-time{font-family:var(--font-mono);font-size:11px;color:var(--tide-dim);flex:0 0 auto;
+    font-variant-numeric:tabular-nums}
+  .player-note{font-size:12px;color:var(--ember);margin-top:10px;min-height:15px}
+
   /* ---------- bottom nav ---------- */
   .bottomnav{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom));transform:translateX(-50%);
     width:calc(100% - 44px);max-width:calc(var(--maxw) - 44px);
@@ -300,6 +333,19 @@
   var ICON_WAVE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M2 9c2 0 2-3 4-3s2 3 4 3 2-3 4-3 2 3 4 3 2-3 4-3"/><path d="M2 15c2 0 2-3 4-3s2 3 4 3 2-3 4-3 2 3 4 3 2-3 4-3" opacity=".5"/></svg>';
   var ICON_CIRCLE = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="2.4" fill="currentColor" stroke="none"/></svg>';
   var ICON_DROP = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"><path d="M12 3c3.5 4.5 6 7.9 6 10.8A6 6 0 1 1 6 13.8C6 10.9 8.5 7.5 12 3z"/></svg>';
+  var ICON_PLAY = '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.14v13.72c0 .84.93 1.35 1.64.9l10.68-6.86a1.06 1.06 0 0 0 0-1.8L9.64 4.24C8.93 3.79 8 4.3 8 5.14z"/></svg>';
+  var ICON_PAUSE = '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4.5" height="14" rx="1.2"/><rect x="13.5" y="5" width="4.5" height="14" rx="1.2"/></svg>';
+  // Paste a direct-playable link here (Dropbox share links need converting —
+  // normalizeTrackUrl() below handles the common "?dl=0" case automatically).
+  var TRACK_URL = "";
+  function normalizeTrackUrl(url){
+    if(!url) return url;
+    if(url.indexOf("dropbox.com") !== -1){
+      if(/[?&]dl=0\b/.test(url)) return url.replace(/([?&])dl=0\b/, "$1dl=1");
+      if(!/[?&]dl=1\b/.test(url)) return url + (url.indexOf("?") === -1 ? "?dl=1" : "&dl=1");
+    }
+    return url;
+  }
   var TABS = [
     { id:"currents", ic:ICON_WAVE, lb:"Currents" },
     { id:"circles", ic:ICON_CIRCLE, lb:"Circles" },
@@ -670,6 +716,46 @@
     rerenderCurrentTab();
   }
 
+  // ---------- headphones track player (intro, frame 1) ----------
+  var audioEl = null;
+  function fmtTime(sec){
+    if(!isFinite(sec) || sec < 0) return "0:00";
+    var m = Math.floor(sec / 60), s = Math.floor(sec % 60);
+    return m + ":" + (s < 10 ? "0" : "") + s;
+  }
+  function updatePlayerTime(){
+    var el = document.getElementById("playerTime");
+    if(!el || !audioEl) return;
+    el.textContent = fmtTime(audioEl.currentTime) + " / " + fmtTime(audioEl.duration || 0);
+  }
+  function setPlayerPlaying(playing){
+    var btn = document.getElementById("playerPlayBtn");
+    var viz = document.getElementById("playerViz");
+    if(btn){ btn.innerHTML = playing ? ICON_PAUSE : ICON_PLAY; btn.setAttribute("aria-label", playing ? "Pause" : "Play"); }
+    if(viz) viz.classList.toggle("playing", playing);
+  }
+  function ensureAudio(){
+    if(audioEl) return audioEl;
+    audioEl = new Audio(normalizeTrackUrl(TRACK_URL));
+    audioEl.addEventListener("timeupdate", updatePlayerTime);
+    audioEl.addEventListener("loadedmetadata", updatePlayerTime);
+    audioEl.addEventListener("ended", function(){ setPlayerPlaying(false); });
+    audioEl.addEventListener("error", function(){
+      var note = document.getElementById("playerNote");
+      if(note) note.textContent = "Couldn't load the track — check the link.";
+      setPlayerPlaying(false);
+    });
+    return audioEl;
+  }
+  function toggleTrack(){
+    var note = document.getElementById("playerNote");
+    if(!TRACK_URL){ if(note) note.textContent = "Track isn't set up yet."; return; }
+    if(note) note.textContent = "";
+    var a = ensureAudio();
+    if(a.paused){ a.play().catch(function(){ if(note) note.textContent = "Couldn't play the track — check the link."; }); setPlayerPlaying(true); }
+    else { a.pause(); setPlayerPlaying(false); }
+  }
+
   // ---------- intro carousel (first run only) ----------
   // NOTE: this ships with an empty STATE and no seed/example/personal data —
   // keep it that way. The only way data ever gets created is by someone
@@ -677,9 +763,15 @@
   var intro = { frame:0 };
   var INTRO_FRAMES = [
     {
-      visual: '<div class="intro-visual">' + ICON_WAVE + "</div>",
-      title: "Welcome to Currents",
-      body: "A new way of optimizing your productivity — one that honors your emotional intelligence and uses best practices from product development to help you actually achieve your goals."
+      html: '<div class="intro-visual big pulse">' + ICON_WAVE + "</div>" +
+        '<p class="intro-lead">Currents is a productivity app designed to help you become the biggest version of yourself.</p>' +
+        "<p>To learn what that feels like, put on some headphones and press play.</p>" +
+        '<div class="player">' +
+        '<button type="button" class="player-play" id="playerPlayBtn" data-action="track-toggle" aria-label="Play">' + ICON_PLAY + "</button>" +
+        '<div class="player-viz" id="playerViz">' + new Array(7).fill('<span class="bar"></span>').join("") + "</div>" +
+        '<span class="player-time" id="playerTime">0:00</span>' +
+        "</div>" +
+        '<div class="player-note" id="playerNote"></div>'
     },
     {
       visual: '<div class="intro-preview">' +
@@ -699,6 +791,7 @@
   ];
 
   function introFrameHTML(f){
+    if(f.html) return '<div class="intro-frame">' + f.html + "</div>";
     return '<div class="intro-frame">' + f.visual + "<h1>" + esc(f.title) + "</h1><p>" + esc(f.body) + "</p></div>";
   }
   function renderIntro(){
@@ -856,6 +949,7 @@
     if(action === "intro-goto"){ introGoTo(parseInt(target.getAttribute("data-idx"), 10)); return true; }
     if(action === "intro-skip"){ introSkip(); return true; }
     if(action === "intro-finish"){ openCurrentFlow(); return true; }
+    if(action === "track-toggle"){ toggleTrack(); return true; }
     if(action === "flow-next"){ flowNext(); return true; }
     if(action === "flow-back"){ flowBack(); return true; }
     if(action === "flow-cancel"){ closeCurrentFlow(); return true; }
