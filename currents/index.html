@@ -810,7 +810,7 @@
       '<div class="onboard-head"><span></span><button class="onboard-skip" data-action="intro-skip">Skip</button></div>' +
       '<div class="intro-track" id="introTrack">' + INTRO_FRAMES.map(introFrameHTML).join("") + "</div>" +
       '<div class="intro-dots" id="introDots">' + dots + "</div>" +
-      '<div class="formactions"><button class="btn primary" id="introCta" data-action="intro-next">Next</button></div>' +
+      '<div class="formactions"><button class="btn primary" data-action="intro-finish">Add My First Current</button></div>' +
       "</div>";
     var track = document.getElementById("introTrack");
     var ticking = false;
@@ -828,15 +828,6 @@
     Array.prototype.forEach.call(document.querySelectorAll("#introDots .dot"), function(d, i){
       d.classList.toggle("active", i === idx);
     });
-    var cta = document.getElementById("introCta");
-    if(!cta) return;
-    if(idx >= INTRO_FRAMES.length - 1){
-      cta.textContent = "Add My First Current";
-      cta.setAttribute("data-action", "intro-finish");
-    } else {
-      cta.textContent = "Next";
-      cta.setAttribute("data-action", "intro-next");
-    }
   }
   function introGoTo(idx){
     idx = Math.max(0, Math.min(INTRO_FRAMES.length - 1, idx));
@@ -869,9 +860,9 @@
   }
   function flowStepGoalHTML(){
     var d = flow.draft;
-    return "<h1>What are you moving toward?</h1>" +
-      "<p>Name a project or vision — big or small — that matters to you right now.</p>" +
-      '<div class="field"><input id="cf-name" value="' + escAttr(d.name) + '" placeholder="Your most important goal right now"></div>' +
+    return "<h1>State it like it's already real</h1>" +
+      '<p>Describe your goal in the present tense — as if it\'s already true. For example: <b>"I\'ve added five pounds of muscle"</b> or <b>"My business made a million dollars."</b></p>' +
+      '<div class="field"><input id="cf-name" value="' + escAttr(d.name) + '" placeholder="e.g. I\'ve added five pounds of muscle"></div>' +
       '<div id="cf-error" class="onboard-error"></div>' +
       '<div class="formactions"><button class="btn primary" data-action="flow-next">Continue</button></div>';
   }
@@ -951,7 +942,6 @@
     if(action === "save-drop"){ saveDropForm(); return true; }
     if(action === "delete-drop"){ deleteDrop(target.getAttribute("data-id")); return true; }
     if(action === "toggle-drop"){ toggleDrop(target.getAttribute("data-id")); return true; }
-    if(action === "intro-next"){ introGoTo(intro.frame + 1); return true; }
     if(action === "intro-goto"){ introGoTo(parseInt(target.getAttribute("data-idx"), 10)); return true; }
     if(action === "intro-skip"){ introSkip(); return true; }
     if(action === "intro-finish"){ openCurrentFlow(); return true; }
